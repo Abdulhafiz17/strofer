@@ -1,17 +1,17 @@
 <template>
   <div class="container-fluid">
-    <router-link class="btn btn-outline-warning btn-sm mb-2" to="/hodimlar">
+    <router-link class="btn btn-outline-success btn-sm mb-2" to="/hodimlar">
       <span class="fa fa-arrow-left"></span> Chiqish
     </router-link>
     <div class="card shadow">
       <div class="card-header">
-        <h3>Bloklangan Hodim</h3>
+        <h3>Bloklangan Hodimlar</h3>
       </div>
       <div class="card-body">
         <div class="row">
           <div
             class="col-md-4 mb-3"
-            v-for="hodim in hodims"
+            v-for="hodim in hodimlar"
             :key="hodim.name"
           >
             <div class="card shadow">
@@ -93,28 +93,29 @@
 
 <script>
 import axios from "axios";
-import { access_token } from "../../../DATA_BASE";
 export default {
   data() {
     return {
-      hodims: [],
+      access_token: localStorage.getItem("access_token"),
+      branch_id: localStorage.getItem("branch_id"),
+      hodimlar: [],
     };
   },
   methods: {
     getData() {
-      const BASEURL = "https://oqsaroy.crud.uz/hodimlar_block";
+      const BASEURL = "https://savdo.crud.uz/branch_user/" + this.branch_id + "/block";
       axios
         .create({
           baseURL: BASEURL,
           headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            Authorization: "Bearer " + access_token,
+            Authorization: "Bearer " + this.access_token,
           },
         })
         .get(BASEURL)
         .then((res) => {
-          this.hodims = res.data;
+          this.hodimlar = res.data;
           console.log(res.data);
         });
     },

@@ -13,7 +13,7 @@
                 v-model="search"
                 @keyup="filteredCards"
                 class="form-control"
-                placeholder="Search"
+                placeholder="Qidiruv"
               />
               <div class="input-group-append">
                 <span class="input-group-text">
@@ -32,14 +32,14 @@
             </button>
             <router-link
               class="btn btn-outline-danger"
-              to="/bloklanganHodimlar"
+              to="/blocklanganHodimlar"
             >
               <span class="fa fa-eye-slash"></span>
             </router-link>
           </div>
         </div>
       </div>
-      <!-- <div class="card-body">
+      <div class="card-body">
         <div class="row">
           <div
             class="col-md-4 mb-3"
@@ -90,7 +90,7 @@
                       <th>
                         <span class="fa fa-industry text-secondary"></span>
                       </th>
-                      <td>{{ hodim.role }}</td>
+                      <td v-if="hodim.role == 'branch_admin'"> Filial admin </td>
                     </tr>
                   </tbody>
                 </table>
@@ -118,10 +118,12 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
+
     <!-- Modal -->
-    <!-- <div
+
+    <div
       class="modal fade"
       id="exampleModall"
       tabindex="-1"
@@ -136,93 +138,84 @@
           </div>
           <form id="form1" @submit.prevent="postData">
             <div class="modal-body">
-              <div class="row">
+              <div class="row mb-2">
                 <div class="col-md-6">
-                  <div class="form-group field-client-ism required">
-                    <label>Ism</label>
+                  <label> Ismi </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Ism"
+                    v-model="yangiHodim.name"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label> Telefon raqami </label>
+                  <div class="input-group">
+                    <span class="input-group-prepend">
+                      <span class="input-group-text">
+                        +998
+                      </span>
+                    </span>
                     <input
-                      type="text"
+                      type="tel"
                       class="form-control"
-                      placeholder="Hodim ismi"
-                      v-model="data.name"
+                      placeholder="Tel"
+                      min="0"
+                      minlength="9"
+                      maxlength="9"
+                      v-model="yangiHodim.phone"
                       required
                     />
                   </div>
-                  <div class="form-group field-client-manzil required">
-                    <label for="">Vazifasi</label>
-                    <select
-                      name=""
-                      id=""
-                      v-model="data.role"
-                      class="form-control"
-                      required
-                    >
-                      <option value="tikiuvchi">Tikiuvchi</option>
-                      <option value="dazmollovchi">Dazmollovchi</option>
-                      <option value="upakovchi">Upakovchi</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </div>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md">
+                  <label> Role </label>
+                  <select class="custom-select" v-model="yangiHodim.role">
+                    <option value="branch_admin"> Filial admin </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label> Username </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Username"
+                    v-model="yangiHodim.username"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
-                  <label>Telefon</label>
-                  <div class="form-group">
-                    <div class="input-group">
-                      <span class="input-group-append">
-                        <span class="input-group-text">+998</span>
-                      </span>
-                      <input
-                        type="phone"
-                        min="0"
-                        maxlength="9"
-                        minlength="9"
-                        v-model="data.phone"
-                        class="form-control"
-                        placeholder="Telefon raqami"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="">Tseh</label>
-                    <select
-                      name=""
-                      id=""
-                      v-model="data.seh_id"
-                      class="form-control"
-                      required
-                    >
-                      <option v-for="seh in sehs" :key="seh.id" :value="seh.id">
-                        {{ seh.name }}
-                      </option>
-                    </select>
-                  </div>
+                  <label> Parol </label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    placeholder="Password"
+                    v-model="yangiHodim.password"
+                    required
+                  />
                 </div>
               </div>
-              <div class="modal-footer">
-                <button
-                  type="submit"
-                  form="form1"
-                  class="btn btn-outline-primary"
-                >
-                  <i class="far fa-check-circle"></i>
-                  Tasdiqlash
-                </button>
-                <button
-                  class="btn btn-outline-danger"
-                  type="button"
-                  data-dismiss="modal"
-                >
-                  <i class="far fa-times-circle"></i>
-                  Bekor qilish
-                </button>
-              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-outline-primary" type="submit">
+                <span class="far fa-circle-check"/> Tasdiqlash
+              </button>
+              <button class="btn btn-outline-danger" data-dismiss="modal">
+                <span class="far fa-circle-xmark"/> Bekor qilish
+              </button>
             </div>
           </form>
         </div>
       </div>
-    </div> -->
+    </div>
+
     <!-- Modal -->
+
     <!-- <div
       class="modal fade"
       id="exampleModal"
@@ -325,23 +318,32 @@ export default {
       branch_id: localStorage.getItem("branch_id"),
       access_token: localStorage.getItem("access_token"),
       hodimlar: [],
+      yangiHodim: {
+        name: "",
+        username: "",
+        password: "",
+        role: "",
+        branch_id: "",
+        phone: null
+      },
       search: "",
     };
   },
   methods: {
     postData() {
-      const TOKEN = localStorage.getItem("access_token");
-      const BASEURL = "https://oqsaroy.crud.uz/hodim/create";
+      this.yangiHodim.branch_id = this.branch_id
+      console.log(this.yangiHodim)
+      const BASEURL = "https://savdo.crud.uz/user_create";
       axios
         .create({
           baseURL: BASEURL,
           headers: {
             // Accept: "*/*",
             "Content-Type": "application/json",
-            Authorization: "Bearer " + TOKEN,
+            Authorization: "Bearer " + this.access_token,
           },
         })
-        .post(BASEURL, this.data)
+        .post(BASEURL, this.yangiHodim)
         .then((res) => {
           console.log(res.data);
           window.location.reload();
@@ -364,28 +366,14 @@ export default {
           this.hodimlar = res.data;
           console.log(res.data);
         });
-      // axios
-      //   .create({
-      //     baseURL: "https://oqsaroy.crud.uz/sehlar",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Accept: "*/*",
-      //       Authorization: "Bearer " + TOKEN,
-      //     },
-      //   })
-      //   .get("https://oqsaroy.crud.uz/sehlar")
-      //   .then((res) => {
-      //     this.sehs = res.data;
-      //     // console.log(res.data);
-      //   });
     },
-    edit(id, name, phone, role, seh_id) {
-      this.editH = {
+    edit(id, name, phone, role, username) {
+      this.yangiHodim = {
         id: id,
         name: name,
         phone: phone,
         role: role,
-        seh_id: seh_id,
+        username: username,
       };
       console.log(this.editH);
     },
@@ -408,18 +396,17 @@ export default {
         });
     },
     block(id) {
-      // const TOKEN = localStorage.getItem("access_token");
-      const BASEURL = "https://oqsaroy.crud.uz/hodim_block/";
+      const BASEURL = "https://savdo.crud.uz/this_user_block/";
       axios
         .create({
           baseURL: BASEURL,
           headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            Authorization: "Bearer " + access_token,
+            Authorization: "Bearer " + this.access_token,
           },
         })
-        .get(BASEURL + id)
+        .put(BASEURL + id)
         .then((res) => {
           console.log(res.data);
           window.location.reload();

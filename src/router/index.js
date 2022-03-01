@@ -19,6 +19,13 @@ const routes = [
     name: "Hodimlar",
     component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
   },
+  
+  {
+    path: "/blocklanganHodimlar",
+    meta: { requiresAuth: true },
+    name: "BlocklanganHodimlar",
+    component: () => import("../components/Pages/Hodimlar/BloklanganHodimlar.vue"),
+  },
 
 ];
 

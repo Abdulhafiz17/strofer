@@ -221,6 +221,13 @@ table:hover {
 .form-control:hover,
 .form-control:focus {
   border: 1px solid var(--success);
+  box-shadow: none;
+}
+
+.custom-select:active,
+.custom-select:hover,
+.custom-select:focus {
+  box-shadow: none;
 }
 
 .dark input {
@@ -301,18 +308,13 @@ table:hover {
   margin-left: 20px;
 }
 
-.form-control:active,
-.form-control:focus,
-.form-control:hover {
-  box-shadow: none;
-}
-
 .card:hover {
   cursor: default;
 }
 
 .card {
   border: 1px solid var(--success);
+  border-radius: 4px !important;
 }
 
 .card-header {
@@ -342,7 +344,7 @@ table:hover {
 }
 
 .dark .input-group .input-group-text {
-  background: #3f4449;
-  color: white;
+  background: #3f4449 !important;
+  color: white !important;
 }
 </style>
