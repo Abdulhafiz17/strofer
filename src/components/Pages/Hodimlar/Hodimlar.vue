@@ -4,7 +4,7 @@
       <div class="card-header">
         <div class="row">
           <div class="col-md-4">
-            <h3>Hodimlar {{ this.length }}</h3>
+            <h3>Hodimlar</h3>
           </div>
           <div class="col-md-4 mb-2">
             <div class="input-group">
@@ -26,7 +26,7 @@
             <button
               data-toggle="modal"
               data-target="#exampleModall"
-              class="btn btn-outline-warning"
+              class="btn btn-outline-success"
             >
               <span class="fa fa-user-plus"></span> Hodim qo'shish
             </button>
@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="card-body">
+      <!-- <div class="card-body">
         <div class="row">
           <div
             class="col-md-4 mb-3"
@@ -118,10 +118,10 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <!-- Modal -->
-    <div
+    <!-- <div
       class="modal fade"
       id="exampleModall"
       tabindex="-1"
@@ -221,9 +221,9 @@
           </form>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- Modal -->
-    <div
+    <!-- <div
       class="modal fade"
       id="exampleModal"
       tabindex="-1"
@@ -313,33 +313,19 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { access_token } from '../../../DATA_BASE';
 export default {
   data() {
     return {
-      hodims: [],
-      sehs: [],
-      length: "",
-      data: {
-        name: "",
-        phone: "",
-        role: "",
-        seh_id: "",
-      },
+      branch_id: localStorage.getItem("branch_id"),
+      access_token: localStorage.getItem("access_token"),
+      hodimlar: [],
       search: "",
-      editH: {
-        id: "",
-        name: "",
-        role: "",
-        phone: 0,
-        seh_id: 0,
-      },
     };
   },
   methods: {
@@ -363,37 +349,35 @@ export default {
     },
 
     getData() {
-      const TOKEN = localStorage.getItem("access_token");
-      const BASEURL = "https://oqsaroy.crud.uz/hodimlar";
+      const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
       axios
         .create({
           baseURL: BASEURL,
           headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            Authorization: "Bearer " + TOKEN,
+            Authorization: "Bearer " + this.access_token,
           },
         })
         .get(BASEURL)
         .then((res) => {
-          this.hodims = res.data;
-          this.length = res.data.length;
+          this.hodimlar = res.data;
           console.log(res.data);
         });
-      axios
-        .create({
-          baseURL: "https://oqsaroy.crud.uz/sehlar",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-            Authorization: "Bearer " + TOKEN,
-          },
-        })
-        .get("https://oqsaroy.crud.uz/sehlar")
-        .then((res) => {
-          this.sehs = res.data;
-          // console.log(res.data);
-        });
+      // axios
+      //   .create({
+      //     baseURL: "https://oqsaroy.crud.uz/sehlar",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Accept: "*/*",
+      //       Authorization: "Bearer " + TOKEN,
+      //     },
+      //   })
+      //   .get("https://oqsaroy.crud.uz/sehlar")
+      //   .then((res) => {
+      //     this.sehs = res.data;
+      //     // console.log(res.data);
+      //   });
     },
     edit(id, name, phone, role, seh_id) {
       this.editH = {
@@ -444,7 +428,7 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.hodims.filter((taminotchis) => {
+      return this.hodimlar.filter((taminotchis) => {
         return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
       });
     },

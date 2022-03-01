@@ -214,13 +214,13 @@ table:hover {
 }
 
 .form-control {
-  border: 1px solid #ffc107;
+  border: 1px solid var(--success);
 }
 
 .form-control:active,
 .form-control:hover,
 .form-control:focus {
-  border: 1px solid #ffc107;
+  border: 1px solid var(--success);
 }
 
 .dark input {
@@ -232,13 +232,13 @@ table:hover {
 .dark input:active {
   background: #3f4449;
   color: white;
-  border: 1px solid #ffc107;
+  border: 1px solid var(--success);
 }
 
 .dark select {
   background: #3f4449;
   color: white;
-  border: 1px solid #ffc107;
+  border: 1px solid var(--success);
 }
 
 .dark select:hover,
@@ -246,11 +246,11 @@ table:hover {
 .dark select:active {
   background: #3f4449;
   color: white;
-  border: 1px solid #ffc107;
+  border: 1px solid var(--success);
 }
 
 .modal-content {
-  border: 1px solid #ffc107;
+  border: 1px solid var(--success);
 }
 
 .dark .modal-content {
@@ -270,7 +270,7 @@ table:hover {
   width: 40px;
   line-height: 35px;
   text-align: center;
-  border: 1px solid #FFC107FF;
+  border: 1px solid var(--success);
   display: inline-block;
   color: black;
 }
@@ -284,7 +284,7 @@ table:hover {
   border-radius: 0 10px 10px 0;
 }
 .blocks:hover {
-  background-color: #FFC107FF;
+  background-color: var(--success);
 }
 .inputFile + label {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
@@ -312,7 +312,7 @@ table:hover {
 }
 
 .card {
-  border: 1px solid #ffc107;
+  border: 1px solid var(--success);
 }
 
 .card-header {
@@ -329,7 +329,7 @@ table:hover {
 }
 
 .input-group-text {
-  border: 1px solid #FFC107FF;
+  border: 1px solid var(--success);
   background: white;
 }
 

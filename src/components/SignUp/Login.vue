@@ -45,8 +45,8 @@
 </template>
 
 <script>
-// import axios from "axios";
-// import store from "@/store/index";
+import axios from "axios";
+import store from "@/store/index";
 
 export default {
   name: "Login",
@@ -58,40 +58,43 @@ export default {
     };
   },
   methods: {
-    // async handleSubmit() {
-    //   console.log(this);
-    //   const url = "https://oqsaroy.crud.uz/token";
-    //   let params = new URLSearchParams();
-    //   params.append("username", this.username);
-    //   params.append("password", this.password);
+    async handleSubmit() {
+      console.log(this);
+      const url = "https://savdo.crud.uz/token";
+      let params = new URLSearchParams();
+      params.append("username", this.username);
+      params.append("password", this.password);
 
-    //   const config = {
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //     },
-    //   };
-    //   console.log(url, params, config);
-    //   const response = await axios.post(url, params, config);
-    //   console.log(this);
-    //   if (response.status == 200) {
-    //     console.log("logged in");
+      const config = {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      };
+      console.log(url, params, config);
+      const response = await axios.post(url, params, config);
+      console.log(this);
+      if (response.status == 200) {
+        console.log("logged in");
 
-    //     localStorage.setItem("access_token", response.data.access_token);
-    //     this.$router.push("/home");
-    //   } else {
-    //     console.log("logged out");
-    //     await this.$store.dispatch("user/logout");
-    //   }
+        console.log(response.data)
+        localStorage.setItem("access_token", response.data.access_token);
+        localStorage.setItem("branch_id", response.data.branch_id);
+        localStorage.setItem("role", response.data.role);
+        this.$router.push("/home");
+      } else {
+        console.log("logged out");
+        await this.$store.dispatch("user/logout");
+      }
 
-    //   //   localStorage.setItem('token', response.data.token)
+        localStorage.setItem('token', response.data.token)
 
-    //   // if (this.username === 'admin' && this.password === "admin") {
-    //   //   this.$router.push("/home");
-    //   //   localStorage.setItem('username', this.username)
-    //   // } else {
-    //   //   alert("Please enter username & password");
-    //   // }
-    // },
+      // if (this.username === 'admin' && this.password === "admin") {
+      //   this.$router.push("/home");
+      //   localStorage.setItem('username', this.username)
+      // } else {
+      //   alert("Please enter username & password");
+      // }
+    },
   },
 };
 </script>
