@@ -1,0 +1,42 @@
+import Vue from "vue";
+import axios from "axios";
+import store from "@/store";
+import router from "@/router";
+
+let config = {
+    baseURL: "https://oqsaroy.crud.uz/token",
+    timeout: 10000,
+    withCredentials: true,
+    headers: {
+        Accept: "*/*",
+        "Content-type": "application/json",
+    },
+};
+
+const apiClient = axios.create(config);
+
+const authInterceptor = async (config) => {
+    config.headers.Authorization = "Bearer " + store.getters["user/getToken"];
+    return config;
+};
+
+apiClient.interceptors.request.use(authInterceptor);
+
+apiClient.interceptors.response.use(
+    async (response) => {
+        return response;
+    },
+    async (error) => {
+        if (error.response.status === 401) {
+            await store.dispatch("user/logout");
+        }
+        if (error.response.status === 422) {
+            error.response.data.map((text) => {
+                alert(text)
+            });
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default apiClient;
