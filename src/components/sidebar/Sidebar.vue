@@ -15,9 +15,24 @@ export default {
     <div class="sidebar" :style="{ width: sidebarWidth }">
       <div class="sidebar-link SidebarLink">
 
-        <SidebarLink to="/hodimlar" v-if="role == 'branch_admin'">
+        <SidebarLink to="/filiallar" v-if="role === 'admin'">
+          <span class="fas fa-code-branch"></span>
+          <p class="ripple">Filiallar</p>
+        </SidebarLink>
+        
+        <SidebarLink to="/hodimlar" v-if="role === 'branch_admin'">
           <span class="fas fa-users"></span>
           <p class="ripple">Hodimlar</p>
+        </SidebarLink>
+        
+        <SidebarLink to="/mahsulotlar" v-if="role === 'branch_admin'">
+          <span class="fas fa-boxes"></span>
+          <p class="ripple">Mahsulotlar</p>
+        </SidebarLink>
+        
+        <SidebarLink to="/taminotchilar" v-if="role === 'branch_admin'">
+          <span class="fas fa-user-group"></span>
+          <p class="ripple">Ta'minot</p>
         </SidebarLink>
         
       </div>
