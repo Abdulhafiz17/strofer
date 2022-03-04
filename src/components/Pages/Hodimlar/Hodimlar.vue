@@ -306,15 +306,20 @@
       </div>
     </div> -->
   </div>
+  <Anime :isLoading="isLoading"/>
 </template>
 
 <script>
 import axios from "axios";
+import Anime from "../../Anime/Anime.vue"
 export default {
+  components: { Anime, },
   data() {
     return {
-      branch_id: localStorage.getItem("branch_id"),
+      branch_id: "",
       access_token: localStorage.getItem("access_token"),
+      role: localStorage.getItem("role"),
+      isLoading: false,
       hodimlar: [],
       yangiHodim: {
         name: "",
@@ -345,12 +350,24 @@ export default {
         .then((res) => {
           console.log(res.data);
           window.location.reload();
-        });
+        })
     },
 
     getData() {
+<<<<<<< HEAD
       const BASEURL =
         "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
+=======
+      if (this.role === "admin") {
+        this.branch_id = this.$route.params.id
+      }
+      if (this.role === "branch_admin") {
+        this.branch_id = localStorage.getItem("branch_id")
+      }
+
+      this.isLoading = true
+      const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
+>>>>>>> 653c16d5a2c28fa1d31078fcf60d8b5fe65174b1
       axios
         .create({
           baseURL: BASEURL,
@@ -364,7 +381,10 @@ export default {
         .then((res) => {
           this.hodimlar = res.data;
           console.log(res.data);
-        });
+        })
+        .finally(
+          this.isLoading = false
+        )
     },
     edit(id, name, phone, role, username) {
       this.yangiHodim = {

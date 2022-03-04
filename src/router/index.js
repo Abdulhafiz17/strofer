@@ -19,7 +19,6 @@ const routes = [
     name: "Hodimlar",
     component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
   },
-  
   {
     path: "/blocklanganHodimlar",
     meta: { requiresAuth: true },
@@ -39,6 +38,32 @@ const routes = [
     meta: { requiresAuth: true },
     name: "Filialadmin",
     component: () => import("../components/Pages/Filial admin/Filialadmin.vue"),
+  },
+  
+  {
+    path: "/mahsulotlar",
+    meta: { requiresAuth: true },
+    name: "Mahsulotlar",
+    component: () => import("../components/Pages/Mahsulotlar/Mahsulotlar.vue"),
+  },
+  {
+    path: "/taminotchilar",
+    meta: { requiresAuth: true },
+    name: "Taminotchilar",
+    component: () => import("../components/Pages/Ta'minot/Taminot.vue"),
+  },
+  
+  {
+    path: "/filiallar",
+    meta: { requiresAuth: true },
+    name: "Filiallar",
+    component: () => import("../components/Pages/Filial/Filial.vue"),
+  },
+  {
+    path: "/filialKirish/:id",
+    meta: { requiresAuth: true },
+    name: "FilialKirish",
+    component: () => import("../components/Pages/Filial/FilialKirish.vue"),
   },
 
 ];

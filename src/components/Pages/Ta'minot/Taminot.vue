@@ -20,7 +20,7 @@
               type="button"
               data-toggle="modal"
               data-target="#modal1"
-              class="btn btn-outline-warning float-right"
+              class="btn btn-outline-success float-right"
             >
               <span class="fa fa-user-plus"></span> Ta'minotchi qo'shish
             </button>
@@ -96,7 +96,7 @@
                   <div class="col-sm-4" style="width: 78px">
                     <router-link
                       class="btn btn-block btn-outline-success mt-2"
-                      to="/taminotOlish"
+                      :to="'/taminotOlish/' + taminotchi.id"
                     >
                       <span class="fa fa-box"></span>
                     </router-link>
@@ -113,7 +113,7 @@
                   <div class="col-sm-4" style="width: 78px">
                     <router-link
                       class="btn btn-block btn-outline-warning mt-2"
-                      to="tarix"
+                      :to="'/tarix/' + taminotchi.id"
                     >
                       <span class="fa fa-clock"></span>
                     </router-link>
@@ -192,7 +192,7 @@
                 placeholder="Summa"
               />
               <div class="input-group-append">
-                <span class="input-group-text border-warning">so'm</span>
+                <span class="input-group-text">so'm</span>
               </div>
             </div>
             <textarea
@@ -255,12 +255,12 @@
 </template>
 
 <script>
-import { access_token } from "../../../DATA_BASE";
 import axios from "axios";
 export default {
   data() {
     return {
-      taminotchis: [],
+      access_token: localStorage.getItem("access_token"),
+      taminotchilar: [],
       data: {
         name: "",
         phone: null,
@@ -275,19 +275,19 @@ export default {
   },
   methods: {
     getData() {
-      const BASEURL = "https://oqsaroy.crud.uz/suppliers";
+      const BASEURL = "https://savdo.crud.uz/all_markets";
       axios
         .create({
           baseURL: BASEURL,
           headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            Authorization: "Bearer " + access_token,
+            Authorization: "Bearer " + this.access_token,
           },
         })
         .get(BASEURL)
         .then((res) => {
-          this.taminotchis = res.data;
+          this.taminotchilar = res.data;
           console.log(res.data);
         });
     },
@@ -335,7 +335,7 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.taminotchis.filter((taminotchis) => {
+      return this.taminotchilar.filter((taminotchis) => {
         return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
         // taminotchis.tel.match(this.search)
       });
