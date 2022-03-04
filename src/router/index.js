@@ -27,6 +27,20 @@ const routes = [
     component: () => import("../components/Pages/Hodimlar/BloklanganHodimlar.vue"),
   },
 
+  {
+    path: "/kurs",
+    meta: { requiresAuth: true },
+    name: "kurs",
+    component: () => import("../components/Pages/Kurs/Kurs.vue"),
+  },
+
+  {
+    path: "/filialadmin",
+    meta: { requiresAuth: true },
+    name: "Filialadmin",
+    component: () => import("../components/Pages/Filial admin/Filialadmin.vue"),
+  },
+
 ];
 
 const router = createRouter({

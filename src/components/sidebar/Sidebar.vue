@@ -19,6 +19,14 @@ export default {
           <span class="fas fa-users"></span>
           <p class="ripple">Hodimlar</p>
         </SidebarLink>
+        <SidebarLink to="/kurs" v-if="role == 'branch_admin'">
+          <span class="fas fa-users"></span>
+          <p class="ripple">Kurs</p>
+        </SidebarLink>
+        <SidebarLink to="/filialadmin" v-if="role == 'branch_admin'">
+          <span class="fas fa-users"></span>
+          <p class="ripple">Filial admin</p>
+        </SidebarLink>
         
       </div>
     </div>

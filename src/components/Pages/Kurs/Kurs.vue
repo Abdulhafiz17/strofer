@@ -3,119 +3,77 @@
     <div class="card shadow">
       <div class="card-header">
         <div class="row">
-          <div class="col-md-4">
-            <h3>Hodimlar</h3>
+          <div class="col-md-2">
+            <h3>Kurs</h3>
           </div>
-          <div class="col-md-4 mb-2">
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="search"
-                @keyup="filteredCards"
-                class="form-control"
-                placeholder="Qidiruv"
-              />
-              <div class="input-group-append">
-                <span class="input-group-text">
-                  <i class="fa fa-search"></i>
-                </span>
+          <div class="col-md-3 mb-2">
+            <label>Narx :</label>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text text-dark">1 $ =</div>
+                </div>
+                <input
+                  type="number"
+                  class="form-control"
+                  aria-required="true"
+                />
               </div>
             </div>
           </div>
-          <div class="col-md-4 mb-2 d-flex justify-content-around">
+          <div class="col-md-3 mb-2">
+            <label for="">Valyuta: </label>
+            <input type="text" class="form-control" aria-required="true" />
+          </div>
+          <div class="col-md-4">
+            <label class="mt-10"></label>
             <button
-              data-toggle="modal"
-              data-target="#exampleModall"
-              class="btn btn-outline-success"
+              class="btn btn-outline-dark btn-sm btn-block"
+              style="margin-top: 10px"
             >
-              <span class="fa fa-user-plus"></span> Hodim qo'shish
+              <i class="fas fa-circle-check" form="form1"></i> Tasdiqlash
             </button>
-            <router-link
-              class="btn btn-outline-danger"
-              to="/blocklanganHodimlar"
-            >
-              <span class="fa fa-eye-slash"></span>
-            </router-link>
           </div>
         </div>
       </div>
       <div class="card-body">
         <div class="row">
-          <div
-            class="col-md-4 mb-3"
-            v-for="hodim in filteredCards"
-            :key="hodim.name"
-          >
-            <div class="card shadow">
-              <div class="card-body">
-                <table class="table table-borderless table-sm">
-                  <tbody>
-                    <tr>
-                      <th>
-                        <span class="fa fa-user text-secondary"></span>
-                      </th>
-                      <td>
-                        <strong>{{ hodim.name }}</strong>
-                      </td>
-                      <td>
-                        <button
-                          data-toggle="modal"
-                          data-target="#exampleModal"
-                          class="btn btn-sm btn-outline-warning float-right"
-                          @click="
-                            edit(
-                              hodim.id,
-                              hodim.name,
-                              hodim.phone,
-                              hodim.role,
-                              hodim.seh_id
-                            )
-                          "
-                        >
-                          <span class="fa fa-edit"></span>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>
-                        <span class="fa fa-phone text-secondary"></span>
-                      </th>
-                      <td>
-                        <a :href="'tel:+998' + hodim.phone">
-                          +998{{ hodim.phone }}
-                        </a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>
-                        <span class="fa fa-industry text-secondary"></span>
-                      </th>
-                      <td v-if="hodim.role == 'branch_admin'">Filial admin</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="card-footer">
-                <div class="row d-flex justify-content-around">
-                  <div class="col-md-6" style="width: 118px">
+          <div class="table-responsive mt-3">
+            <table class="table table-borderless table-sm">
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td>
+                    <div class="input-group input-group-sm">
+                      <div class="input-group-append">
+                        <div class="input-group-text text-dark">1 $ =</div>
+                      </div>
+                      <input
+                        class="form-control form-control-sm"
+                        
+                      />
+                      <div class="input-group-append">
+                        <input
+                          type="text"
+                          
+                          class="form-control form-control-sm border-left-0"
+                        />
+                        <!-- {{ user.valyuta }} -->
+                      </div>
+                    </div>
+                  </td>
+                  <td>
                     <button
-                      class="btn btn-block btn-outline-danger"
-                      @click="block(hodim.id)"
+                      type="submit"
+                      class="btn btn-outline-warning btn-sm"
+                      
                     >
-                      <i class="fa fa-user-slash"></i>
+                      <i class="fa fa-edit"></i>
                     </button>
-                  </div>
-                  <div class="col-md-6" style="width: 118px">
-                    <router-link
-                      to="/kPITarixi"
-                      class="btn btn-block btn-outline-primary"
-                    >
-                      <i class="fa fa-history"></i>
-                    </router-link>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
