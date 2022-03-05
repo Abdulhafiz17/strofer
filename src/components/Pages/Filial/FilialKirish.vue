@@ -22,7 +22,7 @@
                     <div class="col-md-2">
                         <div class="card">
                             <div class="card-body">
-                                <a @click="shareToHodimlar()" style="cursor: pointer;"> <span class="fa fa-user"/> </a>
+                                <a @click="shareToHodimlar()" style="cursor: pointer;"> <span class="fa fa-user"/> {{ hodimlar }}ta hodim </a>
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@ export default {
         },
 
         shareToHodimlar() {
-            this.$router.push({ path: "/hodimlar", params: {id: this.branch_id} })
+            this.$router.push({ name: "Hodimlar", params: { id: this.branch_id } })
         },
     },
     mounted() {

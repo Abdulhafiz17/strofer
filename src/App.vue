@@ -224,6 +224,10 @@ table:hover {
   box-shadow: none;
 }
 
+.custom-select {
+  border: 1px solid var(--success);
+}
+
 .custom-select:active,
 .custom-select:hover,
 .custom-select:focus {

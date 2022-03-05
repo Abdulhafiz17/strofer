@@ -336,7 +336,12 @@ export default {
   },
   methods: {
     postData() {
-      this.yangiHodim.branch_id = this.branch_id
+      if (this.role == "admin") {
+        this.yangiHodim.branch_id = this.$route.params.id
+      }
+      if (this.role == "branch_admin") {
+        this.yangiHodim.branch_id = localStorage.getItem("branch_id")
+      }
       console.log(this.yangiHodim)
       const BASEURL = "https://savdo.crud.uz/user_create";
       axios
@@ -356,10 +361,10 @@ export default {
     },
 
     getData() {
-      if (this.role === "admin") {
+      if (this.role == "admin") {
         this.branch_id = this.$route.params.id
       }
-      if (this.role === "branch_admin") {
+      if (this.role == "branch_admin") {
         this.branch_id = localStorage.getItem("branch_id")
       }
 

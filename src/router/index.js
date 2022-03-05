@@ -14,7 +14,7 @@ const routes = [
   },
 
   {
-    path: "/hodimlar",
+    path: "/hodimlar/:id",
     meta: { requiresAuth: true },
     name: "Hodimlar",
     component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
