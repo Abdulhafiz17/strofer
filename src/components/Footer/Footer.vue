@@ -3,8 +3,9 @@
     <footer class="mt-5 pb-3">
       <hr />
       <h6 class="text-muted text-center">
-        Copyright &copy; 2022
-        <a href="https://onlyup.uz" target="_blank">Crud Group</a>
+         Created by
+        <a href="https://onlyup.uz" target="_blank">Crud group</a>
+        2022
       </h6>
     </footer>
   </div>
@@ -15,4 +16,5 @@ export default {};
 </script>
 
 <style>
+
 </style>

@@ -354,10 +354,6 @@ export default {
     },
 
     getData() {
-<<<<<<< HEAD
-      const BASEURL =
-        "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
-=======
       if (this.role === "admin") {
         this.branch_id = this.$route.params.id
       }
@@ -367,7 +363,6 @@ export default {
 
       this.isLoading = true
       const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
->>>>>>> 653c16d5a2c28fa1d31078fcf60d8b5fe65174b1
       axios
         .create({
           baseURL: BASEURL,

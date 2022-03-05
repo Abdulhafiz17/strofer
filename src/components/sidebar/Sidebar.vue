@@ -28,19 +28,16 @@ export default {
           <span class="fas fa-users"></span>
           <p class="ripple">Kurs</p>
         </SidebarLink>
-        <SidebarLink to="/filialadmin" v-if="role == 'branch_admin'">
-          <span class="fas fa-users"></span>
-          <p class="ripple">Filial admin</p>
-        </SidebarLink>
-        
-        <SidebarLink to="/mahsulotlar" v-if="role === 'branch_admin'">
-          <span class="fas fa-boxes"></span>
-          <p class="ripple">Mahsulotlar</p>
-        </SidebarLink>
+       
         
         <SidebarLink to="/taminotchilar" v-if="role === 'branch_admin'">
           <span class="fas fa-user-group"></span>
-          <p class="ripple">Ta'minot</p>
+          <p class="ripple">Ta'minotchilar</p>
+        </SidebarLink>
+
+        <SidebarLink to="/kategoriya" v-if="role === 'branch_admin'">
+          <span class="fas fa-user-group"></span>
+          <p class="ripple">Kategoriya</p>
         </SidebarLink>
         
       </div>

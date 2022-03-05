@@ -2,170 +2,174 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-header">
-        <div class="row">
-          <div class="col-md-2">
-            <h3>Kurs</h3>
-          </div>
-          <div class="col-md-3 mb-2">
-            <label>Narx :</label>
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <div class="input-group-text text-dark">1 $ =</div>
-                </div>
-                <input
-                  type="number"
-                  class="form-control"
-                  aria-required="true"
-                />
-              </div>
+        <form @submit.prevent="postData">
+          <div class="row">
+            <div class="col-md-2">
+              <h3>Kurs</h3>
             </div>
-          </div>
-          <div class="col-md-3 mb-2">
-            <label for="">Valyuta: </label>
-            <input type="text" class="form-control" aria-required="true" />
-          </div>
-          <div class="col-md-4">
-            <label class="mt-10"></label>
-            <button
-              class="btn btn-outline-dark btn-sm btn-block"
-              style="margin-top: 10px"
-            >
-              <i class="fas fa-circle-check" form="form1"></i> Tasdiqlash
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="table-responsive mt-3">
-            <table class="table table-borderless table-sm">
-              <tbody>
-                <tr>
-                  <td></td>
-                  <td>
-                    <div class="input-group input-group-sm">
-                      <div class="input-group-append">
-                        <div class="input-group-text text-dark">1 $ =</div>
-                      </div>
-                      <input
-                        class="form-control form-control-sm"
-                        
-                      />
-                      <div class="input-group-append">
-                        <input
-                          type="text"
-                          
-                          class="form-control form-control-sm border-left-0"
-                        />
-                        <!-- {{ user.valyuta }} -->
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      type="submit"
-                      class="btn btn-outline-warning btn-sm"
-                      
-                    >
-                      <i class="fa fa-edit"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal -->
-
-    <div
-      class="modal fade"
-      id="exampleModall"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModallLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="exampleModallLabel">Hodim qo'shish</h4>
-          </div>
-          <form id="form1" @submit.prevent="postData">
-            <div class="modal-body">
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label> Ismi </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Ism"
-                    v-model="yangiHodim.name"
-                    required
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label> Telefon raqami </label>
-                  <div class="input-group">
-                    <span class="input-group-prepend">
-                      <span class="input-group-text"> +998 </span>
-                    </span>
+            <div class="col-md-3 mb-2">
+              <label>Narx :</label>
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text text-dark">1 $ =</div>
                     <input
-                      type="tel"
+                      type="number"
                       class="form-control"
-                      placeholder="Tel"
-                      min="0"
-                      minlength="9"
-                      maxlength="9"
-                      v-model="yangiHodim.phone"
-                      required
+                      aria-required="true"
+                      v-model="yangikurs.price"
                     />
                   </div>
                 </div>
               </div>
-              <div class="row mb-2">
-                <div class="col-md">
-                  <label> Role </label>
-                  <select class="custom-select" v-model="yangiHodim.role">
-                    <option value="branch_admin">Filial admin</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <label> Username </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Username"
-                    v-model="yangiHodim.username"
-                    required
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label> Parol </label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder="Password"
-                    v-model="yangiHodim.password"
-                    required
-                  />
-                </div>
-              </div>
             </div>
-            <div class="modal-footer">
-              <button class="btn btn-outline-primary" type="submit">
-                <span class="far fa-circle-check" /> Tasdiqlash
-              </button>
-              <button class="btn btn-outline-danger" data-dismiss="modal">
-                <span class="far fa-circle-xmark" /> Bekor qilish
+            <div class="col-md-3 mb-2">
+              <label for="">Valyuta: </label>
+              <input
+                type="text"
+                class="form-control"
+                aria-required="true"
+                v-model="yangikurs.currency"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="mt-10"></label>
+              <button
+                type="submit"
+                class="btn btn-outline-dark btn-sm btn-block"
+                style="margin-top: 10px"
+              >
+                <i class="fas fa-circle-check" form="form1"></i> Tasdiqlash
               </button>
             </div>
-          </form>
+          </div>
+        </form>
+      </div>
+
+      <div class="card-body">
+        <!-- alert -->
+        <div class="row mt-2" v-if="error === 'birxil'">
+          <div class="col-md">
+            <div class="alert alert-danger" role="alert">
+              <strong>Bunday valyuta avval ham ro`yxatga olingan !!!</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2" v-if="error === 'birxilpost'">
+          <div class="col-md">
+            <div class="alert alert-success" role="alert">
+              <strong>Tasdiqlandi</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2" v-if="error === 'birxilput'">
+          <div class="col-md">
+            <div class="alert alert-success" role="alert">
+              <strong>Tahrirlandi</strong>
+            </div>
+          </div>
+        </div>
+
+         <div class="row mt-2" v-if="error === 'birxilget'">
+          <div class="col-md">
+            <div class="alert alert-danger" role="alert">
+              <strong>Bunday valyuta mavjud</strong>
+            </div>
+          </div>
+        </div>
+        <!-- alert end -->
+        <div class="row">
+          <div class="col-md">
+            <div class="table-responsive mt-3">
+              <table class="table table-bordered table-hover text-center">
+                <thead>
+                  <tr>
+                    <th class="col-md-0">valyuta</th>
+                    <th class="col-md-8">Narxi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="kurs in kurslar" :key="kurs">
+                    <th>{{ kurs.currency }}</th>
+                    <td>
+                      {{ kurs.price }}
+                      <button
+                        class="btn btn-sm btn-outline-warning float-right"
+                        data-toggle="modal"
+                        data-target="#exampleModal"
+                        @click="edit(kurs.currency, kurs.price, kurs.id)"
+                      >
+                        <span class="fa fa-edit"></span>
+                      </button>
+                    </td>
+
+                    <!-- Modal -->
+                    <div
+                      class="modal fade"
+                      id="exampleModal"
+                      tabindex="-1"
+                      role="dialog"
+                      aria-labelledby="exampleModalLabel"
+                      aria-hidden="true"
+                    >
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                              Tahrirlash
+                            </h5>
+                            <button
+                              type="button"
+                              class="close"
+                              data-dismiss="modal"
+                              aria-label="Close"
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <label>Valyuta</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              v-model="editT.currency"
+                            /><br />
+
+                            <label>Narx</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              v-model="editT.price"
+                            />
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-dismiss="modal"
+                            >
+                              Qaytish
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-dismiss="modal"
+                              v-on:click="putData(editT.id)"
+                            >
+                              Tahrirlash
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Modal end -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -268,113 +272,72 @@
 
 <script>
 import axios from "axios";
+import { instance } from "../Api";
 export default {
   data() {
     return {
+      yangikurs: {
+        currency: "",
+        price: null,
+      },
+      error: "",
       branch_id: localStorage.getItem("branch_id"),
       access_token: localStorage.getItem("access_token"),
-      hodimlar: [],
-      yangiHodim: {
-        name: "",
-        username: "",
-        password: "",
-        role: "",
-        branch_id: "",
-        phone: null,
-      },
+
       search: "",
+      kurslar: [],
+      editT: [],
     };
   },
   methods: {
     postData() {
-      this.yangiHodim.branch_id = this.branch_id;
-      console.log(this.yangiHodim);
-      const BASEURL = "https://savdo.crud.uz/user_create";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            // Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.access_token,
-          },
-        })
-        .post(BASEURL, this.yangiHodim)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        });
+      instance.post("currency_create", this.yangikurs).then((response) => {
+        this.getData();
+        console.log(response.data);
+        if (response.data == "Bunday valyuta avval ham ro`yxatga olingan") {
+          this.error = "birxil";
+        } else {
+          this.error = "";
+
+          if (response.data == "success") {
+          this.error = "birxilpost";
+        } else {
+          this.error = "";
+        }
+        }
+      });
     },
 
     getData() {
-      const BASEURL =
-        "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.access_token,
-          },
-        })
-        .get(BASEURL)
-        .then((res) => {
-          this.hodimlar = res.data;
-          console.log(res.data);
-        });
-    },
-    edit(id, name, phone, role, username) {
-      this.yangiHodim = {
-        id: id,
-        name: name,
-        phone: phone,
-        role: role,
-        username: username,
-      };
-      console.log(this.editH);
-    },
-    editPost(id) {
-      const TOKEN = localStorage.getItem("access_token");
-      const BASEURL = "https://oqsaroy.crud.uz/hodim/update/";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + TOKEN,
-          },
-        })
-        .put(BASEURL + id, this.editH)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        });
-    },
-    block(id) {
-      const BASEURL = "https://savdo.crud.uz/this_user_block/";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.access_token,
-          },
-        })
-        .put(BASEURL + id)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        });
-    },
-  },
-  computed: {
-    filteredCards: function () {
-      return this.hodimlar.filter((taminotchis) => {
-        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+      instance.get("all_currencies").then((response) => {
+        this.kurslar = response.data;
+        
       });
+    },
+
+    edit(valyuta, narx, id) {
+      this.editT = {
+        id: id,
+        price: narx,
+        currency: valyuta,
+      };
+    },
+
+    putData(id) {
+      instance
+        .put("this_currency_update/" + id, this.editT)
+        .then((response) => {
+          this.getData();
+
+          console.log(response.data);
+          if (response.data == "success") {
+            this.error = "birxilput";
+          }
+
+          if (response.data == "Bunday valyuta mavjud") {
+            this.error = "birxilget";
+          }
+        });
     },
   },
   mounted() {

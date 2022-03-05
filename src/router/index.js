@@ -66,6 +66,19 @@ const routes = [
     component: () => import("../components/Pages/Filial/FilialKirish.vue"),
   },
 
+  {
+    path: "/kategoriya",
+    meta: { requiresAuth: true },
+    name: "Kategoriya",
+    component: () => import("../components/Pages/Kategoriya/Kategoriya.vue"),
+  },
+  
+  {
+    path: "/kmahsulotlar/:id",
+    meta: { requiresAuth: true },
+    name: "kmahsulotlar",
+    component: () => import("../components/Pages/Kategoriya/kmahsulotlar.vue"),
+  },
 ];
 
 const router = createRouter({
