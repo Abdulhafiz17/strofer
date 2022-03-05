@@ -90,14 +90,14 @@
                       <th>
                         <span class="fa fa-industry text-secondary"></span>
                       </th>
-                      <td v-if="hodim.role == 'branch_admin'"> Filial admin </td>
+                      <td v-if="hodim.role == 'branch_admin'">Filial admin</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <div class="card-footer">
                 <div class="row d-flex justify-content-around">
-                  <div class="col-md-6" style="width: 118px;">
+                  <div class="col-md-6" style="width: 118px">
                     <button
                       class="btn btn-block btn-outline-danger"
                       @click="block(hodim.id)"
@@ -105,7 +105,7 @@
                       <i class="fa fa-user-slash"></i>
                     </button>
                   </div>
-                  <div class="col-md-6" style="width: 118px;">
+                  <div class="col-md-6" style="width: 118px">
                     <router-link
                       to="/kPITarixi"
                       class="btn btn-block btn-outline-primary"
@@ -153,9 +153,7 @@
                   <label> Telefon raqami </label>
                   <div class="input-group">
                     <span class="input-group-prepend">
-                      <span class="input-group-text">
-                        +998
-                      </span>
+                      <span class="input-group-text"> +998 </span>
                     </span>
                     <input
                       type="tel"
@@ -174,7 +172,7 @@
                 <div class="col-md">
                   <label> Role </label>
                   <select class="custom-select" v-model="yangiHodim.role">
-                    <option value="branch_admin"> Filial admin </option>
+                    <option value="branch_admin">Filial admin</option>
                   </select>
                 </div>
               </div>
@@ -203,10 +201,10 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-outline-primary" type="submit">
-                <span class="far fa-circle-check"/> Tasdiqlash
+                <span class="far fa-circle-check" /> Tasdiqlash
               </button>
               <button class="btn btn-outline-danger" data-dismiss="modal">
-                <span class="far fa-circle-xmark"/> Bekor qilish
+                <span class="far fa-circle-xmark" /> Bekor qilish
               </button>
             </div>
           </form>
@@ -329,7 +327,7 @@ export default {
         password: "",
         role: "",
         branch_id: "",
-        phone: null
+        phone: null,
       },
       search: "",
     };
@@ -413,7 +411,7 @@ export default {
         .put(BASEURL + id, this.editH)
         .then((res) => {
           console.log(res.data);
-          window.location.reload()
+          window.location.reload();
         });
     },
     block(id) {
@@ -432,7 +430,7 @@ export default {
           console.log(res.data);
           window.location.reload();
         });
-    }
+    },
   },
   computed: {
     filteredCards: function () {

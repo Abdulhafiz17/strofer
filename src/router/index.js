@@ -26,6 +26,19 @@ const routes = [
     component: () => import("../components/Pages/Hodimlar/BloklanganHodimlar.vue"),
   },
 
+  {
+    path: "/kurs",
+    meta: { requiresAuth: true },
+    name: "kurs",
+    component: () => import("../components/Pages/Kurs/Kurs.vue"),
+  },
+
+  {
+    path: "/filialadmin",
+    meta: { requiresAuth: true },
+    name: "Filialadmin",
+    component: () => import("../components/Pages/Filial admin/Filialadmin.vue"),
+  },
   
   {
     path: "/mahsulotlar",
@@ -53,6 +66,19 @@ const routes = [
     component: () => import("../components/Pages/Filial/FilialKirish.vue"),
   },
 
+  {
+    path: "/kategoriya",
+    meta: { requiresAuth: true },
+    name: "Kategoriya",
+    component: () => import("../components/Pages/Kategoriya/Kategoriya.vue"),
+  },
+  
+  {
+    path: "/kmahsulotlar/:id",
+    meta: { requiresAuth: true },
+    name: "kmahsulotlar",
+    component: () => import("../components/Pages/Kategoriya/kmahsulotlar.vue"),
+  },
 ];
 
 const router = createRouter({
