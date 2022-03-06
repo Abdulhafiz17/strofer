@@ -87,11 +87,11 @@ p {
 
 .fade-SidebarLink-enter-active,
 .fade-SidebarLink-leave-active {
-    transition: all 0.54s linear;
+  transition: all 0.54s linear;
 }
 
 .fade-SidebarLink-enter {
-    transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 
 .fade-SidebarLink-enter-to {
@@ -103,5 +103,7 @@ p {
 }
 
 .fas {
+  font-size: 20px;
   margin-right: 7px;
+  padding: 5px;
 }

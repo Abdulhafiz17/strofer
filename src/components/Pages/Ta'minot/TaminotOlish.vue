@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <router-link class="btn btn-outline-warning btn-sm mb-2" to="/taminot">
+    <router-link class="btn btn-outline-success btn-sm mb-2" to="/taminot">
       <span class="fa fa-arrow-left"></span> Orqaga
     </router-link>
     <div class="card shadow">
@@ -8,18 +8,18 @@
         <div class="row">
           <div class="col-md">
             <h3>
-              { <span class="fa fa-user-secret"></span> }dan ta'minot olish
+              {{ taminotchi.name }}dan ta'minot olish
             </h3>
           </div>
           <div class="col-md">
             <router-link
-              class="btn btn-outline-warning float-right ml-3"
+              class="btn btn-outline-success float-right ml-3"
               to="/tolovTarixi"
             >
               <span class="far fa-clock"></span> To'lo'v tarixi
             </router-link>
             <router-link
-              class="btn btn-outline-warning float-right"
+              class="btn btn-outline-success float-right"
               to="/taminotTarixi"
             >
               <span class="far fa-clock"></span> Ta'minot tarixi 
@@ -83,7 +83,7 @@
             </div>
           </div>
           <div class="col-md-3 mb-2">
-            <button class="btn btn-outline-warning btn-block">
+            <button class="btn btn-outline-success btn-block">
               <span class="far fa-circle-check"></span>
             </button>
           </div>
@@ -128,13 +128,13 @@
               </tr>
             </tbody>
             <tfoot class="mt-4">
-              <tr style="border-top: 1px solid gold">
+              <tr style="border-top: 1px solid black">
                 <td colspan="4" class="text-right align-items-center">
                   Jami summa: <strong> 42 150 000 so'm </strong>
                 </td>
                 <td>
                   <button
-                    class="btn btn-outline-warning float-left"
+                    class="btn btn-outline-success float-left"
                     data-toggle="modal"
                     data-target="#modal1"
                   >
@@ -164,7 +164,7 @@
             </div>
           </div>
           <!-- <button
-            class="btn btn-outline-warning btn-block"
+            class="btn btn-outline-success btn-block"
             data-toggle="collapse"
             data-target="#collapse1"
           >
@@ -198,22 +198,27 @@
 </template>
 
 <script>
+import { instance } from '../Api';
 export default {
   data() {
     return {
-      // xomashyo: [
-      //   { id: "1", name: "serio" },
-      //   { id: "2", name: "yelim" },
-      //   { id: "3", name: "ximikat" },
-      // ],
-      // search: "",
+      taminotchi: {},
     };
   },
   methods: {
+    getData() {
+      instance.get("this_market/" + this.$route.params.id)
+      .then((res) => {
+        this.taminotchi = res.data
+      })
+    },
     showText() {
       // let n = document.getElementById("narx").value;
       // n = new Intl.NumberFormat({style: "currency",}).format(n)
     },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>

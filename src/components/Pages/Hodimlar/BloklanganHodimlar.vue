@@ -93,6 +93,7 @@
 
 <script>
 import axios from "axios";
+import { instance } from '../Api';
 export default {
   data() {
     return {
@@ -103,7 +104,7 @@ export default {
   },
   methods: {
     getData() {
-      const BASEURL = "https://savdo.crud.uz/branch_user/" + this.branch_id + "/block";
+      const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/block";
       axios
         .create({
           baseURL: BASEURL,
@@ -120,22 +121,11 @@ export default {
         });
     },
     block(id) {
-      const TOKEN = localStorage.getItem("access_token");
-      const BASEURL = "https://oqsaroy.crud.uz/hodim_open/";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + TOKEN,
-          },
-        })
-        .get(BASEURL + id)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        });
+      instance.put("this_user_unblock/" + id)
+      .then((res) => {
+        console.log(res.data)
+        window.location.reload()
+      })
     },
   },
   mounted() {

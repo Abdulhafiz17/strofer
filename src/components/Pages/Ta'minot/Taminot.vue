@@ -17,7 +17,6 @@
           </div>
           <div class="col-md">
             <button
-              type="button"
               data-toggle="modal"
               data-target="#modal1"
               class="btn btn-outline-success float-right"
@@ -51,7 +50,8 @@
                             edit(
                               taminotchi.id,
                               taminotchi.name,
-                              taminotchi.phone
+                              taminotchi.phone,
+                              taminotchi.address,
                             )
                           "
                           data-toggle="modal"
@@ -60,13 +60,11 @@
                           <span class="fa fa-edit"></span>
                         </button>
                       </td>
-                      <!-- <td>
-                      </td> -->
                     </tr>
                     <tr>
                       <th><span class="fa fa-phone text-secondary"></span></th>
                       <td>
-                        <a :href="'tel: +998' + taminotchi.phone">
+                        <a :href="'tel:+998' + taminotchi.phone">
                           +998{{ taminotchi.phone }}
                         </a>
                       </td>
@@ -137,43 +135,49 @@
             <div class="px-1 d-felx justify-content-around">
               <input
                 type="text"
-                name=""
                 id=""
                 class="form-control"
                 placeholder="Ismi"
-                v-model="data.name"
+                v-model="yangiTaminotchi.name"
                 required
               />
-              <div class="input-group mt-2">
+              <div class="input-group my-2">
                 <div class="input-group-prepend">
                   <span class="input-group-text">+998</span>
                 </div>
                 <input
                   type="phone"
-                  name=""
                   id=""
                   class="form-control"
                   placeholder="Tel"
                   maxlength="9"
                   minlength="9"
-                  v-model="data.phone"
+                  v-model="yangiTaminotchi.phone"
                   required
                 />
               </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Manzil"
+                v-model="yangiTaminotchi.address"
+                required
+              />
             </div>
           </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-primary">
+              <span class="fas fa-check-circle"></span>Tasdiqlash
+            </button>
+            <button class="btn btn-outline-danger" data-dismiss="modal">
+              <span class="fa fa-circle-xmark"></span> Bekor qilish
+            </button>
+          </div>
         </form>
-        <div class="modal-footer">
-          <button type="submit" form="form1" class="btn btn-outline-primary">
-            <span class="fas fa-check-circle"></span>Tasdiqlash
-          </button>
-          <button class="btn btn-outline-danger" data-dismiss="modal">
-            <span class="fa fa-circle-xmark"></span> Bekor qilish
-          </button>
-        </div>
       </div>
     </div>
   </div>
+
   <div class="modal fade" id="modal2">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -186,7 +190,6 @@
               <input
                 type="number"
                 min="0"
-                name=""
                 id=""
                 class="form-control"
                 placeholder="Summa"
@@ -197,7 +200,6 @@
             </div>
             <textarea
               class="form-control mt-2"
-              name=""
               id=""
               cols="70"
               rows="2"
@@ -216,39 +218,57 @@
       </div>
     </div>
   </div>
+
   <div class="modal fade" id="modal3">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h3>{{ editT.name }} ma'lumotlarini tahrirlash</h3>
+          <h3>{{ editTaminotchi.name }} ma'lumotlarini tahrirlash</h3>
         </div>
-        <form @submit.prevent="editData(editT.id)" id="form2">
+        <form @submit.prevent="editData(editTaminotchi.id)">
           <div class="modal-body">
-            <input type="text" class="form-control" v-model="editT.name" />
-            <div class="input-group mt-2">
-              <div class="input-group-prepend">
-                <span class="input-group-text">+998</span>
+            <div class="px-1 d-felx justify-content-around">
+              <input
+                type="text"
+                id=""
+                class="form-control"
+                placeholder="Ismi"
+                v-model="editTaminotchi.name"
+                required
+              />
+              <div class="input-group my-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">+998</span>
+                </div>
+                <input
+                  type="phone"
+                  id=""
+                  class="form-control"
+                  placeholder="Tel"
+                  maxlength="9"
+                  minlength="9"
+                  v-model="editTaminotchi.phone"
+                  required
+                />
               </div>
               <input
-                type="number"
-                name=""
-                id=""
-                maxlength="9"
+                type="text"
                 class="form-control"
-                placeholder="Tel"
-                v-model="editT.phone"
+                placeholder="Manzil"
+                v-model="editTaminotchi.address"
+                required
               />
             </div>
           </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-primary">
+              <span class="fas fa-check-circle"></span>Tasdiqlash
+            </button>
+            <button class="btn btn-outline-danger" data-dismiss="modal">
+              <span class="fa fa-circle-xmark"></span> Bekor qilish
+            </button>
+          </div>
         </form>
-        <div class="modal-footer">
-          <button type="submit" form="form2" class="btn btn-outline-primary">
-            <span class="far fa-circle-check"></span> Tasdiqlash
-          </button>
-          <button class="btn btn-outline-danger" data-dismiss="modal">
-            <span class="far fa-circle-xmark"></span> Bekor qilish
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -256,81 +276,51 @@
 
 <script>
 import axios from "axios";
+import { instance } from "../Api";
 export default {
   data() {
     return {
-      access_token: localStorage.getItem("access_token"),
       taminotchilar: [],
-      data: {
+      yangiTaminotchi: {
         name: "",
         phone: null,
+        address: "",
       },
-      editT: {
-        id: 0,
+      editTaminotchi: {
+        id: "",
         name: "",
-        phone: 0,
+        phone: null,
+        address: "",
       },
       search: "",
     };
   },
   methods: {
     getData() {
-      const BASEURL = "https://savdo.crud.uz/all_markets";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.access_token,
-          },
-        })
-        .get(BASEURL)
-        .then((res) => {
-          this.taminotchilar = res.data;
-          console.log(res.data);
-        });
+      instance.get("all_markets").then((res) => {
+        this.taminotchilar = res.data.sort((a, b) => {a.name - b.name})
+      });
     },
     postData() {
-      const BASEURL = "https://oqsaroy.crud.uz/supplier/create";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + access_token,
-          },
-        })
-        .post(BASEURL, this.data)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        });
+      instance.post("market_create", this.yangiTaminotchi).then((res) => {
+        console.log(res.data);
+        window.location.reload();
+      });
     },
-    edit(id, name, phone) {
-      this.editT = {
+    edit(id, name, phone, address) {
+      this.editTaminotchi = {
         id: id,
         name: name,
         phone: phone,
+        address: address,
       };
     },
     editData(id) {
-      const BASEURL = "https://oqsaroy.crud.uz/supplier/update/";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + access_token,
-          },
-        })
-        .put(BASEURL + id, this.editT)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        });
+      console.log(id)
+      instance.put("this_market_update/" + id,this.editTaminotchi)
+      .then((res) => {
+        console.log(res.data)
+      })
     },
   },
   computed: {
