@@ -28,67 +28,18 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="row mx-3 mb-3">
-          <div class="col-md-3 mb-2">
+        <div class="row my-3">
+          <div class="col-sm-3 mx-auto">
             <input
-              list="xomashyo"
-              placeholder="Xomashyo"
-              name="browser"
-              id="browser"
+              type="number"
               class="form-control"
+              placeholder="code"
+              required
             />
-            <datalist id="xomashyo">
-              <option value="kley"></option>
-              <option value="un"></option>
-              <option value="serio"></option>
-              <option value="bo'r"></option>
-              <option value="ximikat"></option>
-            </datalist>
-          </div>
-          <div class="col-md-3 mb-2">
-            <div class="input-group">
-              <input
-                type="text"
-                name=""
-                id=""
-                min="0"
-                class="form-control"
-                placeholder="Miqdori"
-              />
-              <!-- <select name="" id="" class="form-control">
-                <option value="">Miqdor</option>
-                <option value="">kg</option>
-                <option value="">dona</option>
-                <option value="">tonna</option>
-              </select> -->
-              <div class="input-group-append">
-                <span class="input-group-text"> dona </span>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 mb-2">
-            <div class="input-group">
-              <input
-                type="number"
-                name=""
-                id="narx"
-                min="0"
-                class="form-control"
-                placeholder="Narxi"
-                @keyup="showText"
-              />
-              <div class="input-group-append">
-                <div class="input-group-text">so'm</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 mb-2">
-            <button class="btn btn-outline-success btn-block">
-              <span class="far fa-circle-check"></span>
-            </button>
+            <button class="btn btn-outline-success"></button>
           </div>
         </div>
-        <div class="table-responsive">
+        <!-- <div class="table-responsive">
           <table
             class="table table-sm table-hover table-borderless text-center"
           >
@@ -144,10 +95,7 @@
               </tr>
             </tfoot>
           </table>
-        </div>
-        <div class="row">
-          <div class="col-md"></div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

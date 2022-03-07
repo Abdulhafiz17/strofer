@@ -53,12 +53,12 @@
                   </tr>
                   <tr>
                     <th><span class="fa fa-map" /></th>
-                    <td>{{ filial.address }}</td>
+                    <td> <a href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long)"> {{ filial.address }} </a></td>
                   </tr>
                 </table>
               </div>
               <div class="card-footer">
-                  <a class="btn btn-outline-success" :href="'/filialKirish/' + filial.id">
+                  <a class="btn btn-outline-success btn-block" :href="'/filialKirish/' + filial.id">
                       Kirish
                   </a>
               </div>
@@ -243,6 +243,19 @@
     </div>
   </div>
 
+  <div class="modal fade" id="filialMap">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Filial joylashuvi</h3>
+          <button type="button" class="btn" data-dismiss="modal" aria-label="Close"> <span class="fa fa-xmark"/> </button>
+        </div>
+        <div class="modal-body">
+          <div id="map" style="width: 780px; height: 500px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
   <Anime :isLoading="isLoading" />
 </template>
 
@@ -340,6 +353,22 @@ export default {
         );
       } else {
         console.log("Siz_belgilagan_Geolakatsiya_notogri");
+      }
+    },
+    map(lat, long) {
+      ymaps.ready(init);
+      function init() {
+        var myMap = new ymaps.Map("map", {
+            center: [lat, long],
+            zoom: 15,
+          }),
+          myGeoObject = new ymaps.GeoObject({
+            geometry: {
+              type: "Point",
+              coordinates: [lat, long],
+            },
+          });
+        myMap.geoObjects.add(myGeoObject);
       }
     },
   },

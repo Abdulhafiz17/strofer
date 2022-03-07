@@ -80,7 +80,11 @@ export default {
         localStorage.setItem("access_token", response.data.access_token);
         localStorage.setItem("branch_id", response.data.branch_id);
         localStorage.setItem("role", response.data.role);
-        this.$router.push("/home");
+        if (response.data.role == "admin") {
+          this.$router.push("/filiallar");
+        } else {
+          this.$router.push("/home")
+        }
         setTimeout(() => {
           window.location.reload()
         }, 100);

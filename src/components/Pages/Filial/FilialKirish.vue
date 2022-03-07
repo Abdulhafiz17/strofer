@@ -16,15 +16,7 @@
           </div>
           <div class="col-md-2">
             <div class="card shadow border-0">
-              <a
-                :href="
-                  'https://yandex.uz/maps/10336/phergana/?ll=/' +
-                  filial.long +
-                  '/%2C40./' +
-                  filial.lat +
-                  '/&z=15'
-                "
-              >
+              <a href="#filialMap" data-toggle="modal">
                 <div class="card-body">
                   <span class="fa fa-location-arrow" /> {{ filial.address }}
                 </div>
@@ -44,10 +36,24 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="filialMap">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Filial joylashuvi</h3>
+        </div>
+        <div class="modal-body">
+          <div id="map" style="width: 780px; height: 500px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { instance } from "../Api";
+let filial
 export default {
   data() {
     return {
@@ -59,7 +65,9 @@ export default {
   methods: {
     getData() {
       instance.get("this_branch/" + this.branch_id).then((res) => {
+        console.log(res.data)
         this.filial = res.data;
+        this.map(res.data.lat, res.data.long)
       });
 
       instance
@@ -71,6 +79,24 @@ export default {
 
     shareToHodimlar() {
       this.$router.push({ name: "Hodimlar", params: { id: this.branch_id } });
+    },
+
+    map(lat, long) {
+      console.log(lat, long)
+      ymaps.ready(init);
+      function init() {
+        var myMap = new ymaps.Map("map", {
+            center: [lat, long],
+            zoom: 15,
+          }),
+          myGeoObject = new ymaps.GeoObject({
+            geometry: {
+              type: "Point",
+              coordinates: [lat, long],
+            },
+          });
+        myMap.geoObjects.add(myGeoObject);
+      }
     },
   },
   mounted() {
