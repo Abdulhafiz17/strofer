@@ -172,6 +172,12 @@ table:hover {
  }
 
 ::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  transition: 0.5s;
+}
+
+::-webkit-scrollbar:hover {
   width: 15px;
   height: 15px;
 }
@@ -224,7 +230,16 @@ table:hover {
   box-shadow: none;
 }
 
+.dark .form-control[readonly] {
+  background: #636363;
+}
+
 .custom-select {
+  border: 1px solid var(--success);
+}
+.custom-select:active,
+/* .custom-select:active, */
+.custom-select:focus {
   border: 1px solid var(--success);
 }
 
