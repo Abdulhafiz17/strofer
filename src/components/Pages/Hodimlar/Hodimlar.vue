@@ -305,8 +305,8 @@
         </div>
       </div>
     </div> -->
+  <Anime :isloading="isloading"/>
   </div>
-  <Anime :isLoading="isLoading"/>
 </template>
 
 <script>
@@ -319,7 +319,7 @@ export default {
       branch_id: "",
       access_token: localStorage.getItem("access_token"),
       role: localStorage.getItem("role"),
-      isLoading: false,
+      isloading: false,
       hodimlar: [],
       yangiHodim: {
         name: "",
@@ -366,7 +366,7 @@ export default {
         this.branch_id = localStorage.getItem("branch_id")
       }
 
-      this.isLoading = true
+      // this.isLoading = true
       const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
       axios
         .create({
@@ -383,7 +383,7 @@ export default {
           console.log(res.data);
         })
         .finally(
-          this.isLoading = false
+          // this.isLoading = false
         )
     },
     edit(id, name, phone, role, username) {
@@ -446,5 +446,4 @@ export default {
 </script>
 
 <style>
-/* "https://oqsaroy.crud.uz/hodim/update */
 </style>

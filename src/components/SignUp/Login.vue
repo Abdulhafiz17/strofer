@@ -85,9 +85,9 @@ export default {
         } else {
           this.$router.push("/home")
         }
-        setTimeout(() => {
-          window.location.reload()
-        }, 100);
+        // setTimeout(() => {
+        //   window.location.reload()
+        // }, 100);
       } else {
         console.log("logged out");
         await this.$store.dispatch("user/logout");

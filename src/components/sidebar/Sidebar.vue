@@ -40,6 +40,11 @@ export default {
           <p class="ripple">Kategoriya</p>
         </SidebarLink>
         
+        <SidebarLink to="/me">
+          <span class="fas fa-user-circle"></span>
+          <p class="ripple">Shaxsiy sahifa</p>
+        </SidebarLink>
+        
       </div>
     </div>
   </transition>

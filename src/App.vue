@@ -177,11 +177,6 @@ table:hover {
   transition: 0.5s;
 }
 
-::-webkit-scrollbar:hover {
-  width: 15px;
-  height: 15px;
-}
-
 ::-webkit-scrollbar-track {
   background: #343a40;
 }
@@ -231,6 +226,10 @@ table:hover {
 }
 
 .dark .form-control[readonly] {
+  background: #636363;
+}
+
+.dark .custom-select[disabled] {
   background: #636363;
 }
 

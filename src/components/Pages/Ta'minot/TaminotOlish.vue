@@ -46,7 +46,17 @@
       <div class="card-body">
         <form @submit.prevent="postCode()">
           <div class="row my-3">
-            <div class="col-sm-1"></div>
+            <div class="col-sm-1">
+              <button
+                type="button"
+                class="btn btn-block btn-outline-success"
+                data-toggle="modal"
+                data-target="#savat"
+                @click="getTaminot()"
+              >
+                <span class="fa fa-shopping-cart" />
+              </button>
+            </div>
             <div class="col-sm-3 input-group my-2 mx-auto">
               <input
                 type="number"
@@ -59,17 +69,7 @@
                 <span class="far fa-circle-check" />
               </button> -->
             </div>
-            <div class="col-sm-1 float-right">
-              <button 
-                type="button" 
-                class="btn btn-block btn-outline-success"
-                data-toggle="modal"
-                data-target="#savat"
-                @click="getTaminot()"
-              >
-                <span class="fa fa-shopping-cart"/>
-              </button>
-            </div>
+            <div class="col-sm-1"></div>
           </div>
         </form>
 
@@ -189,26 +189,42 @@
                 </div>
                 <div class="col-sm">
                   <label> Minimal qoldiq </label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    v-model="postMahsulot.product.quantity_note"
-                    min="0"
-                  />
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      class="form-control"
+                      v-model="postMahsulot.product.quantity_note"
+                      min="0"
+                      required
+                    />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      {{ postMahsulot.product.measure }}
+                    </div>
+                  </div>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="row m-3">
               <div class="col-sm">
-                <input
-                  type="number"
-                  class="form-control"
-                  placeholder="Miqdori"
-                  v-model="postMahsulot.new_supply.quantity"
-                  required
-                />
+                <label>Hajm</label>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    v-model="postMahsulot.new_supply.quantity"
+                    required
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      {{ postMahsulot.product.measure }}
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="col-sm">
+                <label>Kirim narx</label>
                 <div class="input-group">
                   <input
                     type="number"
@@ -232,10 +248,7 @@
                 </div>
               </div>
             </div>
-            <button
-              class="btn btn-block btn-outline-success"
-              type="submit"
-            >
+            <button class="btn btn-block btn-outline-success" type="submit">
               <span class="far fa-circle-check" />
             </button>
           </span>
@@ -244,8 +257,18 @@
             <div class="row m-2 mb-2">
               <div class="col-sm-3 mx-auto">
                 <label> Kategoriya </label>
-                <select class="custom-select" v-model="postMahsulot.product.category_id" required>
-                  <option v-for="kategoriya in kategoriyalar" :key="kategoriya.id" :value="kategoriya.id"> {{ kategoriya.name }} </option>
+                <select
+                  class="custom-select"
+                  v-model="postMahsulot.product.category_id"
+                  required
+                >
+                  <option
+                    v-for="kategoriya in kategoriyalar"
+                    :key="kategoriya.id"
+                    :value="kategoriya.id"
+                  >
+                    {{ kategoriya.name }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -343,32 +366,51 @@
               </div>
               <div class="col-sm">
                 <label> Minimal qoldiq </label>
-                <input
-                  type="number"
-                  class="form-control"
-                  v-model="postMahsulot.product.quantity_note"
-                  min="0"
-                  required
-                />
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    v-model="postMahsulot.product.quantity_note"
+                    min="0"
+                    required
+                  />
+                  <select
+                    class="custom-select"
+                    v-model="postMahsulot.product.measure"
+                    required
+                  >
+                    <option value="dona">dona</option>
+                    <option value="kg">kg</option>
+                    <option value="litr">litr</option>
+                    <option value="metr">metr</option>
+                  </select>
+                </div>
               </div>
             </div>
 
             <div class="row m-3">
               <div class="col-sm">
-                <input
-                  type="number"
-                  class="form-control"
-                  placeholder="Miqdori"
-                  v-model="postMahsulot.new_supply.quantity"
-                  required
-                />
-              </div>
-              <div class="col-sm">
+                <label>Hajm</label>
                 <div class="input-group">
                   <input
                     type="number"
                     class="form-control"
-                    placeholder="Narxi"
+                    v-model="postMahsulot.new_supply.quantity"
+                    required
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      {{ postMahsulot.product.measure }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <label>Kirim narx</label>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="form-control"
                     v-model="postMahsulot.new_supply.price"
                     required
                   />
@@ -387,10 +429,7 @@
                 </div>
               </div>
             </div>
-            <button
-              class="btn btn-block btn-outline-success"
-              type="submit"
-            >
+            <button class="btn btn-block btn-outline-success" type="submit">
               <span class="far fa-circle-check" />
             </button>
           </span>
@@ -451,39 +490,44 @@
           <h3>Mahsulotlar</h3>
         </div>
         <div class="modal-body">
-          <table class="table text-center table-sm table-hover table-borderless">
-            <thead>
-              <tr>
-                <th>№</th>
-                <th>Mahsulot</th>
-                <th>Hajm</th>
-                <th>Narx</th>
-                <th>Summa</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(taminot, n) in taminotlar" :key="taminot.id">
-                <td> {{ n + 1 }} </td>
-                <td> {{ taminot.product_id }} </td>
-                <td> {{ taminot.quantity }} </td>
-                <td> {{ taminot.price }} {{ taminot.currency_id }} </td>
-                <td> {{ taminot.quantity * taminot.price }} </td>
-                <td> 
-                  <button class="btn btn-sm btn-outline-danger">
-                    <span class="far fa-circle-xmark"/>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive text-center">
+            <table class="table table-sm table-hover table-borderless">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Mahsulot</th>
+                  <th>Hajm</th>
+                  <th>Narx</th>
+                  <th>Summa</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(taminot, n) in taminotlar" :key="taminot.id">
+                  <td>{{ n + 1 }}</td>
+                  <td>{{ taminot.product_id }}</td>
+                  <td>{{ taminot.quantity }}</td>
+                  <td>{{ taminot.price }} {{ taminot.currency_id }}</td>
+                  <td>{{ taminot.quantity * taminot.price }}</td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      @click="deleteTaminot(taminot.id)"
+                    >
+                      <span class="far fa-circle-xmark" />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline-success">
-            <span class="far fa-circle-check"/> Tasdiqlash
+            <span class="far fa-circle-check" /> Tasdiqlash
           </button>
           <button class="btn btn-outline-danger" data-dismiss="modal">
-            <span class="far fa-circle-xmark"/> Bekor qilish
+            <span class="far fa-circle-xmark" /> Bekor qilish
           </button>
         </div>
       </div>
@@ -516,6 +560,7 @@ export default {
           final_price: null,
           currency_id_for_sell: "",
           quantity_note: null,
+          measure: "",
         },
         new_supply: {
           quantity: null,
@@ -541,15 +586,13 @@ export default {
       instance.get("this_market/" + this.$route.params.id).then((res) => {
         this.taminotchi = res.data;
       });
-      instance
-        .get("all_currencies")
-        .then((res) => {
-          this.kurslar = res.data;
-        })
+      instance.get("all_currencies").then((res) => {
+        this.kurslar = res.data;
+      });
       instance
         .get("all_categories")
         .then((res) => {
-          this.kategoriyalar = res.data
+          this.kategoriyalar = res.data;
         })
         .finally((this.isLoading = false));
     },
@@ -568,6 +611,7 @@ export default {
             final_price: res.data.final_price,
             currency_id_for_sell: res.data.currency_id_for_sell,
             quantity_note: res.data.quantity_note,
+            measure: res.data.measure,
           };
           this.getMahsulot(this.postMahsulot.product);
           console.log(res.data);
@@ -593,14 +637,23 @@ export default {
       // this.postMahsulot.push(this.product, this.new_supply);
       instance.post("take_supply", this.postMahsulot).then((res) => {
         console.log(res.data);
+        if (res.status == 200) {
+          window.location.reload();
+        }
       });
       console.log(this.postMahsulot);
     },
     getTaminot() {
-      instance.get("all_supplies/" + this.$route.params.id + "/false")
-      .then((res) => {
-        this.taminotlar = res.data
-      })
+      instance
+        .get("all_supplies/" + this.$route.params.id + "/false")
+        .then((res) => {
+          this.taminotlar = res.data;
+        });
+    },
+    deleteTaminot(id) {
+      instance.delete("remove_this_supply/" + id).then((res) => {
+        this.getTaminot();
+      });
     },
   },
   mounted() {
