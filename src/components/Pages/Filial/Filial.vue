@@ -53,7 +53,8 @@
                   </tr>
                   <tr>
                     <th><span class="fa fa-map" /></th>
-                    <td> <a href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long, filial.id)"> {{ filial.address }} </a></td>
+                    <td> <a> {{ filial.address }} </a></td>
+                     <!-- href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long, filial.id);" -->
                   </tr>
                 </table>
               </div>
@@ -352,9 +353,8 @@ export default {
       }
     },
     map(lat, long, id) {
-      
-      this.showMap = id
-      if (this.showMap) {
+      if (this.showMap != id) {
+        this.showMap = id
         ymaps.ready(init);
         function init() {
           var myMap = new ymaps.Map("map", {
@@ -369,6 +369,8 @@ export default {
             });
           myMap.geoObjects.add(myGeoObject);
         }
+      } else if (this.showMap == id) {
+        document.$("#filialMap").modal("show")
       }
     },
   },
