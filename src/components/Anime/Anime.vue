@@ -1,5 +1,5 @@
 <template>
-  <div class="content2" v-if="isLoading">
+  <div class="content2" v-if="isloading">
     <div class="img-content2">
       <center>
         <img class="img1" src="../../assets/Qora.png" alt="Qora" />
@@ -12,7 +12,7 @@
 <script>
 export default {
   props: {
-    isLoading: Boolean,
+    isloading: Boolean,
   },
 };
 </script>

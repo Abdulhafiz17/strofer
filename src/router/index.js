@@ -12,6 +12,13 @@ const routes = [
     name: "Home",
     component: () => import("../components/Pages/Home/Home.vue"),
   },
+  
+  {
+    path: "/me",
+    meta: { requiresAuth: true },
+    name: "Me",
+    component: () => import("../components/Pages/Me/Me.vue"),
+  },
 
   {
     path: "/hodimlar",

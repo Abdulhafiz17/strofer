@@ -29,7 +29,7 @@
       <div class="card-body">
         <div class="row">
           <div
-            class="col-md-4 mb-3"
+            class="col-md-4 mb-2"
             v-for="taminotchi in filteredCards"
             :key="taminotchi"
           >
@@ -51,7 +51,7 @@
                               taminotchi.id,
                               taminotchi.name,
                               taminotchi.phone,
-                              taminotchi.address,
+                              taminotchi.address
                             )
                           "
                           data-toggle="modal"
@@ -104,6 +104,7 @@
                       class="btn btn-block btn-outline-primary mt-2"
                       data-toggle="modal"
                       data-target="#modal2"
+                      @click="tolov.id = taminotchi.id"
                     >
                       <span class="fa fa-coins"></span>
                     </button>
@@ -184,37 +185,47 @@
         <div class="modal-header">
           <h3>Ta'minotchiga pul berish</h3>
         </div>
-        <div class="modal-body">
-          <div class="row px-3">
-            <div class="input-group">
-              <input
-                type="number"
-                min="0"
-                id=""
-                class="form-control"
-                placeholder="Summa"
-              />
-              <div class="input-group-append">
-                <span class="input-group-text">so'm</span>
+        <form @submit.prevent="payToMarket()">
+          <div class="modal-body">
+            <div class="row px-3">
+              <div class="input-group">
+                <input
+                  type="number"
+                  min="0"
+                  id=""
+                  class="form-control"
+                  placeholder="Summa"
+                  v-model="tolov.price"
+                />
+                <select class="custom-select" v-model="tolov.currency_id">
+                  <option
+                    v-for="kurses in kurslar"
+                    :key="kurses"
+                    :value="kurses.id"
+                  >
+                    {{ kurses.currency }}
+                  </option>
+                </select>
               </div>
+              <textarea
+                class="form-control mt-2"
+                id=""
+                cols="70"
+                rows="2"
+                placeholder="Izoh"
+                v-model="tolov.comment"
+              />
             </div>
-            <textarea
-              class="form-control mt-2"
-              id=""
-              cols="70"
-              rows="2"
-              placeholder="Izoh"
-            />
           </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-outline-primary">
-            <span class="fa fa-check-circle"></span> Tasdiqlash
-          </button>
-          <button class="btn btn-outline-danger" data-dismiss="modal">
-            <span class="fa fa-circle-xmark"></span> Bekor qilish
-          </button>
-        </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-primary">
+              <span class="far fa-check-circle"/> Tasdiqlash
+            </button>
+            <button class="btn btn-outline-danger" data-dismiss="modal">
+              <span class="far fa-circle-xmark"></span> Bekor qilish
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -292,19 +303,33 @@ export default {
         phone: null,
         address: "",
       },
+      tolov: {
+        id: "",
+        price: null,
+        currency_id: "",
+        comment: "",
+      },
+      kurslar: [],
       search: "",
     };
   },
   methods: {
     getData() {
       instance.get("all_markets").then((res) => {
-        this.taminotchilar = res.data.sort((a, b) => {a.name - b.name})
+        this.taminotchilar = res.data.sort((a, b) => {
+          a.name - b.name;
+        });
+      });
+      instance.get("all_currencies").then((res) => {
+        this.kurslar = res.data;
       });
     },
     postData() {
       instance.post("market_create", this.yangiTaminotchi).then((res) => {
         console.log(res.data);
-        window.location.reload();
+        if (res.status == 200) {
+          window.location.reload();
+        }
       });
     },
     edit(id, name, phone, address) {
@@ -316,11 +341,20 @@ export default {
       };
     },
     editData(id) {
-      console.log(id)
-      instance.put("this_market_update/" + id,this.editTaminotchi)
-      .then((res) => {
-        console.log(res.data)
-      })
+      console.log(id);
+      instance
+        .put("this_market_update/" + id, this.editTaminotchi)
+        .then((res) => {
+          console.log(res.data);
+        });
+    },
+    payToMarket() {
+      console.log(this.tolov)
+      // instance
+      //   .post("pay_to_market/" + this.tolov.id, this.tolov)
+      //   .then((res) => {
+      //     console.log(res.data);
+      //   });
     },
   },
   computed: {
