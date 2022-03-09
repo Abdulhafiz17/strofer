@@ -43,6 +43,11 @@ export default {
           <span class="fas fa-box-open"></span>
           <p class="ripple">Kategoriya</p>
         </SidebarLink>
+
+        <SidebarLink to="/chiqim" v-if="role === 'branch_admin'">
+          <span class="fas fa-box-open"></span>
+          <p class="ripple">Chiqim</p>
+        </SidebarLink>
         
         <SidebarLink to="/me">
           <span class="fas fa-user-circle"></span>
