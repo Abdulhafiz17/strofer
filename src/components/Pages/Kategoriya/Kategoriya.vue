@@ -87,7 +87,7 @@
                       </div>
                       <div class="col"></div>
                       <div class="col-md-10">
-                        <a href="/kmahsulotlar/:id" class="btn btn-outline-success btn-block mt-3">
+                        <a :href="'/kmahsulotlar/' + kategoriya.id" class="btn btn-outline-success btn-block mt-3">
                           Mahsulotlar
                         </a>
                       </div>

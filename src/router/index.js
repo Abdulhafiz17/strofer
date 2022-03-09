@@ -85,6 +85,27 @@ const routes = [
     name: "kmahsulotlar",
     component: () => import("../components/Pages/Kategoriya/kmahsulotlar.vue"),
   },
+
+  {
+    path: "/chiqim",
+    meta: { requiresAuth: true },
+    name: "Chiqim",
+    component: () => import("../components/Pages/Chiqim/Chiqim.vue"),
+  },
+
+  {
+    path: "/chiqimlartarixi",
+    meta: { requiresAuth: true },
+    name: "Chiqimlartarixi",
+    component: () => import("../components/Pages/Chiqim/Chiqimlartarixi.vue"),
+  },
+
+  {
+    path: "/idboyichachiqim/:id",
+    meta: { requiresAuth: true },
+    name: "idboyichachiqim",
+    component: () => import("../components/Pages/Chiqim/idboyichachiqim.vue"),
+  },
 ];
 
 const router = createRouter({
