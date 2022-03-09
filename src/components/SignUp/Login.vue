@@ -81,7 +81,7 @@ export default {
         localStorage.setItem("branch_id", response.data.branch_id);
         localStorage.setItem("role", response.data.role);
         if (response.data.role == "admin") {
-          this.$router.push("/filiallar");
+          this.$router.push("/home");
         } else {
           this.$router.push("/home")
         }

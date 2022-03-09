@@ -65,6 +65,12 @@ const routes = [
     name: "TaminotOlish",
     component: () => import("../components/Pages/Ta'minot/TaminotOlish.vue"),
   },
+  {
+    path: "/tarix/:id",
+    meta: { requiresAuth: true },
+    name: "Tarix",
+    component: () => import("../components/Pages/Ta'minot/Tarix.vue"),
+  },
   
   {
     path: "/filiallar",

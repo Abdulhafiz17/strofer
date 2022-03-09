@@ -8,7 +8,7 @@
         : { 'padding-top': '0' },
     ]"
   >
-    <PageLoad />
+    <!-- <PageLoad /> -->
     <Navbar
       v-if="this.$route.name !== 'Login'"
       @togglenav="navOpen = !navOpen"
@@ -55,7 +55,7 @@ import {
 } from "@/components/sidebar/state";
 import { sidebarWidthContent } from "@/components/sidebar/state";
 import { contentTop } from "@/components/sidebar/state";
-import PageLoad from "./components/Preloader/PreloaderAnime.vue";
+// import PageLoad from "./components/Preloader/PreloaderAnime.vue";
 import Footer from "./components/Footer/Footer.vue";
 export default {
   data: () => {
@@ -67,7 +67,7 @@ export default {
   components: {
     Sidebar,
     Navbar,
-    PageLoad,
+    // PageLoad,
     Footer,
   },
   setup() {

@@ -489,6 +489,7 @@
         <div class="modal-header">
           <h3>Mahsulotlar</h3>
         </div>
+        <form @submit.prevent="confirmTaminot()">
         <div class="modal-body">
           <div class="table-responsive text-center">
             <table class="table table-sm table-hover table-borderless">
@@ -523,13 +524,14 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-outline-success">
+          <button type="submit" class="btn btn-outline-success">
             <span class="far fa-circle-check" /> Tasdiqlash
           </button>
           <button class="btn btn-outline-danger" data-dismiss="modal">
             <span class="far fa-circle-xmark" /> Bekor qilish
           </button>
         </div>
+        </form>
       </div>
     </div>
   </div>
@@ -654,6 +656,15 @@ export default {
       instance.delete("remove_this_supply/" + id).then((res) => {
         this.getTaminot();
       });
+    },
+    confirmTaminot() {
+      instance.put("confirmation_all_supplies/" + this.$route.params.id)
+      .then((res) => {
+        console.log(res.data)
+        if (res.status == 200) {
+          window.location.reload()
+        }
+      })
     },
   },
   mounted() {

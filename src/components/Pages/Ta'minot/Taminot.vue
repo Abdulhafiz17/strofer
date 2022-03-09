@@ -273,7 +273,7 @@
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-outline-primary">
-              <span class="fas fa-check-circle"></span>Tasdiqlash
+              <span class="fa fa-circle-check"></span> Tasdiqlash
             </button>
             <button class="btn btn-outline-danger" data-dismiss="modal">
               <span class="fa fa-circle-xmark"></span> Bekor qilish
@@ -316,9 +316,7 @@ export default {
   methods: {
     getData() {
       instance.get("all_markets").then((res) => {
-        this.taminotchilar = res.data.sort((a, b) => {
-          a.name - b.name;
-        });
+        this.taminotchilar = res.data
       });
       instance.get("all_currencies").then((res) => {
         this.kurslar = res.data;
@@ -349,12 +347,14 @@ export default {
         });
     },
     payToMarket() {
-      console.log(this.tolov)
-      // instance
-      //   .post("pay_to_market/" + this.tolov.id, this.tolov)
-      //   .then((res) => {
-      //     console.log(res.data);
-      //   });
+      instance
+        .post("pay_to_market/" + this.tolov.id, this.tolov)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status == 200) {
+            window.location.reload()
+          }
+        });
     },
   },
   computed: {

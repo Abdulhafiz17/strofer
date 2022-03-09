@@ -24,17 +24,15 @@
                       <div class="col-md-3">
                         <label> Telefon </label>
                         <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    +998
-                                </div>
-                            </div>
-                            <input
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">+998</div>
+                          </div>
+                          <input
                             type="number"
                             class="form-control"
                             v-model="hodim.phone"
                             required
-                            />
+                          />
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -100,14 +98,13 @@ export default {
       });
     },
     putData() {
-        // console.log(this.hodim)
-      instance.put("this_user_update/" + this.hodim.id)
-      .then((res) => {
-          console.log(res.data)
-          if(res.status == 200) {
-              window.location.reload()
-          }
-      })
+      console.log(this.hodim);
+      instance.put("this_user_update/" + this.hodim.id, this.hodim).then((res) => {
+        console.log(res.data);
+        if (res.status == 200) {
+          window.location.reload();
+        }
+      });
     },
   },
   mounted() {

@@ -1,11 +1,15 @@
 <script>
 import SidebarLink from "./SidebarLink";
 import { sidebarWidth, collapsed, toggleSidebar } from "./state";
-const role = localStorage.getItem("role")
 export default {
   components: { SidebarLink },
+  data() {
+    return {
+      role: localStorage.getItem("role")
+    }
+  },
   setup() {
-    return { collapsed, sidebarWidth, toggleSidebar, role };
+    return { collapsed, sidebarWidth, toggleSidebar };
   },
 };
 </script>

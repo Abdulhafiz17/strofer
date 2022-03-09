@@ -7,7 +7,7 @@
             <h3>Filiallar</h3>
           </div>
           <div class="col-md">
-            <input type="text" class="form-control" placeholder="Qidiruv" />
+            <input type="text" class="form-control" placeholder="Qidiruv" v-model="search" />
           </div>
           <div class="col-md">
             <button
@@ -23,7 +23,7 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-md-4 mb-2" v-for="filial in filiallar" :key="filial">
+          <div class="col-md-4 mb-2" v-for="filial in filter" :key="filial">
             <div class="card shadow">
               <div class="card-header">
                 <div class="row">
@@ -53,7 +53,7 @@
                   </tr>
                   <tr>
                     <th><span class="fa fa-map" /></th>
-                    <td> <a href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long)"> {{ filial.address }} </a></td>
+                    <td> <a href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long, filial.id)"> {{ filial.address }} </a></td>
                   </tr>
                 </table>
               </div>
@@ -266,8 +266,10 @@ export default {
   components: { Anime },
   data() {
     return {
+      search: "",
       isLoading: false,
       filiallar: [],
+      showMap: "",
       yangiFilial: {
         name: "",
         phone: null,
@@ -287,20 +289,14 @@ export default {
   },
   methods: {
     getData() {
-      this.isLoading = true;
-
+    // window.location.reload(1)
         instance.get("all_branches")
         .then((res) => {
             this.filiallar = res.data
-            console.log(res.data)
         })
-        .finally(
-            this.isLoading = false
-        )
     },
 
     postData() {
-      console.log(this.yangiFilial);
       this.isLoading = true;
         
         instance.post("branch_create", this.yangiFilial)
@@ -355,22 +351,36 @@ export default {
         console.log("Siz_belgilagan_Geolakatsiya_notogri");
       }
     },
-    map(lat, long) {
-      ymaps.ready(init);
-      function init() {
-        var myMap = new ymaps.Map("map", {
-            center: [lat, long],
-            zoom: 15,
-          }),
-          myGeoObject = new ymaps.GeoObject({
-            geometry: {
-              type: "Point",
-              coordinates: [lat, long],
-            },
-          });
-        myMap.geoObjects.add(myGeoObject);
+    map(lat, long, id) {
+      
+      this.showMap = id
+      if (this.showMap) {
+        ymaps.ready(init);
+        function init() {
+          var myMap = new ymaps.Map("map", {
+              center: [lat, long],
+              zoom: 15,
+            }),
+            myGeoObject = new ymaps.GeoObject({
+              geometry: {
+                type: "Point",
+                coordinates: [lat, long],
+              },
+            });
+          myMap.geoObjects.add(myGeoObject);
+        }
       }
     },
+  },
+  computed: {
+    filter: function() {
+      return this.filiallar.filter((filial) =>{
+        return filial.name.toLowerCase().match(this.search.toLowerCase())
+      })
+      // return this.filiallar.filter((filial) => {
+      //   filial.match(/this.search/g)
+      // })
+    }
   },
   mounted() {
     this.getData();
