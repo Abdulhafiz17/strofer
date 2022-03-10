@@ -5,7 +5,8 @@ export default {
   components: { SidebarLink },
   data() {
     return {
-      role: localStorage.getItem("role")
+      role: localStorage.getItem("role"),
+      branch_id: localStorage.getItem("branch_id"),
     }
   },
   setup() {
@@ -24,7 +25,7 @@ export default {
           <p class="ripple">Filiallar</p>
         </SidebarLink>
         
-        <SidebarLink to="Hodimlar" v-if="role === 'branch_admin'">
+        <SidebarLink :to="'/hodimlar/' + branch_id" v-if="role === 'branch_admin'">
           <span class="fas fa-users"></span>
           <p class="ripple">Hodimlar</p>
         </SidebarLink>

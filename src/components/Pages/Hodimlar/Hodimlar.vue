@@ -32,7 +32,7 @@
             </button>
             <router-link
               class="btn btn-outline-danger"
-              to="/blocklanganHodimlar"
+              :to="'/blocklanganHodimlar/' + branch_id"
             >
               <span class="fa fa-eye-slash"></span>
             </router-link>
@@ -62,15 +62,7 @@
                           data-toggle="modal"
                           data-target="#exampleModal"
                           class="btn btn-sm btn-outline-warning float-right"
-                          @click="
-                            edit(
-                              hodim.id,
-                              hodim.name,
-                              hodim.phone,
-                              hodim.role,
-                              hodim.seh_id
-                            )
-                          "
+                          @click="edit(hodim)"
                         >
                           <span class="fa fa-edit"></span>
                         </button>
@@ -171,7 +163,7 @@
               <div class="row mb-2">
                 <div class="col-md">
                   <label> Role </label>
-                  <select class="custom-select" v-model="yangiHodim.role">
+                  <select class="custom-select" v-model="yangiHodim.role" required>
                     <option value="branch_admin">Filial admin</option>
                   </select>
                 </div>
@@ -214,106 +206,100 @@
 
     <!-- Modal -->
 
-    <!-- <div
+    <div
       class="modal fade"
       id="exampleModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
     >
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title" id="exampleModalLabel">
               Hodim ma'lumotlarini tahrirlash
             </h4>
           </div>
-          <form id="form2" @submit.prevent="editPost(editH.id)">
+          <form id="form1" @submit.prevent="editPost(editHodim.id)">
             <div class="modal-body">
-              <div class="row">
+              <div class="row mb-2">
                 <div class="col-md-6">
-                  <div class="form-group field-client-ism required">
-                    <label>Ism</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="editH.name"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label>Vazifasi</label>
-                    <select
-                      name=""
-                      id=""
-                      v-model="editH.role"
-                      class="form-control"
-                      required
-                    >
-                      <option value="tikiuvchi">Tikiuvchi</option>
-                      <option value="dazmollovchi">Dazmollovchi</option>
-                      <option value="upakovchi">Upakovchi</option>
-                    </select>
-                  </div>
+                  <label> Ismi </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Ism"
+                    v-model="editHodim.name"
+                    required
+                  />
                 </div>
-
                 <div class="col-md-6">
-                  <label>Telefon</label>
-                  <div class="form-group">
-                    <div class="input-group">
-                      <div class="input-group-append">
-                        <span class="input-group-text">+998</span>
-                      </div>
-                         <input
-                        type="phone"
-                        min="0"
-                        maxlength="9"
-                        minlength="9"
-                        v-model="editH.phone"
-                        class="form-control"
-                        placeholder="Telefon raqami"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div class="form-group field-client-manzil required">
-                    <label>Tseh</label>
-                    <select class="form-control" v-model="editH.seh_id">
-                      <option v-for="seh in sehs" :key="seh">
-                        {{ seh.name }}
-                      </option>
-                    </select>
+                  <label> Telefon raqami </label>
+                  <div class="input-group">
+                    <span class="input-group-prepend">
+                      <span class="input-group-text"> +998 </span>
+                    </span>
+                    <input
+                      type="tel"
+                      class="form-control"
+                      placeholder="Tel"
+                      min="0"
+                      minlength="9"
+                      maxlength="9"
+                      v-model="editHodim.phone"
+                      required
+                    />
                   </div>
                 </div>
               </div>
+              <div class="row mb-2">
+                <div class="col-md">
+                  <label> Role </label>
+                  <select class="custom-select" v-model="editHodim.role">
+                    <option value="branch_admin">Filial admin</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label> Username </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Username"
+                    v-model="editHodim.username"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label> Parol </label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    placeholder="Password"
+                    v-model="editHodim.password"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-outline-primary" type="submit">
+                <span class="far fa-circle-check" /> Tasdiqlash
+              </button>
+              <button class="btn btn-outline-danger" data-dismiss="modal">
+                <span class="far fa-circle-xmark" /> Bekor qilish
+              </button>
             </div>
           </form>
-          <div class="modal-footer">
-            <button type="submit" form="form2" class="btn btn-outline-primary">
-              <span class="far fa-check-circle"></span>
-              Tasdiqlash
-            </button>
-            <button
-              class="btn btn-outline-danger"
-              type="button"
-              data-dismiss="modal"
-            >
-              <span class="far fa-times-circle"></span>
-              Bekor qilish
-            </button>
-          </div>
         </div>
       </div>
-    </div> -->
-  <Anime :isloading="isloading"/>
+    </div>
+    <Anime :isloading="isloading" />
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import Anime from "../../Anime/Anime.vue"
+import { instance } from "../Api";
+import Anime from "../../Anime/Anime.vue";
 export default {
-  components: { Anime, },
+  components: { Anime },
   data() {
     return {
       branch_id: "",
@@ -326,7 +312,15 @@ export default {
         username: "",
         password: "",
         role: "",
-        branch_id: "",
+        branch_id: this.branch_id,
+        phone: null,
+      },
+      editHodim: {
+        name: "",
+        username: "",
+        password: "",
+        role: "",
+        branch_id: this.branch_id,
         phone: null,
       },
       search: "",
@@ -335,100 +329,69 @@ export default {
   methods: {
     postData() {
       if (this.role == "admin") {
-        this.yangiHodim.branch_id = this.$route.params.id
+        this.branch_id = this.$route.params.id;
       }
       if (this.role == "branch_admin") {
-        this.yangiHodim.branch_id = localStorage.getItem("branch_id")
+        this.branch_id = localStorage.getItem("branch_id");
       }
-      console.log(this.yangiHodim)
-      const BASEURL = "https://savdo.crud.uz/user_create";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            // Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.access_token,
-          },
-        })
-        .post(BASEURL, this.yangiHodim)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        })
-    },
-
-    getData() {
-      if (this.role == "admin") {
-        this.branch_id = this.$route.params.id
-      }
-      if (this.role == "branch_admin") {
-        this.branch_id = localStorage.getItem("branch_id")
-      }
-
-      // this.isLoading = true
-      const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/unblock";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.access_token,
-          },
-        })
-        .get(BASEURL)
-        .then((res) => {
-          this.hodimlar = res.data;
-          console.log(res.data);
-        })
-        .finally(
-          // this.isLoading = false
-        )
-    },
-    edit(id, name, phone, role, username) {
-      this.yangiHodim = {
-        id: id,
-        name: name,
-        phone: phone,
-        role: role,
-        username: username,
-      };
-      console.log(this.editH);
-    },
-    editPost(id) {
-      const TOKEN = localStorage.getItem("access_token");
-      const BASEURL = "https://oqsaroy.crud.uz/hodim/update/";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + TOKEN,
-          },
-        })
-        .put(BASEURL + id, this.editH)
+      this.yangiHodim.branch_id = this.branch_id
+      console.log(this.yangiHodim);
+      instance
+        .post("user_create", this.yangiHodim)
         .then((res) => {
           console.log(res.data);
           window.location.reload();
         });
     },
-    block(id) {
-      const BASEURL = "https://savdo.crud.uz/this_user_block/";
-      axios
-        .create({
-          baseURL: BASEURL,
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.access_token,
-          },
+
+    getData() {
+      if (this.role == "admin") {
+        this.branch_id = this.$route.params.id;
+      }
+      if (this.role == "branch_admin") {
+        this.branch_id = localStorage.getItem("branch_id");
+      }
+      instance
+        .get("branch_users/" + this.branch_id + "/unblock")
+        .then((res) => {
+          this.hodimlar = res.data;
         })
-        .put(BASEURL + id)
+        .finally
+        // this.isLoading = false
+        ();
+    },
+    edit(hodim) {
+      this.editHodim = {
+        id: hodim.id,
+        name: hodim.name,
+        phone: hodim.phone,
+        role: hodim.role,
+        username: hodim.username,
+        password: "none",
+        branch_id: localStorage.getItem("branch_id")
+      };
+      console.log(this.editHodim);
+    },
+    editPost(id) {
+      instance
+        .put("this_user_update/" + id, this.editHodim)
         .then((res) => {
           console.log(res.data);
-          window.location.reload();
+          if (res.status == 200) {
+            window.location.reload();
+            // document.$("#exampleModal").modal("hide")
+          }
+        });
+    },
+    block(id) {
+      instance
+        .put("this_user_block/" + id)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status == 200) {
+            // window.location.reload();
+            this.getData();
+          }
         });
     },
   },

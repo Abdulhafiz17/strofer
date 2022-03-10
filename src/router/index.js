@@ -21,13 +21,13 @@ const routes = [
   },
 
   {
-    path: "/hodimlar",
+    path: "/hodimlar/:id",
     meta: { requiresAuth: true },
     name: "Hodimlar",
     component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
   },
   {
-    path: "/blocklanganHodimlar",
+    path: "/blocklanganHodimlar/:id",
     meta: { requiresAuth: true },
     name: "BlocklanganHodimlar",
     component: () => import("../components/Pages/Hodimlar/BloklanganHodimlar.vue"),

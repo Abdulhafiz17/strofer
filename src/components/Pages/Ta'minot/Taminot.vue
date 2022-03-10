@@ -288,6 +288,7 @@
 <script>
 import axios from "axios";
 import { instance } from "../Api";
+import { render } from '@vue/runtime-dom';
 export default {
   data() {
     return {
@@ -327,6 +328,7 @@ export default {
         console.log(res.data);
         if (res.status == 200) {
           window.location.reload();
+          // this.getData();
         }
       });
     },
@@ -343,6 +345,7 @@ export default {
       instance
         .put("this_market_update/" + id, this.editTaminotchi)
         .then((res) => {
+          window.location.reload();
           console.log(res.data);
         });
     },
@@ -356,6 +359,9 @@ export default {
           }
         });
     },
+    render() {
+      window.location.reload()
+    },
   },
   computed: {
     filteredCards: function () {
@@ -367,6 +373,7 @@ export default {
   },
   mounted() {
     this.getData();
+    this.render(1);
   },
 };
 </script>

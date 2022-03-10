@@ -290,24 +290,25 @@ export default {
   },
   methods: {
     getData() {
-    // window.location.reload(1)
         instance.get("all_branches")
         .then((res) => {
             this.filiallar = res.data
         })
+        // setTimeout(() => {
+        //   window.location.reload(1)
+        // }, 1000);
     },
 
-    postData() {
-      this.isLoading = true;
-        
+    postData() {      
+        // document.querySelector("#yangiFilial").modal("hide")
         instance.post("branch_create", this.yangiFilial)
         .then((res) => {
             console.log(res.data)
-            window.location.reload()
+            if (res.status == 200) {
+              // document.querySelector("#yangiFilial").modal("hide")
+              window.location.reload()
+            }
         })
-        .finally(
-            this.isLoading = false
-        )
     },
 
     edit(id, name, phone, address, lat, long) {
@@ -319,7 +320,7 @@ export default {
             lat: lat,
             long: long,
         }
-        console.log(this.editFilial)
+        // console.log(this.editFilial)
     },
 
     putData() {
@@ -349,7 +350,7 @@ export default {
           }
         );
       } else {
-        console.log("Siz_belgilagan_Geolakatsiya_notogri");
+        alert("Siz_belgilagan_Geolakatsiya_notogri");
       }
     },
     map(lat, long, id) {

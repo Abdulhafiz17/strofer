@@ -34,6 +34,17 @@
           </div>
         </div>
       </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="card shadow border-0">
+              <div class="card-header text-center">
+                <h4> Mahsulotlar </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -57,6 +68,7 @@ let filial
 export default {
   data() {
     return {
+      role: localStorage.getItem("role"),
       branch_id: this.$route.params.id,
       filial: {},
       hodimlar: "",
@@ -101,6 +113,9 @@ export default {
   },
   mounted() {
     this.getData();
+    if (this.role == "admin") {
+      localStorage.setItem("branch_id", this.$route.params.id)
+    }
   },
 };
 </script>
