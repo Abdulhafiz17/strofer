@@ -360,7 +360,7 @@ export default {
         });
     },
     render() {
-      window.location.reload()
+      window.location.reload(1)
     },
   },
   computed: {
@@ -373,7 +373,7 @@ export default {
   },
   mounted() {
     this.getData();
-    this.render(1);
+    // this.render(1);
   },
 };
 </script>

@@ -82,7 +82,12 @@
                       <th>
                         <span class="fa fa-industry text-secondary"></span>
                       </th>
-                      <td v-if="hodim.role == 'branch_admin'">Filial admin</td>
+                      <td>
+                        <span v-if="hodim.role == 'branch_admin'">
+                          Filial admin
+                        </span>
+                        <span v-if="hodim.role == 'seller'"> Sotuvchi </span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -163,8 +168,13 @@
               <div class="row mb-2">
                 <div class="col-md">
                   <label> Role </label>
-                  <select class="custom-select" v-model="yangiHodim.role" required>
+                  <select
+                    class="custom-select"
+                    v-model="yangiHodim.role"
+                    required
+                  >
                     <option value="branch_admin">Filial admin</option>
+                    <option value="seller">Sotuvchi</option>
                   </select>
                 </div>
               </div>
@@ -206,10 +216,7 @@
 
     <!-- Modal -->
 
-    <div
-      class="modal fade"
-      id="exampleModal"
-    >
+    <div class="modal fade" id="exampleModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -334,14 +341,12 @@ export default {
       if (this.role == "branch_admin") {
         this.branch_id = localStorage.getItem("branch_id");
       }
-      this.yangiHodim.branch_id = this.branch_id
+      this.yangiHodim.branch_id = this.branch_id;
       console.log(this.yangiHodim);
-      instance
-        .post("user_create", this.yangiHodim)
-        .then((res) => {
-          console.log(res.data);
-          window.location.reload();
-        });
+      instance.post("user_create", this.yangiHodim).then((res) => {
+        console.log(res.data);
+        window.location.reload();
+      });
     },
 
     getData() {
@@ -368,31 +373,27 @@ export default {
         role: hodim.role,
         username: hodim.username,
         password: "none",
-        branch_id: localStorage.getItem("branch_id")
+        branch_id: localStorage.getItem("branch_id"),
       };
       console.log(this.editHodim);
     },
     editPost(id) {
-      instance
-        .put("this_user_update/" + id, this.editHodim)
-        .then((res) => {
-          console.log(res.data);
-          if (res.status == 200) {
-            window.location.reload();
-            // document.$("#exampleModal").modal("hide")
-          }
-        });
+      instance.put("this_user_update/" + id, this.editHodim).then((res) => {
+        console.log(res.data);
+        if (res.status == 200) {
+          window.location.reload();
+          // document.$("#exampleModal").modal("hide")
+        }
+      });
     },
     block(id) {
-      instance
-        .put("this_user_block/" + id)
-        .then((res) => {
-          console.log(res.data);
-          if (res.status == 200) {
-            // window.location.reload();
-            this.getData();
-          }
-        });
+      instance.put("this_user_block/" + id).then((res) => {
+        console.log(res.data);
+        if (res.status == 200) {
+          // window.location.reload();
+          this.getData();
+        }
+      });
     },
   },
   computed: {

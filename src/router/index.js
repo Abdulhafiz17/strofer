@@ -21,7 +21,7 @@ const routes = [
   },
 
   {
-    path: "/hodimlar/:id",
+  path: "/hodimlar/:id",
     meta: { requiresAuth: true },
     name: "Hodimlar",
     component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
@@ -118,6 +118,13 @@ const routes = [
     meta: { requiresAuth: true },
     name: "idboyichachiqim",
     component: () => import("../components/Pages/Chiqim/idboyichachiqim.vue"),
+  },
+  
+  {
+    path: "/savdo",
+    meta: { requiresAuth: true },
+    name: "Savdo",
+    component: () => import("../components/Pages/Savdo/Savdo.vue"),
   },
 ];
 

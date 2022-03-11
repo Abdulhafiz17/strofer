@@ -197,11 +197,11 @@
                       min="0"
                       required
                     />
-                  <div class="input-group-append">
-                    <div class="input-group-text">
-                      {{ postMahsulot.product.measure }}
+                    <div class="input-group-append">
+                      <div class="input-group-text">
+                        {{ postMahsulot.product.measure }}
+                      </div>
                     </div>
-                  </div>
                   </div>
                 </div>
               </div>
@@ -255,24 +255,6 @@
 
           <span v-if="openRow == false">
             <div class="row m-2 mb-2">
-              <div class="col-sm-3 mx-auto">
-                <label> Kategoriya </label>
-                <select
-                  class="custom-select"
-                  v-model="postMahsulot.product.category_id"
-                  required
-                >
-                  <option
-                    v-for="kategoriya in kategoriyalar"
-                    :key="kategoriya.id"
-                    :value="kategoriya.id"
-                  >
-                    {{ kategoriya.name }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="row m-2 mb-2">
               <div class="col-sm">
                 <label> Nomi </label>
                 <input
@@ -292,25 +274,20 @@
                 />
               </div>
               <div class="col-sm">
-                <label> Kirim narx </label>
-                <div class="input-group">
-                  <input
-                    type="number"
-                    class="form-control"
-                    v-model="postMahsulot.product.price"
-                    min="0"
-                    required
-                  />
-                  <select class="custom-select" required>
-                    <option
-                      v-for="kurs in kurslar"
-                      :key="kurs.id"
-                      :value="kurs.id"
-                    >
-                      {{ kurs.currency }}
-                    </option>
-                  </select>
-                </div>
+                <label> Kategoriya </label>
+                <select
+                  class="custom-select"
+                  v-model="postMahsulot.product.category_id"
+                  required
+                >
+                  <option
+                    v-for="kategoriya in kategoriyalar"
+                    :key="kategoriya.id"
+                    :value="kategoriya.id"
+                  >
+                    {{ kategoriya.name }}
+                  </option>
+                </select>
               </div>
             </div>
             <div class="row m-2">
@@ -489,49 +466,47 @@
         <div class="modal-header">
           <h3>Mahsulotlar</h3>
         </div>
-        <form @submit.prevent="confirmTaminot()">
-        <div class="modal-body">
-          <div class="table-responsive text-center">
-            <table class="table table-sm table-hover table-borderless">
-              <thead>
-                <tr>
-                  <th>№</th>
-                  <th>Mahsulot</th>
-                  <th>Hajm</th>
-                  <th>Narx</th>
-                  <th>Summa</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(taminot, n) in taminotlar" :key="taminot.id">
-                  <td>{{ n + 1 }}</td>
-                  <td>{{ taminot.product_id }}</td>
-                  <td>{{ taminot.quantity }}</td>
-                  <td>{{ taminot.price }} {{ taminot.currency_id }}</td>
-                  <td>{{ taminot.quantity * taminot.price }}</td>
-                  <td>
-                    <button
-                      class="btn btn-sm btn-outline-danger"
-                      @click="deleteTaminot(taminot.id)"
-                    >
-                      <span class="far fa-circle-xmark" />
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="modal-body">
+            <div class="table-responsive text-center">
+              <table class="table table-sm table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th>№</th>
+                    <th>Mahsulot</th>
+                    <th>Hajm</th>
+                    <th>Narx</th>
+                    <th>Summa</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(taminot, n) in taminotlar" :key="taminot.id">
+                    <td>{{ n + 1 }}</td>
+                    <td>{{ taminot.mahsulot }}</td>
+                    <td>{{ taminot.hajm }} {{taminot.olchov}} </td>
+                    <td>{{ taminot.narx }} {{ taminot.kurs }}</td>
+                    <td>{{ taminot.hajm * taminot.narx }}</td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        @click="deleteTaminot(taminot.id)"
+                      >
+                        <span class="far fa-circle-xmark" />
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-outline-success">
-            <span class="far fa-circle-check" /> Tasdiqlash
-          </button>
-          <button class="btn btn-outline-danger" data-dismiss="modal">
-            <span class="far fa-circle-xmark" /> Bekor qilish
-          </button>
-        </div>
-        </form>
+          <div class="modal-footer">
+            <button @click="confirmTaminot()" class="btn btn-outline-success">
+              <span class="far fa-circle-check" /> Tasdiqlash
+            </button>
+            <button class="btn btn-outline-danger" data-dismiss="modal">
+              <span class="far fa-circle-xmark" /> Bekor qilish
+            </button>
+          </div>
       </div>
     </div>
   </div>
@@ -539,7 +514,8 @@
   <Anime :isLoading="isLoading" />
 </template>
 
-<script>
+<script type="text/javascript">
+import swal from "sweetalert"
 import { instance } from "../Api";
 import { Anime } from "../../Anime/Anime.vue";
 export default {
@@ -573,7 +549,16 @@ export default {
       },
       kurslar: [],
       kategoriyalar: [],
+      jami_summa: null,
       taminotlar: [],
+      taminot: {
+        id: "",
+        mahsulot: "",
+        hajm: null,
+        olchov: "",
+        narx: null,
+        kurs: "",
+      },
       kurs_id: {
         price_kurs: "",
         sellling_price_kurs: "",
@@ -639,32 +624,92 @@ export default {
       // this.postMahsulot.push(this.product, this.new_supply);
       instance.post("take_supply", this.postMahsulot).then((res) => {
         console.log(res.data);
+        if (res.data == "Bunday mahsulot olinganlar royhatida mavjud") {
+          swal({
+            icon: "warning",
+            title: "Bunday mahsulot ro'yxatga qo'shilgan",
+            closeOnClickOutside: false
+          })
+        }
         if (res.status == 200) {
-          window.location.reload();
+          this.openRow = null;
+          this.barcode = "";
+          this.postMahsulot = {
+            product: {
+              category_id: "",
+              code: "",
+              name: "",
+              brand: "",
+              price: null,
+              currency_id: "",
+              selling_price: null,
+              final_price: null,
+              currency_id_for_sell: "",
+              quantity_note: null,
+              measure: "",
+            },
+            new_supply: {
+              quantity: null,
+              price: null,
+              currency_id: "",
+              market_id: this.$route.params.id,
+            },
+          };
         }
       });
       console.log(this.postMahsulot);
     },
     getTaminot() {
+      this.taminotlar = [];
       instance
         .get("all_supplies/" + this.$route.params.id + "/false")
         .then((res) => {
-          this.taminotlar = res.data;
+          console.log(res.data);
+          res.data.forEach((element) => {
+              instance
+                .get("this_currency/" + element.currency_id)
+                .then((response) => {
+                  instance
+                    .get("this_product/" + element.product_id + "/empty")
+                    .then((res) => {
+                      this.taminot = {
+                        id: element.id,
+                        mahsulot: res.data.name,
+                        hajm: element.quantity,
+                        olchov: res.data.measure,
+                        narx: element.price,
+                        kurs: response.data.currency,
+                      }
+                      this.taminotlar.push(this.taminot);
+                    });
+                });
+          });
+          console.log(this.taminotlar);
         });
     },
     deleteTaminot(id) {
-      instance.delete("remove_this_supply/" + id).then((res) => {
+      instance.delete("remove_this_supply/" + id).then(() => {
         this.getTaminot();
       });
     },
     confirmTaminot() {
-      instance.put("confirmation_all_supplies/" + this.$route.params.id)
-      .then((res) => {
-        console.log(res.data)
-        if (res.status == 200) {
-          window.location.reload()
-        }
-      })
+      let button = document.createElement("button")
+      button.class = "btn btn-outline-succcess"
+      instance
+        .put("confirmation_all_supplies/" + this.$route.params.id)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status == 200) {
+            swal({
+              icon: "success",
+              title: "Ta'minot olindi",
+              closeOnClickOutside: false
+            })
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 3000);
+          }
+        });
     },
   },
   mounted() {

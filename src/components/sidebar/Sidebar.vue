@@ -20,6 +20,11 @@ export default {
     <div class="sidebar" :style="{ width: sidebarWidth }">
       <div class="sidebar-link SidebarLink">
 
+        <SidebarLink to="/savdo" v-if="role === 'branch_admin'">
+          <span class="fas fa-shopping-cart"></span>
+          <p class="ripple">Savdo</p>
+        </SidebarLink>
+
         <SidebarLink to="/filiallar" v-if="role === 'admin'">
           <span class="fas fa-code-branch"></span>
           <p class="ripple">Filiallar</p>
