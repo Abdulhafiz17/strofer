@@ -1,0 +1,173 @@
+:root {
+    --success: #198754FF;
+    --shadow: rgba(25, 135, 84, 0.309);
+    --dark: #3f4449;
+}
+
+#content-app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.app {
+    min-height: 100vh;
+    padding: 50px 0 0 0;
+}
+
+.card {
+    border: 1px solid var(--success);
+    border-radius: 4px !important;
+}
+
+.card:hover {
+    cursor: default;
+}
+
+.card-header {
+    background: white;
+    font-family: font-weight-light;
+}
+
+.card-footer {
+    background: white;
+    border-bottom-left-radius: 20px;
+}
+
+.card a {
+    text-decoration: none;
+}
+
+.modal-content {
+    border: 1px solid var(--success);
+}
+
+.scroll {
+    min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    transition: 0.5s;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: grey;
+    border-radius: 8px;
+    border: 3px solid gray;
+}
+
+table:hover {
+    cursor: default;
+}
+
+.form-control,
+.custom-select {
+    border: 1px solid var(--success);
+}
+
+.form-control:active,
+/* .form-control:hover, */
+.form-control:focus,
+.custom-select:active,
+/* .custom-select:hover, */
+.custom-select:focus {
+    border: 1px solid var(--success);
+    box-shadow: var(--shadow) 0px 0px 0px 3px,
+        var(--shadow) 0px 0px 0px 3px,
+        var(--shadow) 0px 0px 0px 3px !important;
+}
+
+.input-group-text {
+    border: 1px solid var(--success);
+    background: white;
+}
+
+.dark {
+    background: var(--dark);
+    color: white;
+}
+
+.dark .card {
+    background: var(--dark);
+    color: white;
+}
+
+.dark .btn:hover,
+.dark .btn:active {
+    color: rgb(50, 50, 50) !important;
+}
+
+.dark table {
+    color: white;
+}
+
+.dark a {
+    background: var(--dark);
+    color: white;
+}
+
+.dark input,
+.dark input:hover,
+.dark input:focus,
+.dark input:active,
+.dark select,
+.dark select:hover,
+.dark select:focus,
+.dark select:active,
+.dark textarea,
+.dark textarea:active,
+.dark textarea:hover,
+.dark textarea:focus {
+    background: var(--dark);
+    color: white;
+    border: 1px solid var(--success);
+}
+
+.dark .form-control[readonly] {
+    background: #636363;
+}
+
+.dark .custom-select[disabled] {
+    background: #636363;
+}
+
+.dark .input-group .input-group-text {
+    background: var(--dark) !important;
+    color: white !important;
+}
+
+.dark .modal-content {
+    background: var(--dark);
+    color: white;
+}
+
+.dark .card-header,
+.dark .card-footer,
+.dark .card .card-body .table table {
+    background: var(--dark);
+    color: white;
+}
+
+.dark div table tbody tr:hover {
+    color: #fff;
+}
+
+.dark .footer hr {
+    background: #fff;
+}
+
+sup {
+    padding-left: 5px;
+    padding-right: 5px;
+    background: red;
+    color: black;
+    border-radius: 50%;
+}

@@ -52,7 +52,8 @@
                         data-toggle="modal"
                         data-target="#savat"
                       >
-                        <span class="fa fa-shopping-cart" /> {{ tradesLength }}
+                        <span class="fa fa-shopping-cart" /> 
+                        <!-- <sup v-if="tradesLength != 0"> {{ tradesLength }} </sup> -->
                       </button>
                     </div>
                     <div class="col-sm">
@@ -85,7 +86,7 @@
                             <i>{{ mahsulot.brand }}</i>
                           </td>
                           <td>
-                            {{ mahsulot.selling_price }}
+                            {{ Intl.NumberFormat({style: "currency"}).format(mahsulot.selling_price) }}
                             {{ mahsulot.currency_id_for_sell }}
                           </td>
                           <td>
@@ -126,6 +127,7 @@
                       <th>Hajm</th>
                       <th>Narx</th>
                       <th>Summa</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -139,6 +141,11 @@
                       <td>{{ mahsulot.hajm }} {{ mahsulot.olchov }}</td>
                       <td> {{ Intl.NumberFormat({ style: "currency" }).format(mahsulot.narx) }} {{ mahsulot.currency }}</td>
                       <td> {{ Intl.NumberFormat({ style: "currency" }).format(mahsulot.narx * mahsulot.hajm) }} {{ mahsulot.currency }}</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-danger" @click="deleteTrade(mahsulot.code)">
+                          <span class="far fa-circle-xmark"/>
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -249,7 +256,6 @@ export default {
       });
     },
     getTrades(id) {
-      // console.log(id)
       this.buyurtmaMahsulotlar = [];
       instance.get("this_order_trades/" + id).then((res) => {
         this.tradesLength = res.data.length
@@ -261,11 +267,12 @@ export default {
                 .get("this_currency/" + element.currency_id_for_sell)
                 .then((res) => {
                   let mahsulot = {
+                    code: element.code,
                     name: response.data.name,
                     brand: response.data.brand,
                     hajm: element.quantity,
                     olchov: response.data.measure,
-                    narx: element.price,
+                    narx: element.selling_price,
                     currency: res.data.currency,
                   };
                   this.buyurtmaMahsulotlar.push(mahsulot)
@@ -274,6 +281,12 @@ export default {
         });
         console.log(this.buyurtmaMahsulotlar);
       });
+    },
+    deleteTrade(code) {
+      instance.delete("remove_this_trade/" + code)
+      .then((res) => {
+        console.log(res.data)
+      })
     },
   },
   computed: {
