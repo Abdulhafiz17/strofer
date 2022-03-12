@@ -2,12 +2,19 @@
     color: black;
 }
 
+.dark .nav-link {
+    color: white;
+}
+.dark .nav-link:hover {
+    color: white;
+}
+
 .nav-link:hover {
     color: black;
 }
 
 .nav-link.active {
-    color: white;
+    color: white !important;
     background: var(--success) !important;
 }
 

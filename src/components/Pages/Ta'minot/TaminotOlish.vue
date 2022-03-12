@@ -704,6 +704,8 @@ export default {
               icon: "success",
               title: "Ta'minot olindi",
               closeOnClickOutside: false
+            }).then(() => {
+              window.location.reload()
             })
             // setTimeout(() => {
             //   window.location.reload();
