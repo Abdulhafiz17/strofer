@@ -27,7 +27,7 @@
           <div class="col-md">
             <h3>{{ taminotchi.name }}dan ta'minot olish</h3>
           </div>
-          <div class="col-md">
+          <!-- <div class="col-md">
             <router-link
               class="btn btn-outline-success float-right ml-3"
               to="/tolovTarixi"
@@ -40,7 +40,7 @@
             >
               <span class="far fa-clock"></span> Ta'minot tarixi
             </router-link>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="card-body">
@@ -57,7 +57,7 @@
                 <span class="fa fa-shopping-cart" />
               </button>
             </div>
-            <div class="col-sm-3 input-group my-2 mx-auto">
+            <div class="col-sm-3 my-2 mx-auto">
               <input
                 type="number"
                 class="form-control"

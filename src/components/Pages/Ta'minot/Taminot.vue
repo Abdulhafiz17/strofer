@@ -72,26 +72,26 @@
                     <tr>
                       <th><span class="fa fa-coins text-secondary"></span></th>
                       <td
-                        :class="
-                          taminotchi.balance >= 0
-                            ? 'text-success'
-                            : 'text-danger'
-                        "
                       >
-                        {{
-                          Intl.NumberFormat({ style: "currency" }).format(
-                            taminotchi.balance
-                          )
-                        }}
-                        $
+                        <span
+                          v-for="balance in taminotchi.balances"
+                          :key="balance"
+                        >
+                          <!-- :class="balance != 0? 'text-success': 'text-danger'" -->
+                          {{ Intl.NumberFormat({ style: "currency" }).format(balance.balance) }} {{ balance.currency_id }} <span class="fa fa-coin"/>
+                        </span>
                       </td>
+                    </tr>
+                    <tr>
+                      <th><span class="fa fa-map-marker text-secondary" /></th>
+                      <td>{{ taminotchi.address }}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <div class="card-footer text-center">
                 <div class="row d-flex justify-content-around">
-                  <div class="col-sm-4" style="width: 78px">
+                  <div class="col-md-4" style="width: 80px">
                     <router-link
                       class="btn btn-block btn-outline-success mt-2"
                       :to="'/taminotOlish/' + taminotchi.id"
@@ -99,7 +99,7 @@
                       <span class="fa fa-box"></span>
                     </router-link>
                   </div>
-                  <div class="col-sm-4" style="width: 78px">
+                  <div class="col-md-4" style="width: 80px">
                     <button
                       class="btn btn-block btn-outline-primary mt-2"
                       data-toggle="modal"
@@ -109,7 +109,7 @@
                       <span class="fa fa-coins"></span>
                     </button>
                   </div>
-                  <div class="col-sm-4" style="width: 78px">
+                  <div class="col-md-4" style="width: 80px">
                     <router-link
                       class="btn btn-block btn-outline-warning mt-2"
                       :to="'/tarix/' + taminotchi.id"
@@ -219,7 +219,7 @@
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-outline-primary">
-              <span class="far fa-check-circle"/> Tasdiqlash
+              <span class="far fa-check-circle" /> Tasdiqlash
             </button>
             <button class="btn btn-outline-danger" data-dismiss="modal">
               <span class="far fa-circle-xmark"></span> Bekor qilish
@@ -288,7 +288,7 @@
 <script>
 import axios from "axios";
 import { instance } from "../Api";
-import { render } from '@vue/runtime-dom';
+import { render } from "@vue/runtime-dom";
 export default {
   data() {
     return {
@@ -318,6 +318,16 @@ export default {
     getData() {
       instance.get("all_markets").then((res) => {
         this.taminotchilar = res.data
+        this.taminotchilar.forEach((element) => {
+          for (let i = 0; i < element.balances.length; i++) {
+            instance.get("this_currency/" + element.balances[i].currency_id)
+            .then((response) => {
+              element.balances[i].currency_id = response.data.currency
+              // console.log(response.data)
+            })
+          }
+        })
+        console.log(this.taminotchilar)
       });
       instance.get("all_currencies").then((res) => {
         this.kurslar = res.data;
@@ -355,12 +365,12 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            window.location.reload()
+            window.location.reload();
           }
         });
     },
     render() {
-      window.location.reload(1)
+      window.location.reload(1);
     },
   },
   computed: {

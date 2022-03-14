@@ -51,17 +51,18 @@
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
-    transition: 0.5s;
+    transition: 0.1s;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--dark);
+    background: lightgray;
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: grey;
+    background: var(--dark);
     border-radius: 8px;
-    border: 3px solid gray;
+    border: 1px solid var(--dark);
 }
 
 table:hover {
@@ -171,3 +172,11 @@ sup {
     color: black;
     border-radius: 50%;
 }
+.my-custom-scrollbar {
+    position: relative;
+    height: 50vh;
+    overflow: auto;
+  }
+  .table-wrapper-scroll-y {
+    display: block;
+  }

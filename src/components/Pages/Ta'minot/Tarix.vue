@@ -37,47 +37,50 @@
                 </div>
               </div>
               <div class="card-body">
-                <div class="table-responsive text-center">
-                  <table class="table table-sm table-hover table-borderless">
-                    <thead>
-                      <th>№</th>
-                      <th>Mahsulot</th>
-                      <th>Narxi</th>
-                      <th>Miqdori</th>
-                      <th>Umumiy narxi</th>
-                      <th>Sanasi</th>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(tarix, n) in taminotTarix" :key="tarix.id">
-                        <td>{{ n + 1 }}</td>
-                        <td>{{ tarix.product }}</td>
-                        <td>
-                          {{
-                            Intl.NumberFormat({ style: "currency" }).format(
-                              tarix.price
-                            )
-                          }} {{ tarix.currency }}
-                        </td>
-                        <td>{{ tarix.quantity }} {{ tarix.hajm }}</td>
-                        <td>
-                          {{
-                            Intl.NumberFormat({ style: "currency" }).format(
-                              tarix.price * tarix.quantity
-                            )
-                          }}
-                          {{ tarix.currency }}
-                        </td>
-                        <td>{{ tarix.date_time }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <!-- <div class="text-center">
+                <div class="table-wrapper-scrollbar my-custom-scrollbar">
+                  <div class="table-responsive text-center">
+                    <table class="table table-sm table-hover table-borderless">
+                      <thead>
+                        <th>№</th>
+                        <th>Mahsulot</th>
+                        <th>Narxi</th>
+                        <th>Miqdori</th>
+                        <th>Umumiy narxi</th>
+                        <th>Sanasi</th>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(tarix, n) in taminotTarix" :key="tarix.id">
+                          <td>{{ n + 1 }}</td>
+                          <td>{{ tarix.product }}</td>
+                          <td>
+                            {{
+                              Intl.NumberFormat({ style: "currency" }).format(
+                                tarix.price
+                              )
+                            }}
+                            {{ tarix.currency }}
+                          </td>
+                          <td>{{ tarix.quantity }} {{ tarix.hajm }}</td>
+                          <td>
+                            {{
+                              Intl.NumberFormat({ style: "currency" }).format(
+                                tarix.price * tarix.quantity
+                              )
+                            }}
+                            {{ tarix.currency }}
+                          </td>
+                          <td>{{ tarix.date_time }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- <div class="text-center">
                     <a href="#" class="blocks">&laquo;</a>
                     <a href="#" class="blocks">1</a>
                     <a href="#" class="blocks">2</a>
                     <a href="#" class="blocks">3</a>
                     <a href="#" class="blocks">&raquo;</a>
                   </div> -->
+                  </div>
                 </div>
               </div>
             </div>
@@ -101,39 +104,41 @@
                 </div>
               </div>
               <div class="card-body">
-                <div class="table-responsive text-center">
-                  <table class="table table-sm table-hover table-borderless">
-                    <thead>
-                      <th>№</th>
-                      <th>To'lov summa</th>
-                      <th>Sana</th>
-                      <th>Izoh</th>
-                      <th>Hodim</th>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(tarix, n) in tolovTarix" :key="tarix.id">
-                        <td>{{ n + 1 }}</td>
-                        <td>
-                          {{
-                            Intl.NumberFormat({ style: "currency" }).format(
-                              tarix.price
-                            )
-                          }}
-                          {{ tarix.currency }}
-                        </td>
-                        <td>{{ tarix.date_time }}</td>
-                        <td>{{ tarix.comment }}</td>
-                        <td>{{ tarix.user }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <!-- <div class="text-center">
-                    <a href="#" class="blocks">&laquo;</a>
-                    <a href="#" class="blocks">1</a>
-                    <a href="#" class="blocks">2</a>
-                    <a href="#" class="blocks">3</a>
-                    <a href="#" class="blocks">&raquo;</a>
-                  </div> -->
+                <div class="table-wrapper-scrollbar-y my-custom-scrollbar">
+                  <div class="table-responsive text-center">
+                    <table class="table table-sm table-hover table-borderless">
+                      <thead>
+                        <th>№</th>
+                        <th>To'lov summa</th>
+                        <th>Sana</th>
+                        <th>Izoh</th>
+                        <th>Hodim</th>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(tarix, n) in tolovTarix" :key="tarix.id">
+                          <td>{{ n + 1 }}</td>
+                          <td>
+                            {{
+                              Intl.NumberFormat({ style: "currency" }).format(
+                                tarix.price
+                              )
+                            }}
+                            {{ tarix.currency }}
+                          </td>
+                          <td>{{ tarix.date_time }}</td>
+                          <td>{{ tarix.comment }}</td>
+                          <td>{{ tarix.user }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- <div class="text-center">
+                      <a href="#" class="blocks">&laquo;</a>
+                      <a href="#" class="blocks">1</a>
+                      <a href="#" class="blocks">2</a>
+                      <a href="#" class="blocks">3</a>
+                      <a href="#" class="blocks">&raquo;</a>
+                    </div> -->
+                  </div>
                 </div>
               </div>
             </div>
@@ -172,18 +177,18 @@ export default {
       });
       instance.get("market_expenses/" + this.$route.params.id).then((res) => {
         res.data.forEach((element) => {
-          instance.get("this_currency/" + element.currency_id).then((res) => {
-            this.tarix.currency = res.data.currency;
+          instance.get("this_user/" + element.owner_id).then((response) => {
+            instance.get("this_currency/" + element.currency_id).then((res) => {
+              this.tarix = {
+                currency: res.data.currency,
+                price: element.price,
+                comment: element.comment,
+                date_time: element.time.replace("T", " "),
+                user: response.data.name,
+              };
+              this.tolovTarix.push(this.tarix);
+            });
           });
-          instance.get("this_user/" + element.owner_id).then((res) => {
-            this.tarix.user = res.data.name;
-          });
-          this.tarix = {
-            price: element.price,
-            comment: element.comment,
-            date_time: element.time.replace("T", " "),
-          };
-          this.tolovTarix.push(this.tarix);
         });
       });
     },
@@ -193,24 +198,26 @@ export default {
         .then((res) => {
           console.log(res.data);
           res.data.forEach((element) => {
-            instance.get("this_currency/" + element.currency_id).then((res) => {
-              this.tarix.currency = res.data.currency;
-            });
-            instance.get("this_user/" + element.owner_id).then((res) => {
-              this.tarix.user = res.data.name;
-            });
             instance
-              .get("this_product/" + element.product_id + "/empty")
-              .then((res) => {
-                this.tarix.product = res.data.name;
-                this.tarix.hajm = res.data.measure;
+              .get("this_currency/" + element.currency_id)
+              .then((response) => {
+                instance.get("this_user/" + element.owner_id).then((res) => {
+                  instance
+                    .get("this_product/" + element.product_id + "/empty")
+                    .then((resp) => {
+                      this.tarix = {
+                        quantity: element.quantity,
+                        price: element.price,
+                        date_time: element.time.replace("T", " "),
+                        product: resp.data.name,
+                        hajm: resp.data.measure,
+                        user: res.data.name,
+                        currency: response.data.currency,
+                      };
+                      this.taminotTarix.push(this.tarix);
+                    });
+                });
               });
-            this.tarix = {
-              quantity: element.quantity,
-              price: element.price,
-              date_time: element.time.replace("T", " "),
-            };
-            this.taminotTarix.push(this.tarix);
             console.log(this.taminotTarix);
           });
         });

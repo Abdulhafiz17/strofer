@@ -17,15 +17,16 @@
               role="tab"
               :aria-controls="'nav' + tab.id"
               aria-selected="true"
-              @click="getTrades(tab.id)"
+              @click="getTrades(tab.id), orderId = tab.id"
             >
-              {{ n + 1 }} - buyutma
               <button
                 class="btn btn-sm text-danger"
                 @click="deleteOrder(tab.id)"
               >
                 <span class="far fa-circle-xmark" />
               </button>
+              <center>{{ n + 1 }} - buyutma <br>
+              {{ tab.time.split("T", 2)[1] }} </center>
             </button>
             <button class="btn" type="button" @click="createOrder()">
               <span class="fa fa-circle-plus text-success" />
@@ -126,7 +127,6 @@
                       <th>Brend</th>
                       <th>Hajm</th>
                       <th>Narx</th>
-                      <th>Summa</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -140,9 +140,8 @@
                       <td>{{ mahsulot.brand }}</td>
                       <td>{{ mahsulot.hajm }} {{ mahsulot.olchov }}</td>
                       <td> {{ Intl.NumberFormat({ style: "currency" }).format(mahsulot.narx) }} {{ mahsulot.currency }}</td>
-                      <td> {{ Intl.NumberFormat({ style: "currency" }).format(mahsulot.narx * mahsulot.hajm) }} {{ mahsulot.currency }}</td>
                       <td>
-                        <button class="btn btn-sm btn-outline-danger" @click="deleteTrade(mahsulot.code)">
+                        <button class="btn btn-sm btn-outline-danger" @click="deleteTrade(mahsulot.code), getTrades(orderId)">
                           <span class="far fa-circle-xmark"/>
                         </button>
                       </td>
@@ -171,6 +170,7 @@ export default {
       mahsulotlar: [],
       buyurtmaMahsulotlar: [],
       tradesLength: 0,
+      orderId: "",
       search: "",
     };
   },
@@ -179,13 +179,14 @@ export default {
       this.buyurtmalar = [];
       instance.get("all_orders/false").then((res) => {
         this.buyurtmalar = res.data;
+        console.log(res.data)
       });
     },
     getMahsulotlar() {
       this.mahsulotlar = [];
       instance.get("all_categories").then((res) => {
         res.data.forEach((element) => {
-          instance.get("all_products/" + element.id).then((res) => {
+          instance.get("all_products_for_trade/" + element.id).then((res) => {
             res.data.forEach((e) => {
               instance
                 .get("this_currency/" + e.currency_id_for_sell)
@@ -233,7 +234,7 @@ export default {
       }).then((value) => {
         // console.log(mahsulot, order)
         let product = {
-          product_code: mahsulot.code,
+          product_code: mahsulot.product_code,
           quantity: Number(value),
         };
         if (value > 0 && value < mahsulot.quantity) {
@@ -242,9 +243,10 @@ export default {
               swal({
                 icon: "success",
                 title: "Mahsulot qo'shildi",
-              });
-              console.log(res.data);
-              this.getMahsulotlar();
+              }).then(() => {
+                console.log(res.data)
+                this.getMahsulotlar()
+              })
             }
           });
         } else if (value > mahsulot.quantity) {
@@ -267,7 +269,7 @@ export default {
                 .get("this_currency/" + element.currency_id_for_sell)
                 .then((res) => {
                   let mahsulot = {
-                    code: element.code,
+                    code: element.product_code,
                     name: response.data.name,
                     brand: response.data.brand,
                     hajm: element.quantity,
@@ -283,15 +285,21 @@ export default {
       });
     },
     deleteTrade(code) {
-      instance.delete("remove_this_trade/" + code)
+      console.log(code, this.orderId)
+      instance.delete("remove_this_trade/" + code + "/" + this.orderId)
       .then((res) => {
         console.log(res.data)
+        this.getMahsulotlar()
       })
     },
   },
   computed: {
-    filter: function() {
-    },
+    even: function(arr) {
+      // Set slice() to avoid to generate an infinite loop!
+      return arr.slice().sort(function(a, b) {
+        return a.position - b.position;
+      });
+    }
   },
   mounted() {
     this.getBuyurtma();
