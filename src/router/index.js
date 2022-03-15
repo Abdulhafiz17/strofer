@@ -126,6 +126,13 @@ const routes = [
     name: "Savdo",
     component: () => import("../components/Pages/Savdo/Savdo.vue"),
   },
+
+  {
+    path: "/kassa",
+    meta: { requiresAuth: true },
+    name: "Kassa",
+    component: () => import("../components/Pages/Kassa/Kassa.vue"),
+  },
 ];
 
 const router = createRouter({

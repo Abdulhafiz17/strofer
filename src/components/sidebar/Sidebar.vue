@@ -20,6 +20,11 @@ export default {
     <div class="sidebar" :style="{ width: sidebarWidth }">
       <div class="sidebar-link SidebarLink">
 
+        <SidebarLink to="/kassa" v-if="role === 'branch_admin'">
+          <span class="fas fa-cash-register"></span>
+          <p class="ripple">Kassa</p>
+        </SidebarLink>
+
         <SidebarLink to="/savdo" v-if="role === 'branch_admin'">
           <span class="fas fa-shopping-cart"></span>
           <p class="ripple">Savdo</p>
@@ -34,12 +39,12 @@ export default {
           <span class="fas fa-users"></span>
           <p class="ripple">Hodimlar</p>
         </SidebarLink>
+
         <SidebarLink to="/kurs" v-if="role == 'branch_admin'">
           <span class="fas fa-coins"></span>
           <p class="ripple">Kurs</p>
         </SidebarLink>
        
-        
         <SidebarLink to="/taminot" v-if="role === 'branch_admin'">
           <span class="fas fa-truck-loading"></span>
           <p class="ripple">Ta'minotchilar</p>
@@ -51,7 +56,7 @@ export default {
         </SidebarLink>
 
         <SidebarLink to="/chiqim" v-if="role === 'branch_admin'">
-          <span class="fas fa-box-open"></span>
+          <span class="fas fa-wallet"></span>
           <p class="ripple">Chiqim</p>
         </SidebarLink>
         

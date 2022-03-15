@@ -175,6 +175,7 @@
                   >
                     <option value="branch_admin">Filial admin</option>
                     <option value="seller">Sotuvchi</option>
+                    <option value="kassir">Kassir</option>
                   </select>
                 </div>
               </div>
@@ -261,6 +262,8 @@
                   <label> Role </label>
                   <select class="custom-select" v-model="editHodim.role">
                     <option value="branch_admin">Filial admin</option>
+                    <option value="seller">Sotuvchi</option>
+                    <option value="kassir">Kassir</option>
                   </select>
                 </div>
               </div>
@@ -305,6 +308,7 @@
 <script>
 import { instance } from "../Api";
 import Anime from "../../Anime/Anime.vue";
+import swal from "sweetalert";
 export default {
   components: { Anime },
   data() {
@@ -345,7 +349,27 @@ export default {
       console.log(this.yangiHodim);
       instance.post("user_create", this.yangiHodim).then((res) => {
         console.log(res.data);
-        window.location.reload();
+        if (res.status == 200) {
+          if (res.data == "success") {
+            swal({
+              icon: "success",
+              title: "Hodim qo'shildi",
+            }).then(() => {
+              window.location.reload();
+            });
+          } else if (
+            (res.data = "Bu username bilan avval ham ro`yxatga olingan")
+          ) {
+            swal({
+              icon: "warning",
+              title: "Bunday foydalanuvchi nomiga ega hodim mavjud",
+              closeOnClickOutside: false,
+              closeOnEsc: false,
+            }).then(() => {
+              window.location.reload();
+            });
+          }
+        }
       });
     },
 

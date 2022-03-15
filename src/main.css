@@ -1,6 +1,6 @@
 :root {
     --success: #198754FF;
-    --shadow: rgba(25, 135, 84, 0.309);
+    --shadow: rgba(25, 135, 84, 0.2);
     --dark: #3f4449;
 }
 
@@ -11,10 +11,9 @@
     justify-content: space-between;
     position: relative;
 }
-
 .app {
     min-height: 100vh;
-    padding: 50px 0 0 0;
+    padding: 30px 0 0 0;
 }
 
 .card {
@@ -74,6 +73,11 @@ table:hover {
     border: 1px solid var(--success);
 }
 
+option:hover,
+option:focus {
+    background: var(--success) !important;
+}
+
 .form-control:active,
 /* .form-control:hover, */
 .form-control:focus,
@@ -89,6 +93,10 @@ table:hover {
 .input-group-text {
     border: 1px solid var(--success);
     background: white;
+}
+
+th {
+    text-align: center;
 }
 
 .dark {
@@ -172,11 +180,40 @@ sup {
     color: black;
     border-radius: 50%;
 }
+
 .my-custom-scrollbar {
     position: relative;
     height: 50vh;
     overflow: auto;
-  }
-  .table-wrapper-scroll-y {
+}
+
+.table-wrapper-scroll-y {
     display: block;
-  }
+}
+.nav-link {
+    color: black;
+}
+
+.dark .nav-link {
+    color: white;
+}
+.dark .nav-link:hover {
+    color: white;
+}
+
+.nav-link:hover {
+    color: black;
+}
+
+.nav-link.active {
+    color: white !important;
+    background: var(--success) !important;
+}
+
+.text-danger {
+    border-radius: 50% !important;
+}
+
+.text-danger:hover {
+    border: 1px solid red;
+}

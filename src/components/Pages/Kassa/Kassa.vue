@@ -71,44 +71,42 @@
                 <div class="card-body">
                   <!-- <input class="form-control mb-1" id="searchInput" v-model="search" type="search" placeholder="Qidiruv"/> -->
                   <div class="table-responsive text-center">
-                    <table
-                      class="table table-sm table-hover table-bordered"
-                      id="table"
-                    >
+                    <table class="table table-sm table-hover table-borderless">
                       <thead>
                         <tr>
-                          <th>Nomi</th>
+                          <th>№</th>
+                          <th>Mahsulot</th>
                           <th>Brend</th>
+                          <th>Hajm</th>
                           <th>Narx</th>
-                          <th>Qoldiq</th>
                           <th></th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="mahsulot in mahsulotlar" :key="mahsulot.id">
-                          <td>
-                            <b>{{ mahsulot.name }}</b>
-                          </td>
-                          <td>
-                            <i>{{ mahsulot.brand }}</i>
-                          </td>
+                        <tr
+                          v-for="(mahsulot, n) in buyurtmaMahsulotlar"
+                          :key="mahsulot.id"
+                        >
+                          <td>{{ n + 1 }}</td>
+                          <td>{{ mahsulot.name }}</td>
+                          <td>{{ mahsulot.brand }}</td>
+                          <td>{{ mahsulot.hajm }} {{ mahsulot.olchov }}</td>
                           <td>
                             {{
                               Intl.NumberFormat({ style: "currency" }).format(
-                                mahsulot.selling_price
+                                mahsulot.narx
                               )
                             }}
-                            {{ mahsulot.currency_id_for_sell }}
-                          </td>
-                          <td>
-                            {{ mahsulot.quantity }} {{ mahsulot.measure }}
+                            {{ mahsulot.currency }}
                           </td>
                           <td>
                             <button
-                              class="btn btn-sm btn-outline-success"
-                              @click="toTrade(mahsulot, tab)"
+                              class="btn btn-sm btn-outline-danger"
+                              @click="
+                                deleteTrade(mahsulot.code), getTrades(orderId)
+                              "
                             >
-                              <span class="fa fa-coins" />
+                              <span class="far fa-circle-xmark" />
                             </button>
                           </td>
                         </tr>
