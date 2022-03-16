@@ -21,13 +21,13 @@ const routes = [
   },
 
   {
-    path: "/hodimlar",
+  path: "/hodimlar/:id",
     meta: { requiresAuth: true },
     name: "Hodimlar",
     component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
   },
   {
-    path: "/blocklanganHodimlar",
+    path: "/blocklanganHodimlar/:id",
     meta: { requiresAuth: true },
     name: "BlocklanganHodimlar",
     component: () => import("../components/Pages/Hodimlar/BloklanganHodimlar.vue"),
@@ -118,6 +118,27 @@ const routes = [
     meta: { requiresAuth: true },
     name: "idboyichachiqim",
     component: () => import("../components/Pages/Chiqim/idboyichachiqim.vue"),
+  },
+  
+  {
+    path: "/savdo",
+    meta: { requiresAuth: true },
+    name: "Savdo",
+    component: () => import("../components/Pages/Savdo/Savdo.vue"),
+  },
+
+  {
+    path: "/kassa",
+    meta: { requiresAuth: true },
+    name: "Kassa",
+    component: () => import("../components/Pages/Kassa/Kassa.vue"),
+  },
+
+  {
+    path: "/mijozlar",
+    meta: { requiresAuth: true },
+    name: "Mijozlar",
+    component: () => import("../components/Pages/Mijozlar/Mijozlar.vue"),
   },
 ];
 

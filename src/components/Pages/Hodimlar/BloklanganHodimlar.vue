@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <router-link class="btn btn-outline-success btn-sm mb-2" to="/hodimlar">
+    <router-link class="btn btn-outline-success btn-sm mb-2" :to="'/hodimlar/' + branch_id">
       <span class="fa fa-arrow-left"></span> Chiqish
     </router-link>
     <div class="card shadow">
@@ -124,7 +124,10 @@ export default {
       instance.put("this_user_unblock/" + id)
       .then((res) => {
         console.log(res.data)
-        window.location.reload()
+        if (res.status == 200) {
+          // window.location.reload()
+          this.getData();
+        }
       })
     },
   },

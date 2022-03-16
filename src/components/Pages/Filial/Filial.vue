@@ -53,7 +53,8 @@
                   </tr>
                   <tr>
                     <th><span class="fa fa-map" /></th>
-                    <td> <a href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long, filial.id)"> {{ filial.address }} </a></td>
+                    <td> <a> {{ filial.address }} </a></td>
+                     <!-- href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long, filial.id);" -->
                   </tr>
                 </table>
               </div>
@@ -289,24 +290,25 @@ export default {
   },
   methods: {
     getData() {
-    // window.location.reload(1)
         instance.get("all_branches")
         .then((res) => {
             this.filiallar = res.data
         })
+        // setTimeout(() => {
+        //   window.location.reload(1)
+        // }, 1000);
     },
 
-    postData() {
-      this.isLoading = true;
-        
+    postData() {      
+        // document.querySelector("#yangiFilial").modal("hide")
         instance.post("branch_create", this.yangiFilial)
         .then((res) => {
             console.log(res.data)
-            window.location.reload()
+            if (res.status == 200) {
+              // document.querySelector("#yangiFilial").modal("hide")
+              window.location.reload()
+            }
         })
-        .finally(
-            this.isLoading = false
-        )
     },
 
     edit(id, name, phone, address, lat, long) {
@@ -318,7 +320,7 @@ export default {
             lat: lat,
             long: long,
         }
-        console.log(this.editFilial)
+        // console.log(this.editFilial)
     },
 
     putData() {
@@ -348,13 +350,12 @@ export default {
           }
         );
       } else {
-        console.log("Siz_belgilagan_Geolakatsiya_notogri");
+        alert("Siz_belgilagan_Geolakatsiya_notogri");
       }
     },
     map(lat, long, id) {
-      
-      this.showMap = id
-      if (this.showMap) {
+      if (this.showMap != id) {
+        this.showMap = id
         ymaps.ready(init);
         function init() {
           var myMap = new ymaps.Map("map", {
@@ -369,6 +370,8 @@ export default {
             });
           myMap.geoObjects.add(myGeoObject);
         }
+      } else if (this.showMap == id) {
+        document.$("#filialMap").modal("show")
       }
     },
   },

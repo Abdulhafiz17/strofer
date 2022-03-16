@@ -71,30 +71,27 @@ export default {
         },
       };
       console.log(url, params, config);
-      const response = await axios.post(url, params, config);
       console.log(this);
-      if (response.status == 200) {
-        console.log("logged in");
+      axios
+        .post(url, params, config)
+        .then((response) => {
+          if (response.status == 200) {
+            console.log("logged in");
 
-        console.log(response.data)
-        localStorage.setItem("access_token", response.data.access_token);
-        localStorage.setItem("branch_id", response.data.branch_id);
-        localStorage.setItem("role", response.data.role);
-        if (response.data.role == "admin") {
-          this.$router.push("/home");
-        } else {
-          this.$router.push("/home")
-        }
-        // setTimeout(() => {
-        //   window.location.reload()
-        // }, 100);
-      } else {
-        console.log("logged out");
-        await this.$store.dispatch("user/logout");
-      }
-
-        localStorage.setItem('token', response.data.token)
-
+            console.log(response.data);
+            localStorage.setItem("access_token", response.data.access_token);
+            localStorage.setItem("branch_id", response.data.branch_id);
+            localStorage.setItem("role", response.data.role);
+            this.$router.push("/home");
+          }
+        })
+        .catch((err) => {
+          if (err.message == "Request failed with status code 401") {
+            alert("Login yoki parolda xatolik")
+          } else if (err.message == "Network Error") {
+            alert("Tarmoq bilan aloqa mavjud emas")
+          }
+        });
       // if (this.username === 'admin' && this.password === "admin") {
       //   this.$router.push("/home");
       //   localStorage.setItem('username', this.username)
