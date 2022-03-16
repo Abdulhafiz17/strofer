@@ -133,6 +133,13 @@ const routes = [
     name: "Kassa",
     component: () => import("../components/Pages/Kassa/Kassa.vue"),
   },
+
+  {
+    path: "/mijozlar",
+    meta: { requiresAuth: true },
+    name: "Mijozlar",
+    component: () => import("../components/Pages/Mijozlar/Mijozlar.vue"),
+  },
 ];
 
 const router = createRouter({

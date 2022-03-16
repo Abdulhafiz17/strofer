@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-header">
-        <h3>Savdo</h3>
+        <h3>Kassa</h3>
       </div>
       <div class="card-body">
         <nav>
@@ -31,9 +31,6 @@
                 {{ tab.time.split("T", 2)[1] }}
               </center>
             </button>
-            <button class="btn" type="button" @click="createOrder()">
-              <span class="fa fa-circle-plus text-success" />
-            </button>
           </div>
         </nav>
         <hr />
@@ -50,16 +47,7 @@
               <div class="card shadow mt-2">
                 <div class="card-header text-center">
                   <div class="row">
-                    <div class="col-sm">
-                      <button
-                        class="btn btn-outline-success float-left"
-                        data-toggle="modal"
-                        data-target="#savat"
-                      >
-                        <span class="fa fa-shopping-cart" />
-                        <!-- <sup v-if="tradesLength != 0"> {{ tradesLength }} </sup> -->
-                      </button>
-                    </div>
+                    <div class="col-sm"></div>
                     <div class="col-sm">
                       <h4>{{ n + 1 }} - buyurtma</h4>
                     </div>
@@ -79,6 +67,7 @@
                           <th>Brend</th>
                           <th>Hajm</th>
                           <th>Narx</th>
+                          <th>Summa</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -90,11 +79,42 @@
                           <td>{{ n + 1 }}</td>
                           <td>{{ mahsulot.name }}</td>
                           <td>{{ mahsulot.brand }}</td>
-                          <td>{{ mahsulot.hajm }} {{ mahsulot.olchov }}</td>
+                          <td>
+                            <div class="input-group input-group-sm">
+                              <input
+                                type="number"
+                                class="form-control text-center"
+                                v-model="mahsulot.hajm"
+                                min="0"
+                                required
+                              />
+                              <div class="input-group-append">
+                                <div class="input-group-text">
+                                  {{ mahsulot.olchov }}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group input-group-sm">
+                              <input
+                                v-model="mahsulot.narx"
+                                class="form-control text-center"
+                                type="number"
+                                :min="mahsulot.oxirgi_narx"
+                                required
+                              />
+                              <div class="input-group-append">
+                                <div class="input-group-text">
+                                  {{ mahsulot.currency }}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
                           <td>
                             {{
                               Intl.NumberFormat({ style: "currency" }).format(
-                                mahsulot.narx
+                                mahsulot.narx * mahsulot.hajm
                               )
                             }}
                             {{ mahsulot.currency }}
@@ -118,60 +138,6 @@
             </div>
           </span>
         </span>
-      </div>
-      <div class="modal fade" id="savat">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3>Mahsulotlar</h3>
-            </div>
-            <div class="modal-body">
-              <div class="table-responsive text-center">
-                <table class="table table-sm table-hover table-borderless">
-                  <thead>
-                    <tr>
-                      <th>№</th>
-                      <th>Mahsulot</th>
-                      <th>Brend</th>
-                      <th>Hajm</th>
-                      <th>Narx</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="(mahsulot, n) in buyurtmaMahsulotlar"
-                      :key="mahsulot.id"
-                    >
-                      <td>{{ n + 1 }}</td>
-                      <td>{{ mahsulot.name }}</td>
-                      <td>{{ mahsulot.brand }}</td>
-                      <td>{{ mahsulot.hajm }} {{ mahsulot.olchov }}</td>
-                      <td>
-                        {{
-                          Intl.NumberFormat({ style: "currency" }).format(
-                            mahsulot.narx
-                          )
-                        }}
-                        {{ mahsulot.currency }}
-                      </td>
-                      <td>
-                        <button
-                          class="btn btn-sm btn-outline-danger"
-                          @click="
-                            deleteTrade(mahsulot.code), getTrades(orderId)
-                          "
-                        >
-                          <span class="far fa-circle-xmark" />
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -200,31 +166,6 @@ export default {
       instance.get("all_orders/false").then((res) => {
         this.buyurtmalar = res.data;
         console.log(res.data);
-      });
-    },
-    getMahsulotlar() {
-      this.mahsulotlar = [];
-      instance.get("all_categories").then((res) => {
-        res.data.forEach((element) => {
-          instance.get("all_products_for_trade/" + element.id).then((res) => {
-            res.data.forEach((e) => {
-              instance
-                .get("this_currency/" + e.currency_id_for_sell)
-                .then((res) => {
-                  e.currency_id_for_sell = res.data.currency;
-                  this.mahsulotlar.push(e);
-                });
-            });
-          });
-        });
-      });
-      console.log(this.mahsulotlar);
-    },
-    createOrder() {
-      instance.post("create_order").then(() => {
-        setTimeout(() => {
-          this.getBuyurtma();
-        }, 400);
       });
     },
     deleteOrder(id) {
@@ -263,7 +204,6 @@ export default {
                 title: "Mahsulot qo'shildi",
               }).then(() => {
                 console.log(res.data);
-                this.getMahsulotlar();
               });
             }
           });
@@ -278,7 +218,6 @@ export default {
     getTrades(id) {
       this.buyurtmaMahsulotlar = [];
       instance.get("this_order_trades/" + id).then((res) => {
-        this.tradesLength = res.data.length;
         res.data.forEach((element) => {
           instance
             .get("this_product/empty/" + element.product_code)
@@ -293,6 +232,7 @@ export default {
                     hajm: element.quantity,
                     olchov: response.data.measure,
                     narx: element.selling_price,
+                    oxirgi_narx: response.data.final_price,
                     currency: res.data.currency,
                   };
                   this.buyurtmaMahsulotlar.push(mahsulot);
@@ -308,7 +248,6 @@ export default {
         .delete("remove_this_trade/" + code + "/" + this.orderId)
         .then((res) => {
           console.log(res.data);
-          this.getMahsulotlar();
         });
     },
   },
@@ -322,7 +261,6 @@ export default {
   },
   mounted() {
     this.getBuyurtma();
-    this.getMahsulotlar();
   },
 };
 </script>

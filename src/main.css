@@ -1,6 +1,6 @@
 :root {
     --success: #198754FF;
-    --shadow: rgba(25, 135, 84, 0.2);
+    --shadow: rgba(25, 135, 84, 0.15);
     --dark: #3f4449;
 }
 
@@ -91,8 +91,10 @@ option:focus {
 }
 
 .input-group-text {
+    width: 70px !important;
     border: 1px solid var(--success);
     background: white;
+    justify-content: center;
 }
 
 th {
