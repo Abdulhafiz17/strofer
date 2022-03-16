@@ -87,7 +87,10 @@
                       </div>
                       <div class="col"></div>
                       <div class="col-md-10">
-                        <a :href="'/kmahsulotlar/' + kategoriya.id" class="btn btn-outline-success btn-block mt-3">
+                        <a
+                          :href="'/kmahsulotlar/' + kategoriya.id"
+                          class="btn btn-outline-success btn-block mt-3"
+                        >
                           Mahsulotlar
                         </a>
                       </div>
@@ -136,16 +139,16 @@
           />
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            Bekor qilish
-          </button>
           <button
             type="button"
-            class="btn btn-success"
+            class="btn btn-outline-success"
             @click="postData"
             data-dismiss="modal"
           >
             Saqlash
+          </button>
+          <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
+            Bekor qilish
           </button>
         </div>
       </div>
@@ -180,16 +183,20 @@
           <input type="text" class="form-control" v-model="editT.name" />
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            Qaytish
-          </button>
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-outline-success"
             v-on:click="putData(editT.id)"
             data-dismiss="modal"
           >
             Tasdiqlash
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            data-dismiss="modal"
+          >
+            Qaytish
           </button>
         </div>
       </div>

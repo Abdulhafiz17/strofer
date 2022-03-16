@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="col-md-3 mb-2">
-              <label for="">Valyuta: </label>
+              <label>Valyuta: </label>
               <input
                 type="text"
                 class="form-control"
@@ -32,14 +32,13 @@
                 v-model="yangikurs.currency"
               />
             </div>
-            <div class="col-md-4">
-              <label class="mt-10"></label>
+            <div class="col-md-4 mb-2">
+              <label class=""> <span class="fa fa-coin" /> </label>
               <button
                 type="submit"
-                class="btn btn-outline-dark btn-sm btn-block"
-                style="margin-top: 10px"
+                class="btn btn-sm btn-block btn-outline-success"
               >
-                <i class="fas fa-circle-check" form="form1"></i> Tasdiqlash
+                <span class="fas fa-circle-check"></span> Tasdiqlash
               </button>
             </div>
           </div>
@@ -72,7 +71,7 @@
           </div>
         </div>
 
-         <div class="row mt-2" v-if="error === 'birxilget'">
+        <div class="row mt-2" v-if="error === 'birxilget'">
           <div class="col-md">
             <div class="alert alert-danger" role="alert">
               <strong>Bunday valyuta mavjud</strong>
@@ -147,18 +146,18 @@
                           <div class="modal-footer">
                             <button
                               type="button"
-                              class="btn btn-secondary"
-                              data-dismiss="modal"
-                            >
-                              Qaytish
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-primary"
+                              class="btn btn-outline-success"
                               data-dismiss="modal"
                               v-on:click="putData(editT.id)"
                             >
                               Tahrirlash
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-outline-danger"
+                              data-dismiss="modal"
+                            >
+                              Qaytish
                             </button>
                           </div>
                         </div>
@@ -300,10 +299,10 @@ export default {
           this.error = "";
 
           if (response.data == "success") {
-          this.error = "birxilpost";
-        } else {
-          this.error = "";
-        }
+            this.error = "birxilpost";
+          } else {
+            this.error = "";
+          }
         }
       });
     },
@@ -311,7 +310,6 @@ export default {
     getData() {
       instance.get("all_currencies").then((response) => {
         this.kurslar = response.data;
-        
       });
     },
 

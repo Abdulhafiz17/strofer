@@ -11,19 +11,18 @@
           <table class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th>№</th>
+                <th scope="col" class="text-center">№</th>
                 <th class="col-md-3 text-center">Narx</th>
                 <th class="col-md-4 text-center">Valyuta</th>
-                <th class="col-md-4 text-center">Filial nomi</th>
+                
                 <th class="col-md-4 text-center">Izoh</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(chiqim, idx) in chiqimtarixi" :key="chiqim">
-                <th>{{ idx + 1 }}</th>
-                <td class="text-center">{{ chiqim.price }}</td>
-                <td class="text-center">{{ chiqim.currency_id }}</td>
-                <td class="text-center">{{ chiqim.branch_id }}</td>
+                <th class="text-center">{{ idx + 1 }}</th>
+                <td class="text-center">{{ chiqim.narxi }}</td>
+                <td class="text-center">{{ chiqim.valyuta }}</td>
                 <td class="text-center">{{ chiqim.comment }}</td>
               </tr>
             </tbody>
@@ -41,14 +40,35 @@ import _ from "underscore";
 export default {
   data() {
     return {
-      chiqimtarixi:[],
+      chiqimtarixi: [],
+
+      chiqimtarix: {
+        narxi: null,
+        valyuta: "",
+        comment: "",
+      },
+
+      
     };
   },
 
   methods: {
     getData() {
       instance.get("variable_expenses").then((response) => {
-        this.chiqimtarixi = response.data;
+        response.data.forEach((element) => {
+          instance.get("this_currency/" + element.currency_id).then((res) => {
+            this.chiqimtarix = {
+              narxi: element.price,
+              valyuta: res.data.currency,
+              comment: element.comment,
+            };
+            this.chiqimtarixi.push(this.chiqimtarix);
+          });
+        });
+        // this.chiqimtarixi = response.data;
+        console.log(this.chiqimtarixi);
+        // window.location.reload(this.getData)
+        // this.chiqimtarixi = response.data;
         console.log(response.data);
       });
     },
