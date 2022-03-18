@@ -7,9 +7,6 @@
       <div class="card-body">
         <center>
           <div class="row">
-            <div class="col-md-8 mx-auto">
-              <div class="card shadow border-0">
-                <div class="card-body">
                   <form @submit.prevent="putData()">
                     <div class="row mb-2">
                       <div class="col-md-3">
@@ -28,9 +25,11 @@
                             <div class="input-group-text">+998</div>
                           </div>
                           <input
-                            type="number"
+                            type="tel"
                             class="form-control"
                             v-model="hodim.phone"
+                            maxlength="9"
+                            minlength="9"
                             required
                           />
                         </div>
@@ -59,9 +58,6 @@
                     </button>
                   </form>
                 </div>
-              </div>
-            </div>
-          </div>
         </center>
       </div>
     </div>

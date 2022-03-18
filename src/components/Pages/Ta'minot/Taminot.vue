@@ -71,14 +71,18 @@
                     </tr>
                     <tr>
                       <th><span class="fa fa-coins text-secondary"></span></th>
-                      <td
-                      >
+                      <td>
                         <span
                           v-for="balance in taminotchi.balances"
                           :key="balance"
                         >
                           <!-- :class="balance != 0? 'text-success': 'text-danger'" -->
-                          {{ Intl.NumberFormat({ style: "currency" }).format(balance.balance) }} {{ balance.currency_id }} <span class="fa fa-coin"/>
+                          {{
+                            Intl.NumberFormat({ style: "currency" }).format(
+                              balance.balance
+                            )
+                          }}
+                          {{ balance.currency_id }} <span class="fa fa-coin" />
                         </span>
                       </td>
                     </tr>
@@ -317,20 +321,21 @@ export default {
   methods: {
     getData() {
       instance.get("all_markets").then((res) => {
-        this.taminotchilar = res.data
+        this.taminotchilar = res.data;
         this.taminotchilar.forEach((element) => {
-          for (let i = 0; i < element.balances.length; i++) {
-            instance.get("this_currency/" + element.balances[i].currency_id)
-            .then((response) => {
-              element.balances[i].currency_id = response.data.currency
-              // console.log(response.data)
+          instance.get("market_balances_all/" + element.id).then((res) => {
+            element.balances = res.data
+            element.balances.forEach((balance) => {
+              instance.get("this_currency/" + balance.currency_id)
+              .then((res) => {
+                balance.currency_id = res.data.currency
+              })
             })
-          }
-        })
-        console.log(this.taminotchilar)
-      });
-      instance.get("all_currencies").then((res) => {
-        this.kurslar = res.data;
+          });
+        });
+        instance.get("all_currencies").then((res) => {
+          this.kurslar = res.data;
+        });
       });
     },
     postData() {

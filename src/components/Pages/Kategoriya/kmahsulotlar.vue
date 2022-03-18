@@ -14,7 +14,7 @@
         <div class="row">
           <div class="col-md">
             <div class="table-responsive mt-3">
-              <table class="table table-bordered table-hover text-center">
+              <table class="table table-bordered table-sm table-hover text-center">
                 <thead>
                   <tr>
                     <th scope="col">№</th>
@@ -27,6 +27,7 @@
                     <th scope="col">Miqdor</th>
                     <th scope="col">Minimal qoldiq</th>
                     <th scope="col">KPI</th>
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -38,35 +39,38 @@
                     <td>{{ mahsulotlar.code }}</td>
                     <td>{{ mahsulotlar.name }}</td>
                     <td>{{ mahsulotlar.brand }}</td>
-                    <th>{{ mahsulotlar.price }}</th>
+                    <td>{{ mahsulotlar.price }}</td>
                     <td>{{ mahsulotlar.selling_price }}so'm</td>
                     <td>{{ mahsulotlar.final_price }}so'm</td>
                     <td>{{ mahsulotlar.quantity }}</td>
                     <td>{{ mahsulotlar.quantity_note }}</td>
                     <td>
-                      <!-- <span
-                        >{{ mahsulotlar.kpi.price }}
-                        {{ mahsulotlar.kpi.currency_id }}</span
-                      > -->
+                      <span v-if="mahsulotlar.kpi.percent == 0">
+                        {{ mahsulotlar.kpi.price }} {{ mahsulotlar.kpi.currency_id }}
+                      </span>
+                      <span v-else>
+                        {{ mahsulotlar.kpi.percent }} %
+                      </span>
                     </td>
+                    <td>
+                      <button
+                        class="btn btn-outline-success btn-sm"
+                        data-toggle="modal"
+                        data-target="#exampleModal"
+                        @click="kpi.product_id = mahsulotlar.id"
+                      >
+                        <i class="fa fa-coins"></i>
+                      </button>
 
-                    <button
-                      class="btn btn-success float-right btn-sm mr-2"
-                      data-toggle="modal"
-                      data-target="#exampleModal"
-                      @click="kpi.product_id = mahsulotlar.id"
-                    >
-                      <i class="fa fa-coins"></i>
-                    </button>
-
-                    <button
-                      class="btn btn-warning float-right btn-sm mr-2"
-                      data-toggle="modal"
-                      data-target=".bd-example-modal-lg"
-                      @click="editk(mahsulotlar)"
-                    >
-                      <i class="fa fa-edit"></i>
-                    </button>
+                      <button
+                        class="btn btn-outline-warning btn-sm"
+                        data-toggle="modal"
+                        data-target=".bd-example-modal-lg"
+                        @click="editk(mahsulotlar)"
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -305,6 +309,7 @@ export default {
     },
 
     getData() {
+      this.mahsulotlars = []
       instance.get("all_products/" + this.$route.params.id).then((response) => {
         response.data.forEach((element) => {
           instance.get("this_product_kpi/" + element.id).then((res) => {
@@ -324,6 +329,12 @@ export default {
               kpi: res.data,
             };
             this.mahsulotlars.push(mahsulot);
+            this.mahsulotlars.forEach((e) => {
+              instance.get("this_currency/" + e.kpi.currency_id)
+              .then((res) => {
+                e.kpi.currency_id = res.data.currency
+              })
+            })
           });
         });
         // console.log(response.data);
@@ -333,7 +344,6 @@ export default {
     getcurrency() {
       instance.get("all_currencies").then((response) => {
         this.kurs = response.data;
-        console.log(response.data);
       });
     },
 

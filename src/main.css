@@ -1,6 +1,6 @@
 :root {
     --success: #198754FF;
-    --shadow: rgba(25, 135, 84, 0.15);
+    --shadow: rgba(25, 135, 84, 0.2);
     --dark: #3f4449;
 }
 
@@ -27,7 +27,7 @@
 
 .card-header {
     background: white;
-    font-family: font-weight-light;
+    /* font-family: font-weight-light; */
 }
 
 .card-footer {
@@ -48,20 +48,22 @@
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-    transition: 0.1s;
+    width: 7px;
+    height: 7px;
+    transition: 3s;
 }
 
 ::-webkit-scrollbar-track {
-    background: lightgray;
+    background: rgba(211, 211, 211);
     border-radius: 10px;
+    transition: 3s;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--dark);
+    background: gray;
     border-radius: 8px;
     border: 1px solid var(--dark);
+    transition: 3s;
 }
 
 table:hover {
@@ -85,9 +87,9 @@ option:focus {
 /* .custom-select:hover, */
 .custom-select:focus {
     border: 1px solid var(--success);
-    box-shadow: var(--shadow) 0px 0px 0px 3px,
-        var(--shadow) 0px 0px 0px 3px,
-        var(--shadow) 0px 0px 0px 3px !important;
+    box-shadow: var(--shadow) 0px 0px 0px 3.5px,
+        var(--shadow) 0px 0px 0px 3.5px,
+        var(--shadow) 0px 0px 0px 3.5px !important;
 }
 
 .input-group-text {

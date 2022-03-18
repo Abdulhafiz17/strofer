@@ -290,10 +290,10 @@ export default {
                 .then((res) => {
                   let mahsulot = {
                     code: element.product_code,
-                    name: response.data.name,
-                    brand: response.data.brand,
+                    name: response.data[0].name,
+                    brand: response.data[0].brand,
                     hajm: element.quantity,
-                    olchov: response.data.measure,
+                    olchov: response.data[0].measure,
                     narx: element.selling_price,
                     currency: res.data.currency,
                   };
