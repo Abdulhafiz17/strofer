@@ -64,7 +64,21 @@ export default {
           <span class="fas fa-user-circle"></span>
           <p class="ripple">Shaxsiy sahifa</p>
         </SidebarLink>
-        
+
+         <SidebarLink to="/mijozlar" v-if="role === 'branch_admin'">
+          <span class="fas fa-user-circle"></span>
+          <p class="ripple">Mijozlar</p>
+        </SidebarLink>
+
+        <SidebarLink to="/nasiya" v-if="role === 'branch_admin'">
+          <span class="fas fa-user-circle"></span>
+          <p class="ripple">Nasiyalar</p>
+        </SidebarLink>
+
+        <SidebarLink to="/vozvrat" v-if="role === 'branch_admin'">
+          <span class="fas fa-user-circle"></span>
+          <p class="ripple">Vozvrat</p>
+        </SidebarLink>        
       </div>
     </div>
   </transition>

@@ -147,7 +147,11 @@
           >
             Saqlash
           </button>
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            data-dismiss="modal"
+          >
             Bekor qilish
           </button>
         </div>
