@@ -184,7 +184,7 @@
           <div class="modal-body">
             <div class="input-group">
               <input
-                type="text"
+                type="number"
                 class="form-control"
                 aria-label="Text input with dropdown button"
                 placeholder="summa"
@@ -378,9 +378,14 @@ export default {
           // this.getData();
           console.log(response.data);
           // window.location.reload();
+<<<<<<< HEAD
         }).finally(
           this.isloading = false
         )
+=======
+
+        });
+>>>>>>> 1e1f2496675dbbe863e7edd275eec2ffa7ce7738
     },
 
     getcurrency() {

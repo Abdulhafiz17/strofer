@@ -1,8 +1,6 @@
 <template>
-  <div class="container-fluid">
-    <router-link to="/mijozlar" class="btn btn-sm btn-outline-warning my-2"
-      ><span class="fa fa-arrow-left"></span> Chiqish</router-link
-    >
+<div class="container-fluid">
+  
     <div class="card shadow">
       <div class="card-header"><h3>Mijoz haqida</h3></div>
       <div class="card-body">
@@ -88,11 +86,6 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>   
 </template>
 
-<script>
-export default {};
-</script>
-<style>
-</style>

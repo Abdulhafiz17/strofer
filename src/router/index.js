@@ -140,6 +140,27 @@ const routes = [
     name: "Mijozlar",
     component: () => import("../components/Pages/Mijozlar/Mijozlar.vue"),
   },
+
+  {
+    path: "/mijozhaqida",
+    meta: { requiresAuth: true },
+    name: "MijozHaqida",
+    component: () => import("../components/Pages/Mijozlar/MijozHaqida.vue"),
+  },
+
+  {
+    path: "/nasiya",
+    meta: { requiresAuth: true },
+    name: "Nasiya",
+    component: () => import("../components/Pages/Nasiyalar/Nasiya.vue"),
+  },
+
+  {
+    path: "/vozvrat",
+    meta: { requiresAuth: true },
+    name: "Vozvrat",
+    component: () => import("../components/Pages/Vozvrat/Vozvrat.vue"),
+  },
 ];
 
 const router = createRouter({
