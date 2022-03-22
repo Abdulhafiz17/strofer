@@ -27,11 +27,11 @@
                         placeholder="Mahsulot orqali qidirish"
                         v-model="search"
                       />
-                      <div class="input-group-append">
+                      <!-- <div class="input-group-append">
                         <div class="input-group-text">
                           <span class="fa fa-search"></span>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -49,7 +49,7 @@
                         <th>Sanasi</th>
                       </thead>
                       <tbody>
-                        <tr v-for="(tarix, n) in taminotTarix" :key="tarix.id">
+                        <tr v-for="(tarix, n) in filterRow || []" :key="tarix.id">
                           <td>{{ n + 1 }}</td>
                           <td>{{ tarix.product }}</td>
                           <td>
@@ -90,16 +90,25 @@
               <div class="card-header">
                 <h3>To'lov tarixi</h3>
                 <div class="row">
-                  <div class="col-md-4">
-                    <input type="date" id="dan" class="form-control" />
+                  <div class="col-sm-4 mb-2">
+                    <input type="date" v-model="dateFrom" class="form-control" />
                   </div>
-                  <div class="col-md-4">
-                    <input type="date" id="gacha" class="form-control" />
+                  <div class="col-sm-4 mb-2">
+                    <input type="date" v-model="dateTo" class="form-control" />
                   </div>
-                  <div class="col-md-4">
-                    <button class="btn btn-block btn-outline-success">
-                      <span class="fa fa-search"></span>
-                    </button>
+                  <div class="col-sm-4">
+                    <div class="row">
+                      <div class="col-sm mb-2">
+                        <button class="btn btn-block btn-outline-success" @click="searchByDate(dateFrom, dateTo)">
+                          <span class="fa fa-search"></span>
+                        </button>
+                      </div>
+                      <div class="col-sm">
+                        <button class="btn btn-outline-primary btn-block" @click="getData()">
+                          <span class="fa fa-sync"/>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -147,16 +156,21 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
 import { instance } from "../Api";
+import isloading from "../../Anime/Anime.vue"
 export default {
+  components: { isloading },
   data() {
     return {
       taminotchi: {},
       tolovTarix: [],
       taminotTarix: [],
+      dateFrom: "",
+      dateTo: "",
       tarix: {
         user: "",
         product: "",
@@ -168,13 +182,18 @@ export default {
         date_time: "",
       },
       search: "",
+      isloading: false
     };
   },
   methods: {
     getData() {
+      this.tolovTarix = []
+      this.dateFrom = ""
+      this.dateTo = ""
       instance.get("this_market/" + this.$route.params.id).then((res) => {
+        this.isloading = true
         this.taminotchi = res.data;
-      });
+      })
       instance.get("market_expenses/" + this.$route.params.id).then((res) => {
         res.data.forEach((element) => {
           instance.get("this_user/" + element.owner_id).then((response) => {
@@ -187,12 +206,15 @@ export default {
                 user: response.data.name,
               };
               this.tolovTarix.push(this.tarix);
+              this.isloading = false
             });
           });
         });
-      });
+      }).finally(
+        )
     },
     getData2() {
+      this.isloading = true
       instance
         .get("all_supplies/" + this.$route.params.id + "/true")
         .then((res) => {
@@ -218,9 +240,21 @@ export default {
                     });
                 });
               });
-            console.log(this.taminotTarix);
           });
-        });
+        }).finally(this.isloading = false)
+    },
+    searchByDate(from, to) {
+      this.isloading = true
+      let tarix = []
+      let from2 = Number(from[8] + from[9])
+      let to2 = Number(to[8] + to[9])
+      this.tolovTarix.forEach(element => {
+        if (Number(element.date_time[8] + element.date_time[9]) >= from2 && Number(element.date_time[8] + element.date_time[9]) <= to2) {
+          tarix.push(element)
+        }
+      });
+      this.tolovTarix = tarix
+      this.isloading = false
     },
   },
   mounted() {
@@ -228,11 +262,16 @@ export default {
     this.getData2();
   },
   computed: {
-    // filterHistory: function () {
-    //   return this.taminotTarix.filter((t) => {
-    //     return t.mahsulot.toLowerCase().match(this.search.toLowerCase());
-    //   });
-    // },
+    filterRow: function () {
+      return this.taminotTarix.filter((items) => {
+        for (let item in items) {
+          if (String(items[item]).toLowerCase().indexOf(this.search.toLowerCase()) !== -1) {
+            return true;
+          }
+        }
+        return false;
+      });
+    },
   },
 };
 </script>

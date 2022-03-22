@@ -28,6 +28,9 @@
     </div>
 
     <div class="inline-block d-flex justify-content-between align-items-center">
+
+      <Notificaion/>
+
       <Toggle :mode="mode" @toggle="$emit('toggle')" />
 
       <div class="text-white logout ml-3" @click="logout">
@@ -40,7 +43,7 @@
 <script>
 import Toggle from "@/components/Mode/Toggle.vue";
 import { collapsed, toggleSidebar } from "@/components/sidebar/state";
-
+import Notificaion from './Notificaion.vue';
 export default {
   data() {
     return {};
@@ -55,6 +58,7 @@ export default {
 
   props: ["mode"],
   components: {
+    Notificaion,
     Toggle,
   },
   setup() {
@@ -113,4 +117,8 @@ export default {
   width: 60px;
   padding-left: 11px; */
 /* } */
+
+.dropdown-menu {
+  background: var(--dark);
+}
 </style>

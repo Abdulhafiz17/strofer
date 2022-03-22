@@ -203,13 +203,15 @@
     </div>
   </div>
   <!-- Modal end -->
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
 import { instance } from "../Api";
 import _ from "underscore";
-
+import isloading from "../../Anime/Anime.vue"
 export default {
+  components: { isloading },
   data() {
     return {
       kategoriyalar: {
@@ -221,11 +223,14 @@ export default {
 
       search: "",
       kategoriyass: [],
+
+      isloading: false,
     };
   },
 
   methods: {
     postData() {
+      this.isloading = true
       instance.post("category_create", this.kategoriyalar).then((response) => {
         this.getData();
         console.log(response.data);
@@ -241,14 +246,19 @@ export default {
           this.error = "birxilpost";
           this.getData();
         }
-      });
+      }).finally(
+        this.isloading = false
+      )
     },
 
     getData() {
+      this.isloading = true
       instance.get("all_categories").then((response) => {
         this.kategoriyas = response.data;
         console.log(response.data);
-      });
+      }).finally(
+        this.isloading = false
+      )
     },
 
     editk(id, nomi) {
@@ -259,6 +269,7 @@ export default {
     },
 
     putData(id) {
+      this.isloading = true
       instance
         .put("this_category_update/" + id, this.editT)
         .then((response) => {
@@ -272,7 +283,9 @@ export default {
             this.error = "birxilput2";
             this.getData();
           }
-        });
+        }).finally(
+          this.isloading = false
+        )
     },
   },
   mounted() {

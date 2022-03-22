@@ -95,8 +95,13 @@ option:focus {
 .input-group-text {
     width: 70px !important;
     border: 1px solid var(--success);
+    border-left: none;
     background: white;
     justify-content: center;
+}
+
+.input-group input {
+    border-right: none;
 }
 
 th {
@@ -185,6 +190,10 @@ sup {
     border-radius: 50%;
 }
 
+li {
+    cursor: default !important;
+}
+
 .my-custom-scrollbar {
     position: relative;
     height: 50vh;
@@ -220,4 +229,8 @@ sup {
 
 .text-danger:hover {
     border: 1px solid red;
+}
+
+label {
+    margin: 5px 0px;
 }

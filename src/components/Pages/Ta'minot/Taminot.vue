@@ -8,11 +8,10 @@
           </div>
           <div class="col-md mb-2">
             <input
-              type="text"
+              type="search"
               class="form-control"
               v-model="search"
               placeholder="Qidiruv"
-              @keyup="filteredCards"
             />
           </div>
           <div class="col-md">
@@ -200,15 +199,11 @@
                   class="form-control"
                   placeholder="Summa"
                   v-model="tolov.price"
+                  required
                 />
-                <select class="custom-select" v-model="tolov.currency_id">
-                  <option
-                    v-for="kurses in kurslar"
-                    :key="kurses"
-                    :value="kurses.id"
-                  >
-                    {{ kurses.currency }}
-                  </option>
+                <select class="custom-select" v-model="tolov.currency_id" required>
+                  <option value="dollar">dollar</option>
+                  <option value="so'm">so'm</option>
                 </select>
               </div>
               <textarea
@@ -287,13 +282,14 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
-import axios from "axios";
+import isloading from "../../Anime/Anime.vue"
 import { instance } from "../Api";
-import { render } from "@vue/runtime-dom";
 export default {
+  components: { isloading },
   data() {
     return {
       taminotchilar: [],
@@ -316,11 +312,13 @@ export default {
       },
       kurslar: [],
       search: "",
+      isloading: false,
     };
   },
   methods: {
     getData() {
       instance.get("all_markets").then((res) => {
+        this.isloading = true
         this.taminotchilar = res.data;
         this.taminotchilar.forEach((element) => {
           instance.get("market_balances_all/" + element.id).then((res) => {
@@ -329,23 +327,28 @@ export default {
               instance.get("this_currency/" + balance.currency_id)
               .then((res) => {
                 balance.currency_id = res.data.currency
+                this.isloading = false
               })
             })
           });
         });
-        instance.get("all_currencies").then((res) => {
-          this.kurslar = res.data;
-        });
-      });
+        // instance.get("all_currencies").then((res) => {
+        //   this.kurslar = res.data;
+        // });
+      })
+      .finally(
+        )
     },
     postData() {
+      this.isloading = true
       instance.post("market_create", this.yangiTaminotchi).then((res) => {
         console.log(res.data);
         if (res.status == 200) {
           window.location.reload();
           // this.getData();
         }
-      });
+      })
+      .finally(this.isloading = false)
     },
     edit(id, name, phone, address) {
       this.editTaminotchi = {
@@ -356,15 +359,18 @@ export default {
       };
     },
     editData(id) {
+      this.isloading = true
       console.log(id);
       instance
         .put("this_market_update/" + id, this.editTaminotchi)
         .then((res) => {
           window.location.reload();
           console.log(res.data);
-        });
+        })
+        .finally(this.isloading = false)
     },
     payToMarket() {
+      this.isloading = true
       instance
         .post("pay_to_market/" + this.tolov.id, this.tolov)
         .then((res) => {
@@ -372,7 +378,8 @@ export default {
           if (res.status == 200) {
             window.location.reload();
           }
-        });
+        })
+        .finally(this.isloading = false)
     },
     render() {
       window.location.reload(1);
@@ -380,9 +387,13 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.taminotchilar.filter((taminotchis) => {
-        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
-        // taminotchis.tel.match(this.search)
+      return this.taminotchilar.filter((items) => {
+        for (let item in items) {
+          if (String(items[item]).toLowerCase().indexOf(this.search.toLowerCase()) !== -1) {
+            return true;
+          }
+        }
+        return false;
       });
     },
   },

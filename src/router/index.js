@@ -147,18 +147,18 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const loggedIn = localStorage.getItem('access_token') != null
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem('access_token') != null
 
-//   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     if (!loggedIn) {
-//       next('/')
-//     }
-//     else {
-//       next()
-//     }
-//   }
-//   next()
-// })
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!loggedIn) {
+      next('/')
+    }
+    else {
+      next()
+    }
+  }
+  next()
+})
 
 export default router;

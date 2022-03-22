@@ -42,23 +42,26 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
 import axios from "axios";
-import store from "@/store/index";
-
+import isloading from "../Anime/Anime.vue"
 export default {
+  components: { isloading },
   name: "Login",
   data() {
     return {
       username: "",
       password: "",
       data: "",
+      isloading: false,
     };
   },
   methods: {
     async handleSubmit() {
+      this.isloading = true
       console.log(this);
       const url = "https://savdo.crud.uz/token";
       let params = new URLSearchParams();
@@ -86,6 +89,7 @@ export default {
           }
         })
         .catch((err) => {
+          this.isloading = false
           if (err.message == "Request failed with status code 401") {
             alert("Login yoki parolda xatolik")
           } else if (err.message == "Network Error") {

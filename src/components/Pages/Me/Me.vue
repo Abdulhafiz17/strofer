@@ -62,11 +62,14 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
 import { instance } from "../Api";
+import isloading from "../../Anime/Anime.vue"
 export default {
+  components: { isloading },
   data() {
     return {
       hodim: {
@@ -77,11 +80,13 @@ export default {
         role: "",
         branch_id: "",
         phone: null,
+        isloading: false,
       },
     };
   },
   methods: {
     getData() {
+      this.isloading = true
       instance.get("users/me").then((res) => {
         this.hodim = {
           id: res.data.id,
@@ -91,16 +96,19 @@ export default {
           branch_id: res.data.branch_id,
           phone: res.data.phone,
         };
-      });
+      })
+      .finally(this.isloading = false)
     },
     putData() {
+      this.isloading = true
       console.log(this.hodim);
       instance.put("this_user_update/" + this.hodim.id, this.hodim).then((res) => {
         console.log(res.data);
         if (res.status == 200) {
           window.location.reload();
         }
-      });
+      })
+      .finally(this.isloading = false)
     },
   },
   mounted() {

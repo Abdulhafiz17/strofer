@@ -257,14 +257,14 @@
       </div>
     </div>
   </div>
-  <Anime :isLoading="isLoading" />
+  <isloading :isLoading="isLoading" />
 </template>
 
 <script>
 import { instance } from "../Api";
-import Anime from "../../Anime/Anime.vue";
+import isloading from "../../Anime/Anime.vue";
 export default {
-  components: { Anime },
+  components: { isloading },
   data() {
     return {
       search: "",
@@ -290,16 +290,20 @@ export default {
   },
   methods: {
     getData() {
+      this.isloading = true
         instance.get("all_branches")
         .then((res) => {
             this.filiallar = res.data
-        })
+        }).finally(
+          this.isLoading = false
+        )
         // setTimeout(() => {
         //   window.location.reload(1)
         // }, 1000);
     },
 
-    postData() {      
+    postData() {
+      this.isLoading = true
         // document.querySelector("#yangiFilial").modal("hide")
         instance.post("branch_create", this.yangiFilial)
         .then((res) => {
@@ -308,7 +312,9 @@ export default {
               // document.querySelector("#yangiFilial").modal("hide")
               window.location.reload()
             }
-        })
+        }).finally(
+          this.isloading = false
+        )
     },
 
     edit(id, name, phone, address, lat, long) {
@@ -338,6 +344,7 @@ export default {
     },
 
     locatorButtonPressed() {
+      this.isloading = true
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -349,11 +356,13 @@ export default {
             console.log(error.message);
           }
         );
+        this.isLoading = false
       } else {
         alert("Siz_belgilagan_Geolakatsiya_notogri");
       }
     },
     map(lat, long, id) {
+      this.isloading = true
       if (this.showMap != id) {
         this.showMap = id
         ymaps.ready(init);
@@ -370,6 +379,7 @@ export default {
             });
           myMap.geoObjects.add(myGeoObject);
         }
+        this.isLoading = false
       } else if (this.showMap == id) {
         document.$("#filialMap").modal("show")
       }

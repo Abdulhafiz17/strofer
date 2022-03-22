@@ -70,14 +70,9 @@
                         aria-label="Text input with segmented dropdown button"
                         id="price"
                       />
-                      <select class="custom-select" id="currency" >
-                        <option
-                          v-for="kurse in kurs"
-                          :key="kurse"
-                          :value="kurse.id"
-                        >
-                          {{ kurse.currency }}
-                        </option>
+                      <select class="custom-select" id="currency">
+                        <option value="dollar">dollar</option>
+                        <option value="so'm">so'm</option>
                       </select>
 
                       <!-- input input-group end -->
@@ -199,9 +194,8 @@
                 v-model="birmartachiqim.currency_id"
                 class="custom-select"
               >
-                <option v-for="kurses in kurs" :key="kurses" :value="kurses.id">
-                  {{ kurses.currency }}
-                </option>
+                <option value="dollar">dollar</option>
+                <option value="so'm">so'm</option>
               </select>
             </div>
 
@@ -283,11 +277,13 @@
     </div>
     <!-- Modal end -->
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 <script>
 import { instance } from "../Api";
-
+import isloading from "../../Anime/Anime.vue"
 export default {
+  components: { isloading },
   data() {
     return {
       birmartachiqim: {
@@ -311,20 +307,25 @@ export default {
       editT: [],
       chiqimData: [],
       errorr: [],
+      isloading: false,
     };
   },
   methods: {
     birmartachiqimpost() {
+      this.isloading = true
       instance
         .post("pay_for_variable_expense", this.birmartachiqim)
         .then((response) => {
           // this.getData();
           console.log(response.data);
           window.location.reload();
-        });
+        }).finally(
+          this.isloading = false
+        )
     },
 
     doimiychiqimpost() {
+      this.isloading = true
       if (this.doimiychiqim.name == "") {
         alert("Formani to'ldiring");
       } else {
@@ -339,7 +340,9 @@ export default {
               this.errorr = alert("Qo'shildi");
               this.getData();
             }
-          });
+          }).finally(
+            this.isloading = false
+          )
       }
       if (this.doimiychiqim == "Bunday chiqim turi mavjud") {
         alert("Bunday chiqim turi mavjud");
@@ -355,11 +358,14 @@ export default {
               this.errorr = alert("Qo'shildi");
               this.getData();
             }
-          });
+          }).finally(
+            this.isloading = false
+          )
       }
     },
 
     chiqimidpost(id) {
+      this.isloading = true
       this.chiqimData = {
         price: Number(document.getElementById("price").value),
         currency_id: String(document.getElementById("currency").value),
@@ -369,24 +375,31 @@ export default {
       instance
         .post("pay_for_fixed_expense/" + id, this.chiqimData)
         .then((response) => {
-            // this.getData();
+          // this.getData();
           console.log(response.data);
           // window.location.reload();
-          
-        });
+        }).finally(
+          this.isloading = false
+        )
     },
 
     getcurrency() {
-      instance.get("all_currencies").then((response) => {
-        this.kurs = response.data;
-        console.log(response.data);
-      });
+      // this.isloading = true
+      // instance.get("all_currencies").then((response) => {
+      //   this.kurs = response.data;
+      //   console.log(response.data);
+      // }).finally(
+      //   this.isloading = false
+      // )
     },
     getData() {
+      this.isloading = true
       instance.get("all_fixed_expenses").then((response) => {
         this.cards = response.data;
         console.log(response.data);
-      });
+      }).finally(
+        this.isloading = false
+      )
     },
 
     editk(id, nomi) {
@@ -397,12 +410,15 @@ export default {
     },
 
     putData(id) {
+      this.isloading = true
       instance
         .put("update_this_fixed_expense/" + id, this.editT)
         .then((response) => {
           this.getData();
           window.location.reload();
-        });
+        }).finally(
+          this.isloading = false
+        )
     },
   },
   mounted() {

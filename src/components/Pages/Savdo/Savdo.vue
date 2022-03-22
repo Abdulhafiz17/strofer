@@ -69,7 +69,16 @@
                   </div>
                 </div>
                 <div class="card-body">
-                  <!-- <input class="form-control mb-1" id="searchInput" v-model="search" type="search" placeholder="Qidiruv"/> -->
+                  <div class="row">
+                    <div class="col-sm-5 mx-auto">
+                      <input
+                        type="search"
+                        class="form-control mb-2"
+                        v-model="search"
+                        placeholder="Qididruv"
+                      />
+                    </div>
+                  </div>
                   <div class="table-responsive text-center">
                     <table
                       class="table table-sm table-hover table-bordered"
@@ -85,7 +94,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="mahsulot in mahsulotlar" :key="mahsulot.id">
+                        <tr v-for="mahsulot in filteredRows" :key="mahsulot.id">
                           <td>
                             <b>{{ mahsulot.name }}</b>
                           </td>
@@ -97,8 +106,7 @@
                               Intl.NumberFormat({ style: "currency" }).format(
                                 mahsulot.selling_price
                               )
-                            }}
-                            {{ mahsulot.currency_id_for_sell }}
+                            }} so'm
                           </td>
                           <td>
                             {{ mahsulot.quantity }} {{ mahsulot.measure }}
@@ -137,6 +145,7 @@
                       <th>Brend</th>
                       <th>Hajm</th>
                       <th>Narx</th>
+                      <th>Jami</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -154,8 +163,14 @@
                           Intl.NumberFormat({ style: "currency" }).format(
                             mahsulot.narx
                           )
-                        }}
-                        {{ mahsulot.currency }}
+                        }} so'm
+                      </td>
+                      <td>
+                        {{
+                          Intl.NumberFormat({ style: "currency" }).format(
+                            mahsulot.narx * mahsulot.hajm
+                          )
+                        }} so'm
                       </td>
                       <td>
                         <button
@@ -177,14 +192,15 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
 import { instance } from "../Api";
 import swal from "sweetalert";
-// import { getButtonListOpts } from 'sweetalert/typings/modules/options/buttons';
-// import { setActionValue } from 'sweetalert/typings/modules/state';
+import isloading from "../../Anime/Anime.vue"
 export default {
+  components: { isloading },
   data() {
     return {
       role: localStorage.getItem("role"),
@@ -194,49 +210,55 @@ export default {
       tradesLength: 0,
       orderId: "",
       search: "",
+      isloading: false,
     };
   },
   methods: {
     getBuyurtma() {
+      this.isloading = true
       this.buyurtmalar = [];
       instance.get("all_orders/false").then((res) => {
         this.buyurtmalar = res.data;
         console.log(res.data);
-      });
+      })
+      .finally(this.isloading = false)
     },
     getMahsulotlar() {
+      this.isloading = true
       this.mahsulotlar = [];
       instance.get("all_categories").then((res) => {
         res.data.forEach((element) => {
           instance.get("all_products_for_trade/" + element.id).then((res) => {
+            console.log(res.data)
             res.data.forEach((e) => {
-              instance
-                .get("this_currency/" + e.currency_id_for_sell)
-                .then((res) => {
-                  e.currency_id_for_sell = res.data.currency;
-                  this.mahsulotlar.push(e);
-                });
+            this.mahsulotlar.push(e);
             });
           });
         });
-      });
+      })
+      .finally(this.isloading = false)
       console.log(this.mahsulotlar);
     },
     createOrder() {
+      this.isloading = true
       instance.post("create_order").then(() => {
         setTimeout(() => {
           this.getBuyurtma();
         }, 400);
-      });
+      })
+      .finally(this.isloading = false)
     },
     deleteOrder(id) {
+      this.isloading = true
       instance.delete("remove_this_order/" + id).then(() => {
         setTimeout(() => {
           this.getBuyurtma();
         }, 400);
-      });
+      })
+      .finally(this.isloading = false)
     },
     toTrade(mahsulot, order) {
+      this.isloading = true
       swal({
         title: mahsulot.name + " " + mahsulot.brand + " hajmini kiriting",
         closeOnClickOutside: false,
@@ -264,20 +286,27 @@ export default {
                 icon: "success",
                 title: "Mahsulot qo'shildi",
               }).then(() => {
-                console.log(res.data);
-                this.getMahsulotlar();
+                console.log(res.data)
+                this.getMahsulotlar()
+                this.isloading = false
               });
             }
-          });
+          })
+          .finally(this.isloading = false)
         } else if (value > mahsulot.quantity) {
           swal({
             icon: "warning",
             title: "Miqdor qoldiqdan katta bo'lmasligi kerak",
-          });
+          }).then(
+            this.isloading = false
+          )
+        } else {
+          this.isloading = false
         }
       });
     },
     getTrades(id) {
+      this.isloading = true
       this.buyurtmaMahsulotlar = [];
       instance.get("this_order_trades/" + id).then((res) => {
         this.tradesLength = res.data.length;
@@ -285,9 +314,6 @@ export default {
           instance
             .get("this_product/empty/" + element.product_code)
             .then((response) => {
-              instance
-                .get("this_currency/" + element.currency_id_for_sell)
-                .then((res) => {
                   let mahsulot = {
                     code: element.product_code,
                     name: response.data[0].name,
@@ -295,30 +321,36 @@ export default {
                     hajm: element.quantity,
                     olchov: response.data[0].measure,
                     narx: element.selling_price,
-                    currency: res.data.currency,
+                    currency: element.currency_id,
                   };
                   this.buyurtmaMahsulotlar.push(mahsulot);
-                });
             });
         });
         console.log(this.buyurtmaMahsulotlar);
-      });
+      })
+      .finally(this.isloading = false)
     },
     deleteTrade(code) {
+      this.isloading = true
       console.log(code, this.orderId);
       instance
         .delete("remove_this_trade/" + code + "/" + this.orderId)
         .then((res) => {
           console.log(res.data);
           this.getMahsulotlar();
-        });
+        })
+        .finally(this.isloading = false)
     },
   },
   computed: {
-    even: function (arr) {
-      // Set slice() to avoid to generate an infinite loop!
-      return arr.slice().sort(function (a, b) {
-        return a.position - b.position;
+    filteredRows: function () {
+      return this.mahsulotlar.filter((items) => {
+        for (let item in items) {
+          if (String(items[item]).toLowerCase().indexOf(this.search.toLowerCase()) !== -1) {
+            return true;
+          }
+        }
+        return false;
       });
     },
   },

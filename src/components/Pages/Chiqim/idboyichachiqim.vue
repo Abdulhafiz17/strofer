@@ -26,47 +26,50 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading" />
 </template>
 
 <script>
 import { instance } from "../Api";
-
-
-
+import isloading from "../../Anime/Anime.vue";
 export default {
+  components: { isloading },
   data() {
     return {
       idboyicha: [],
-
-
-      chiqim:{
+      chiqim: {
         narxi: null,
         valyuta: "",
         comment: "",
         sana: "",
-      }
+      },
+      isloading: false,
     };
   },
   methods: {
     getData() {
+      this.isloading = true
       instance
         .get("this_fixed_expense/" + this.$route.params.id)
         .then((response) => {
-          response.data.forEach(element => {
-            instance.get("this_currency/" + element.currency_id)
-            .then((res)=>{
-              this.chiqim = {
-                narxi: element.price,
-                valyuta: res.data.currency,
-                comment: element.comment,
-                sana: element.time.replace('T',' ')
-              }
-              this.idboyicha.push(this.chiqim)
-            })
+          response.data.forEach((element) => {
+            instance
+              .get("this_currency/" + element.currency_id)
+              .then((res) => {
+                this.chiqim = {
+                  narxi: element.price,
+                  valyuta: res.data.currency,
+                  comment: element.comment,
+                  sana: element.time.replace("T", " "),
+                };
+                this.idboyicha.push(this.chiqim);
+              })
           });
           // this.idboyicha = response.data;
           console.log(this.idboyicha);
-        });
+        }).finally(
+          this.isloading = false
+        )
     },
   },
   mounted() {

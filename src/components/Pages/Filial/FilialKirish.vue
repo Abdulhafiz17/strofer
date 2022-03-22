@@ -60,33 +60,43 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
 import { instance } from "../Api";
+import isloading from "../../Anime/Anime.vue"
 let filial
 export default {
+  components: { isloading },
   data() {
     return {
       role: localStorage.getItem("role"),
       branch_id: this.$route.params.id,
       filial: {},
       hodimlar: "",
+      isloading: false,
     };
   },
   methods: {
     getData() {
+      this.isloading = true
       instance.get("this_branch/" + this.branch_id).then((res) => {
         console.log(res.data)
         this.filial = res.data;
         this.map(res.data.lat, res.data.long)
-      });
+      }).finally(
+        this.isloading = false
+      )
 
+      this.isloading = true
       instance
         .get("branch_users/" + this.branch_id + "/unblock")
         .then((res) => {
           this.hodimlar = res.data.length;
-        });
+        }).finally(
+          this.isloading = false
+        )
     },
 
     shareToHodimlar() {
@@ -94,6 +104,7 @@ export default {
     },
 
     map(lat, long) {
+      this.isloading = true
       console.log(lat, long)
       ymaps.ready(init);
       function init() {
@@ -109,6 +120,7 @@ export default {
           });
         myMap.geoObjects.add(myGeoObject);
       }
+      this.isloading = false
     },
   },
   mounted() {

@@ -1,109 +1,93 @@
 <template>
-  <div class="content2" v-if="isloading">
-    <div class="img-content2">
-      <center>
-        <img class="img1" src="../../assets/Qora.png" alt="Qora" />
-        <img class="img2" src="../../assets/qizil.png" alt="Qizil" />
-      </center>
-    </div>
+  <div class="page-loader" v-if="isloading">
+    <div id="loader"></div>
   </div>
 </template>
 
 <script>
 export default {
+  name: "Isloading",
   props: {
     isloading: Boolean,
   },
 };
 </script>
 
-<style>
-.content2 {
-  background: rgba(205, 205, 239, 0.4);
+<style scoped>
+.page-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
-  width: 100%;
-  height: 100vh;
   top: 0;
   left: 0;
-  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  background:  rgba(255,255,255,0.7);
+  z-index: 999;
 }
 
-.img-content2 {
-  position: fixed;
-  top: 35%;
-  left: 45%;
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 120px;
+  height: 120px;
+  margin: -76px 0 0 -76px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid var(--success);
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
 }
 
-.img1 {
-  width: 90px;
-  margin-top: 60px;
-  position: fixed;
-  animation: qora 1700ms infinite ease-in alternate;
-}
-
-.img2 {
-  width: 160px;
-  position: fixed;
-  animation: qizil 1700ms infinite ease-in;
-}
-
-@media screen and (max-width: 660px) {
-  .img-content2 {
-    position: fixed;
-    left: 43%;
-  }
-}
-@media screen and (max-width: 550px) {
-  .img-content2 {
-    position: fixed;
-    left: 41.8%;
-  }
-}
-@media screen and (max-width: 480px) {
-  .img-content2 {
-    position: fixed;
-    left: 41%;
-  }
-}
-@media screen and (max-width: 390px) {
-  .img-content2 {
-    position: fixed;
-    left: 35%;
-  }
-}
-
-@keyframes qizil {
+@-webkit-keyframes spin {
   0% {
-    transform: scale(1.3);
-  }
-  25% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.3);
-  }
-  75% {
-    transform: scale(1);
+    -webkit-transform: rotate(0deg);
   }
   100% {
-    transform: scale(1.3);
+    -webkit-transform: rotate(360deg);
   }
 }
-@keyframes qora {
+
+@keyframes spin {
   0% {
-    transform: scale(1);
-  }
-  25% {
-    transform: scale(1.15);
-  }
-  50% {
-    transform: scale(1);
-  }
-  75% {
-    transform: scale(1.15);
+    transform: rotate(0deg);
   }
   100% {
-    transform: scale(1);
+    transform: rotate(360deg);
+  }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s;
+}
+
+@-webkit-keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0px;
+    opacity: 1;
+  }
+}
+
+@keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
   }
 }
 </style>

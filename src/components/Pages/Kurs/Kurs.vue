@@ -267,12 +267,14 @@
       </div>
     </div> -->
   </div>
+  <isloading :isloading="isloading" />
 </template>
 
 <script>
-import axios from "axios";
+import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 export default {
+  components: { isloading },
   data() {
     return {
       yangikurs: {
@@ -286,31 +288,40 @@ export default {
       search: "",
       kurslar: [],
       editT: [],
+      isloading: false,
     };
   },
   methods: {
     postData() {
-      instance.post("currency_create", this.yangikurs).then((response) => {
-        this.getData();
-        console.log(response.data);
-        if (response.data == "Bunday valyuta avval ham ro`yxatga olingan") {
-          this.error = "birxil";
-        } else {
-          this.error = "";
-
-          if (response.data == "success") {
-            this.error = "birxilpost";
+      this.isloading = true;
+      instance
+        .post("currency_create", this.yangikurs)
+        .then((response) => {
+          this.getData();
+          console.log(response.data);
+          if (response.data == "Bunday valyuta avval ham ro`yxatga olingan") {
+            this.error = "birxil";
           } else {
             this.error = "";
+
+            if (response.data == "success") {
+              this.error = "birxilpost";
+            } else {
+              this.error = "";
+            }
           }
-        }
-      });
+        })
+        .finally((this.isloading = false));
     },
 
     getData() {
-      instance.get("all_currencies").then((response) => {
-        this.kurslar = response.data;
-      });
+      this.isloading = true;
+      instance
+        .get("all_currencies")
+        .then((response) => {
+          this.kurslar = response.data;
+        })
+        .finally((this.isloading = false));
     },
 
     edit(valyuta, narx, id) {
@@ -322,6 +333,7 @@ export default {
     },
 
     putData(id) {
+      this.isloading = true;
       instance
         .put("this_currency_update/" + id, this.editT)
         .then((response) => {
@@ -335,7 +347,8 @@ export default {
           if (response.data == "Bunday valyuta mavjud") {
             this.error = "birxilget";
           }
-        });
+        })
+        .finally((this.isloading = false));
     },
   },
   mounted() {
@@ -345,5 +358,4 @@ export default {
 </script>
 
 <style>
-/* "https://oqsaroy.crud.uz/hodim/update */
 </style>

@@ -301,16 +301,16 @@
         </div>
       </div>
     </div>
-    <Anime :isloading="isloading" />
+    <isloading :isloading="isloading" />
   </div>
 </template>
 
 <script>
 import { instance } from "../Api";
-import Anime from "../../Anime/Anime.vue";
+import isloading from "../../Anime/Anime.vue";
 import swal from "sweetalert";
 export default {
-  components: { Anime },
+  components: { isloading },
   data() {
     return {
       branch_id: "",
@@ -339,6 +339,7 @@ export default {
   },
   methods: {
     postData() {
+      this.isloading = true
       if (this.role == "admin") {
         this.branch_id = this.$route.params.id;
       }
@@ -370,10 +371,13 @@ export default {
             });
           }
         }
-      });
+      }).finally(
+        this.isloading = false
+      )
     },
 
     getData() {
+      this.isloading = true
       if (this.role == "admin") {
         this.branch_id = this.$route.params.id;
       }
@@ -384,10 +388,9 @@ export default {
         .get("branch_users/" + this.branch_id + "/unblock")
         .then((res) => {
           this.hodimlar = res.data;
-        })
-        .finally
-        // this.isLoading = false
-        ();
+        }).finally(
+          this.isloading = false
+        )
     },
     edit(hodim) {
       this.editHodim = {
@@ -402,22 +405,28 @@ export default {
       console.log(this.editHodim);
     },
     editPost(id) {
+      this.isloading = true
       instance.put("this_user_update/" + id, this.editHodim).then((res) => {
         console.log(res.data);
         if (res.status == 200) {
           window.location.reload();
           // document.$("#exampleModal").modal("hide")
         }
-      });
+      }).finally(
+        this.isloading = false
+      )
     },
     block(id) {
+      this.isloading = true
       instance.put("this_user_block/" + id).then((res) => {
         console.log(res.data);
         if (res.status == 200) {
           // window.location.reload();
           this.getData();
         }
-      });
+      }).finally(
+        this.isloading = false
+      )
     },
   },
   computed: {

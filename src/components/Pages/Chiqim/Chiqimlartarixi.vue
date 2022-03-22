@@ -31,29 +31,30 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading"/>
 </template>
 
 <script>
 import { instance } from "../Api";
 import _ from "underscore";
-
+import isloading from "../../Anime/Anime.vue"
 export default {
+  components: { isloading },
   data() {
     return {
       chiqimtarixi: [],
-
       chiqimtarix: {
         narxi: null,
         valyuta: "",
         comment: "",
       },
-
-      
+      isloading: false
     };
   },
 
   methods: {
     getData() {
+      this.isloading = true
       instance.get("variable_expenses").then((response) => {
         response.data.forEach((element) => {
           instance.get("this_currency/" + element.currency_id).then((res) => {
@@ -70,7 +71,9 @@ export default {
         // window.location.reload(this.getData)
         // this.chiqimtarixi = response.data;
         console.log(response.data);
-      });
+      }).finally(
+        this.isloading = false
+      )
     },
   },
   mounted() {
