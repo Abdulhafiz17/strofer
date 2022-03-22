@@ -47,7 +47,7 @@
                           mahsulotlar.price
                         )
                       }}
-                      so'm
+                      {{ mahsulotlar.currency_id }}
                     </td>
                     <td>
                       {{
@@ -55,7 +55,7 @@
                           mahsulotlar.selling_price
                         )
                       }}
-                      so'm
+                      {{ mahsulotlar.currency_id_for_sell }}
                     </td>
                     <td>
                       {{
@@ -63,12 +63,12 @@
                           mahsulotlar.final_price
                         )
                       }}
-                      so'm
+                      {{ mahsulotlar.currency_id_for_sell }}
                     </td>
-                    <td v-if="mahsulotlar.quantity_note &gt; mahsulotlar.quantity" class="bg-danger">{{ mahsulotlar.quantity }}</td>
-                    <td v-else-if="mahsulotlar.quantity_note == mahsulotlar.quantity" class="bg-warning">{{ mahsulotlar.quantity }}</td>
-                    <td v-else>{{ mahsulotlar.quantity }}</td>
-                    <td>{{ mahsulotlar.quantity_note }}</td>
+                    <td v-if="mahsulotlar.quantity_note &gt; mahsulotlar.quantity" class="bg-danger">{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
+                    <td v-else-if="mahsulotlar.quantity_note == mahsulotlar.quantity" class="bg-warning">{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
+                    <td v-else>{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
+                    <td>{{ mahsulotlar.quantity_note }} {{ mahsulotlar.measure }} </td>
                     <td>
                       <span v-if="mahsulotlar.kpi">
                         <span v-if="mahsulotlar.kpi.percent == 0">
@@ -409,6 +409,7 @@ export default {
                 category_id: element.category_id,
                 selling_price: element.selling_price,
                 final_price: element.final_price,
+                currency_id: element.currency_id,
                 currency_id_for_sell: element.currency_id_for_sell,
                 quantity: element.quantity,
                 quantity_note: element.quantity_note,
@@ -446,6 +447,7 @@ export default {
         category_id: mahsulot.category_id,
         selling_price: mahsulot.selling_price,
         final_price: mahsulot.final_price,
+        currency_id: mahsulot.currency_id,
         currency_id_for_sell: mahsulot.currency_id_for_sell,
         quantity_note: mahsulot.quantity_note,
         measure: mahsulot.measure,

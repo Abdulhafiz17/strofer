@@ -345,6 +345,7 @@
                       <div class="p-2">
                         <input
                           type="date"
+                          id="date"
                           class="form-control form-control-sm"
                           required
                         />
@@ -532,14 +533,9 @@ export default {
     },
     payToCass(naxt, plastik) {
       this.isloading = true
-      let date = new Date();
+      // let date = new Date();
       let new_loan = {
-        return_date:
-          date.getDate() +
-          "-" +
-          (date.getMonth() + 1) +
-          "-" +
-          date.getFullYear(),
+        return_date: document.querySelector("#date").value
       };
 
       if (this.client == true && this.client_id == "") {
@@ -559,33 +555,34 @@ export default {
         } else {
           new_incomes.push(naxt, plastik)
         }
-        console.log(new_incomes)
-        // instance
-        //   .post("order_confirmation/" + this.orderId + "/unknown", {new_incomes})
-        //   .then((res) => {
-        //     console.log(res.data);
-        //     if (res.data == null || res.data == "success") {
-        //       swal({
-        //         icon: "success",
-        //         title: "Savdo tugatildi",
-        //         timer: 1500,
-        //       }).then(
-        //         window.location.reload()
-        //       )
-        //     }
-        //   }).finally(
-        //     this.isloading = false
-        //   )
+        instance
+          .post("order_confirmation/" + this.orderId + "/unknown", {new_incomes, new_loan})
+          .then((res) => {
+            console.log(res.data);
+            if (res.data == null || res.data == "success") {
+              swal({
+                icon: "success",
+                title: "Savdo tugatildi",
+                timer: 1500,
+              }).then(
+                window.location.reload()
+              )
+            }
+          }).finally(
+            this.isloading = false
+          )
       } else {
         let new_incomes = [];
-        balance.forEach((element) => {
-          let cash = {
-            price: element.price,
-            currency_id: element.currency_id,
-          };
-          new_incomes.push(cash);
-        });
-        // console.log(new_incomes, new_loan)
+        if (naxt.price == 0 || naxt.price == null) {
+          new_incomes = []
+          new_incomes.push(plastik)
+        } else if (plastik.price == 0 || plastik.price == null) {
+          new_incomes = []
+          new_incomes.push(naxt)
+        } else {
+          new_incomes = []
+          new_incomes.push(naxt, plastik)
+        }
         instance
           .post(
             "order_confirmation/" + this.orderId + "/" + this.client_id,

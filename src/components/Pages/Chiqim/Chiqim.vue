@@ -378,14 +378,9 @@ export default {
           // this.getData();
           console.log(response.data);
           // window.location.reload();
-<<<<<<< HEAD
         }).finally(
           this.isloading = false
         )
-=======
-
-        });
->>>>>>> 1e1f2496675dbbe863e7edd275eec2ffa7ce7738
     },
 
     getcurrency() {

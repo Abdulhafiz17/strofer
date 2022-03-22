@@ -6,7 +6,7 @@
       data-toggle="dropdown"
     >
       <span class="fa fa-bell" style="color: white; font-size: 25px" />
-      <sup v-if="notice"> {{ notice }} </sup>
+      <sup> {{ notice }} </sup>
     </button>
     <ul class="dropdown-menu">
       <span>

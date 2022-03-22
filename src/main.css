@@ -95,13 +95,8 @@ option:focus {
 .input-group-text {
     width: 70px !important;
     border: 1px solid var(--success);
-    border-left: none;
     background: white;
     justify-content: center;
-}
-
-.input-group input {
-    border-right: none;
 }
 
 th {
