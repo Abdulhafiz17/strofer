@@ -11,8 +11,9 @@
               <input
                 type="search"
                 class="form-control"
-                v-model="search"
-                placeholder="Search"
+                 v-model="search"
+                
+                placeholder="Qidiruv"
               />
               <div class="input-group-append">
                 <span class="input-group-text">
@@ -343,6 +344,13 @@ export default {
           return false;
         });
       },
+    },
+  },
+  computed: {
+    filteredCards: function () {
+      return this.mijozget.filter((taminotchis) => {
+        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+      });
     },
   },
   mounted() {
