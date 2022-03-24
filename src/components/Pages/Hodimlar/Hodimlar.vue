@@ -11,7 +11,6 @@
               <input
                 type="text"
                 v-model="search"
-                @keyup="filteredCards"
                 class="form-control"
                 placeholder="Qidiruv"
               />
@@ -89,12 +88,18 @@
                         <span v-if="hodim.role == 'seller'"> Sotuvchi </span>
                       </td>
                     </tr>
+                    <tr>
+                      <th>
+                        <span class="fa fa-coins text-secondary"></span>
+                      </th>
+                      <td> {{ Intl.NumberFormat({style: "currency" }).format(hodim.balance.balance) }} so'm</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
               <div class="card-footer">
                 <div class="row d-flex justify-content-around">
-                  <div class="col-md-6" style="width: 118px">
+                  <div class="col-md" style="width: 84px">
                     <button
                       class="btn btn-block btn-outline-danger"
                       @click="block(hodim.id)"
@@ -102,12 +107,22 @@
                       <i class="fa fa-user-slash"></i>
                     </button>
                   </div>
-                  <div class="col-md-6" style="width: 118px">
-                    <router-link
-                      to="/kPITarixi"
-                      class="btn btn-block btn-outline-primary"
+                  <div class="col-md" style="width: 84px">
+                    <button
+                      class="btn btn-block btn-outline-success"
+                      data-toggle="modal"
+                      data-target="#payToUser"
+                      @click="(payUser.user_id = hodim.id)"
                     >
-                      <i class="fa fa-history"></i>
+                      <span class="fa fa-coins"/>
+                    </button>
+                  </div>
+                  <div class="col-md" style="width: 84px">
+                    <router-link
+                      :to="'/hodimHaqida/' + hodim.id"
+                      class="btn btn-block btn-outline-info"
+                    >
+                      <i class="fa fa-info"></i>
                     </router-link>
                   </div>
                 </div>
@@ -133,7 +148,7 @@
           <div class="modal-header">
             <h4 class="modal-title" id="exampleModallLabel">Hodim qo'shish</h4>
           </div>
-          <form id="form1" @submit.prevent="postData">
+          <form id="form1" @submit.prevent="postData()">
             <div class="modal-body">
               <div class="row mb-2">
                 <div class="col-md-6">
@@ -301,6 +316,54 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="payToUser">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4> Hodimga pul berish </h4>
+          </div>
+          <form @submit.prevent="payToUser(payUser)">
+          <div class="modal-body">
+            <div class="row mb-2">
+              <div class="input-group input-group-sm">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Summa"
+                  min="0"
+                  v-model="payUser.price"
+                  required
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    {{ payUser.currency_id }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-group">
+                <textarea
+                  type="textarea"
+                  class="form-control form-control-sm"
+                  placeholder="Izoh"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-primary">
+              <span class="far fa-circle-check"/> Tasdiqlash
+            </button>
+            <button class="btn btn-outline-danger" data-dismiss="modal">
+              <span class="far fa-circle-xmark"/> Bekor qilish
+            </button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <isloading :isloading="isloading" />
   </div>
 </template>
@@ -333,6 +396,12 @@ export default {
         role: "",
         branch_id: this.branch_id,
         phone: null,
+      },
+      payUser: {
+        user_id: "",
+        price: null,
+        currency_id: "so'm",
+        comment: "",
       },
       search: "",
     };
@@ -375,8 +444,8 @@ export default {
         this.isloading = false
       )
     },
-
     getData() {
+      this.hodimlar = []
       this.isloading = true
       if (this.role == "admin") {
         this.branch_id = this.$route.params.id;
@@ -386,8 +455,24 @@ export default {
       }
       instance
         .get("branch_users/" + this.branch_id + "/unblock")
-        .then((res) => {
-          this.hodimlar = res.data;
+        .then((response) => {
+          response.data.forEach((element) => {
+            instance.get("this_user_balances/" + element.id)
+            .then((res) => {
+              let hodim = {
+                id: element.id,
+                name: element.name,
+                username: element.username,
+                password: element.password_hash,
+                phone: element.phone,
+                role: element.role,
+                status: element.status,
+                token: element.token,
+                balance: res.data[0]
+              }
+              this.hodimlar.push(hodim)
+            })
+          })
         }).finally(
           this.isloading = false
         )
@@ -427,6 +512,15 @@ export default {
       }).finally(
         this.isloading = false
       )
+    },
+    payToUser(object) {
+      instance.post("pay_for_user/" + object.user_id, object)
+      .then((res) => {
+        console.log(res.data)
+        if (res.status == 200) {
+          window.location.reload()
+        }
+      })
     },
   },
   computed: {

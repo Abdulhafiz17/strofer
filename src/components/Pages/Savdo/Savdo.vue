@@ -11,7 +11,7 @@
               v-for="(tab, n) in buyurtmalar"
               :key="tab.id"
               :id="tab.id"
-              class="nav-link"
+              class="nav-link btn-sm"
               data-bs-toggle="tab"
               :href="'/#nav' + tab.id"
               type="button"
@@ -31,7 +31,7 @@
                 {{ tab.time.split("T", 2)[1] }}
               </center>
             </button>
-            <button class="btn" type="button" @click="createOrder()">
+            <button class="btn btn-sm" type="button" @click="createOrder()">
               <span class="fa fa-circle-plus text-success" />
             </button>
           </div>
@@ -70,13 +70,21 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
+                    <!-- <div class="col-sm-1"></div> -->
                     <div class="col-sm-5 mx-auto">
-                      <input
-                        type="search"
-                        class="form-control mb-2"
-                        v-model="search"
-                        placeholder="Qididruv"
-                      />
+                      <div class="input-group mb-2">
+                        <input
+                          type="search"
+                          class="form-control"
+                          v-model="search"
+                          placeholder="Qididruv"
+                        />
+                        <div class="input-group-append">
+                          <div class="input-group-text">
+                            <span class="fa fa-search"/>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="table-responsive text-center">
@@ -157,18 +165,18 @@
                       <td>{{ n + 1 }}</td>
                       <td>{{ mahsulot.name }}</td>
                       <td>{{ mahsulot.brand }}</td>
-                      <td>{{ mahsulot.hajm }} {{ mahsulot.olchov }}</td>
+                      <td>{{ mahsulot.quantity }} {{ mahsulot.measure }}</td>
                       <td>
                         {{
                           Intl.NumberFormat({ style: "currency" }).format(
-                            mahsulot.narx
+                            mahsulot.selling_price
                           )
                         }} so'm
                       </td>
                       <td>
                         {{
                           Intl.NumberFormat({ style: "currency" }).format(
-                            mahsulot.narx * mahsulot.hajm
+                            mahsulot.selling_price * mahsulot.quantity
                           )
                         }} so'm
                       </td>
@@ -176,7 +184,7 @@
                         <button
                           class="btn btn-sm btn-outline-danger"
                           @click="
-                            deleteTrade(mahsulot.code), getTrades(orderId)
+                            deleteTrade(mahsulot.code)
                           "
                         >
                           <span class="far fa-circle-xmark" />
@@ -207,139 +215,106 @@ export default {
       buyurtmalar: [],
       mahsulotlar: [],
       buyurtmaMahsulotlar: [],
-      tradesLength: 0,
       orderId: "",
       search: "",
       isloading: false,
     };
   },
   methods: {
-    getBuyurtma() {
+    getProducts() {
       this.isloading = true
-      this.buyurtmalar = [];
-      instance.get("all_orders/false").then((res) => {
-        this.buyurtmalar = res.data;
-        console.log(res.data);
+      this.mahsulotlar = []
+      instance.get("all_categories").then((response) => {
+        response.data.forEach((element) => {
+          instance.get("all_products_for_trade/" + element.id).then((respon) => {
+            respon.data.forEach((elemen) => {
+              this.mahsulotlar.push(elemen)
+            })
+          })
+        })
       })
-      .finally(this.isloading = false)
     },
-    getMahsulotlar() {
+    getOrders() {
       this.isloading = true
-      this.mahsulotlar = [];
-      instance.get("all_categories").then((res) => {
-        res.data.forEach((element) => {
-          instance.get("all_products_for_trade/" + element.id).then((res) => {
-            console.log(res.data)
-            res.data.forEach((e) => {
-            this.mahsulotlar.push(e);
-            });
-          });
-        });
+      instance.get("all_orders/false")
+      .then((response) => {
+        this.buyurtmalar = response.data
+        this.isloading = false
       })
-      .finally(this.isloading = false)
-      console.log(this.mahsulotlar);
+    },
+    deleteOrder(id) {
+      if (confirm("Ushbu buyurtma o'chirilsinmi ?")) {
+        this.isloading = true
+        instance.delete("remove_this_order/" + id)
+        .then((response) => {
+          this.buyurtmalar = response.data
+        }).finally(this.isloading = false)
+      } else {
+        this.isloading = false
+      }
     },
     createOrder() {
       this.isloading = true
-      instance.post("create_order").then(() => {
-        setTimeout(() => {
-          this.getBuyurtma();
-        }, 400);
+      instance.post("create_order")
+      .then((response) => {
+        this.buyurtmalar = response.data
+        this.isloading = false
       })
-      .finally(this.isloading = false)
     },
-    deleteOrder(id) {
-      this.isloading = true
-      instance.delete("remove_this_order/" + id).then(() => {
-        setTimeout(() => {
-          this.getBuyurtma();
-        }, 400);
-      })
-      .finally(this.isloading = false)
-    },
-    toTrade(mahsulot, order) {
-      this.isloading = true
+    toTrade(mahsulot, tab) {
+      // console.log(mahsulot, tab)
       swal({
-        title: mahsulot.name + " " + mahsulot.brand + " hajmini kiriting",
-        closeOnClickOutside: false,
-        closeOnEsc: false,
+        title: mahsulot.name + " hajmini belgilang",
         content: {
           element: "input",
           attributes: {
             type: "number",
-            class: "form-control",
-            placeholder: "Miqdor: " + mahsulot.measure,
             min: "0",
-            max: mahsulot.quantity,
-          },
-        },
+            placeholder: "Hajm: " + mahsulot.measure,
+          }
+        }
       }).then((value) => {
-        // console.log(mahsulot, order)
-        let product = {
-          product_code: mahsulot.product_code,
-          quantity: Number(value),
-        };
-        if (value > 0 && value < mahsulot.quantity) {
-          instance.post("to_trade/" + order.id, product).then((res) => {
-            if (res.status == 200) {
+        if (value < mahsulot.quantity) {
+          this.isloading = true
+          instance.post("to_trade/" + tab.id, {product_code: mahsulot.product_code, quantity: Number(value)}).then((response) => {
+            this.isloading = false
+            if (response.status == 200) {
+              this.mahsulotlar = response.data[response.data.length - 1].products
+              let mahsulotlar = response.data
+              this.sortProducts(mahsulotlar)
               swal({
                 icon: "success",
-                title: "Mahsulot qo'shildi",
-              }).then(() => {
-                console.log(res.data)
-                this.getMahsulotlar()
-                this.isloading = false
-              });
+                title: "Mahsulot qo'shildi"
+              })
             }
           })
-          .finally(this.isloading = false)
         } else if (value > mahsulot.quantity) {
           swal({
             icon: "warning",
-            title: "Miqdor qoldiqdan katta bo'lmasligi kerak",
-          }).then(
-            this.isloading = false
-          )
-        } else {
-          this.isloading = false
+            title: "Bu mahsulotda yetarli hajm mavjud emas !",
+            text: "Hajm : " + mahsulot.quantity + " " + mahsulot.measure
+          })
         }
-      });
-    },
-    getTrades(id) {
-      this.isloading = true
-      this.buyurtmaMahsulotlar = [];
-      instance.get("this_order_trades/" + id).then((res) => {
-        this.tradesLength = res.data.length;
-        res.data.forEach((element) => {
-          instance
-            .get("this_product/empty/" + element.product_code)
-            .then((response) => {
-                  let mahsulot = {
-                    code: element.product_code,
-                    name: response.data[0].name,
-                    brand: response.data[0].brand,
-                    hajm: element.quantity,
-                    olchov: response.data[0].measure,
-                    narx: element.selling_price,
-                    currency: element.currency_id,
-                  };
-                  this.buyurtmaMahsulotlar.push(mahsulot);
-            });
-        });
-        console.log(this.buyurtmaMahsulotlar);
       })
-      .finally(this.isloading = false)
     },
-    deleteTrade(code) {
+    sortProducts(mahsulotlar) {
       this.isloading = true
-      console.log(code, this.orderId);
-      instance
-        .delete("remove_this_trade/" + code + "/" + this.orderId)
-        .then((res) => {
-          console.log(res.data);
-          this.getMahsulotlar();
+      this.buyurtmaMahsulotlar = []
+      mahsulotlar.forEach((element) => {
+        instance.get("this_product/empty/" + element.product_code).then((response) => {
+          let mahsulot = {
+            code: response.data[0].product_code,
+            name: response.data[0].name,
+            brand: response.data[0].brand,
+            selling_price: response.data[0].selling_price,
+            quantity: element.quantity,
+            measure: response.data[0].measure,
+          }
+          this.buyurtmaMahsulotlar.push(mahsulot)
+          this.isloading = false
         })
-        .finally(this.isloading = false)
+      })
+      console.log(this.buyurtmaMahsulotlar)
     },
   },
   computed: {
@@ -355,8 +330,9 @@ export default {
     },
   },
   mounted() {
-    this.getBuyurtma();
-    this.getMahsulotlar();
+    console.clear()
+    this.getOrders()
+    this.getProducts()
   },
 };
 </script>

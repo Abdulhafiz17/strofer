@@ -36,8 +36,8 @@
         <div class="row">
           <div
             class="col-md-4 mt-3"
-            v-for="mijozgets in searchHandler"
-            :key="mijozgets"
+            v-for="mijozgets in mijozget"
+            :key="mijozgets.id"
           >
             <div class="card shadow">
               <div class="card-body">
@@ -336,13 +336,15 @@ export default {
     },
 
     computed: {
-      sorted() {
-        return this.mijozget ? _.sortBy(this.mijozget, "name") : [];
-      },
-      searchHandler() {
-        return this.mijozget.filter((u) => {
-          return u.name.toLowerCase().match(this.search.toLowerCase());
-        });
+      searchHandler: function () {
+      return this.mijozget.filter((items) => {
+        for (let item in items) {
+          if (String(items[item]).toLowerCase().indexOf(this.search.toLowerCase()) !== -1) {
+            return true;
+          }
+        }
+        return false;
+      });
       },
     },
   },
