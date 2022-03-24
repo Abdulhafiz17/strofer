@@ -41,47 +41,42 @@
           >
             <div class="card shadow">
               <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <h3 class="card-title">
-                      <h4>
-                        {{ mijozgets.name }}
-
+                <table class="table table-sm table-borderless">
+                  <tbody>
+                    <tr>
+                      <th><span class="fa fa-user text-secondary" /></th>
+                      <td>
+                        <strong>{{ mijozgets.name }}</strong>
+                      </td>
+                      <td>
                         <button
-                          class="btn btn-warning float-right btn-sm"
-                          data-toggle="modal"
-                          data-target="#example"
-                          @click="
-                            editk(
-                              mijozgets.id,
-                              mijozgets.name,
-                              mijozgets.phone,
-                              mijozgets.address,
-                              mijozgets.comment
-                            )
-                          "
+                          class="btn btn-sm btn-outline-warning float-right"
                         >
-                          <i class="fa fa-edit"></i>
+                          <span class="fa fa-edit" />
                         </button>
-                      </h4>
-                    </h3>
-                    <h4>
-                      Tel: +998{{ mijozgets.phone }} <br />
-                      Manzil: {{ mijozgets.address }} <br />
-                      Izoh: {{ mijozgets.comment }}
-                    </h4>
-                  </div>
-                </div>
-                <div class="col">
-                  <!-- <div class="card-footer">
-                    <a
-                      :href="'/mijozhaqida/' + mijozgets.id"
-                      class="btn btn-outline-success btn-block mt-3"
-                    >
-                      Mijoz haqida
-                    </a>
-                  
-                  </div> -->
+                      </td>
+                    </tr>
+                    <tr>
+                      <th><span class="fa fa-map-marker text-secondary" /></th>
+                      <td>{{ mijozgets.address }}</td>
+                    </tr>
+                    <tr>
+                      <th><span class="fa fa-phone text-secondary" /></th>
+                      <td>
+                        <a :href="'tel:+998' + mijozgets.phone"
+                          >+998{{ mijozgets.phone }}</a
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="card-footer">
+                  <a
+                    :href="'/mijozhaqida/' + mijozgets.id"
+                    class="btn btn-outline-info btn-block mt-3"
+                  >
+                    <span class="fa fa-info" /> Mijoz haqida
+                  </a>
                 </div>
               </div>
             </div>
@@ -303,7 +298,6 @@ export default {
         console.log(response.data);
         this.getData();
         window.location.reload();
-       
       });
     },
 
@@ -311,7 +305,6 @@ export default {
       instance.get("all_customers").then((response) => {
         this.mijozget = response.data;
         console.log(response.data);
-        
       });
     },
 
@@ -337,14 +330,18 @@ export default {
 
     computed: {
       searchHandler: function () {
-      return this.mijozget.filter((items) => {
-        for (let item in items) {
-          if (String(items[item]).toLowerCase().indexOf(this.search.toLowerCase()) !== -1) {
-            return true;
+        return this.mijozget.filter((items) => {
+          for (let item in items) {
+            if (
+              String(items[item])
+                .toLowerCase()
+                .indexOf(this.search.toLowerCase()) !== -1
+            ) {
+              return true;
+            }
           }
-        }
-        return false;
-      });
+          return false;
+        });
       },
     },
   },

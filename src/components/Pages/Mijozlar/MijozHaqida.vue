@@ -1,6 +1,5 @@
 <template>
 <div class="container-fluid">
-  
     <div class="card shadow">
       <div class="card-header"><h3>Mijoz haqida</h3></div>
       <div class="card-body">
@@ -9,7 +8,7 @@
             <div class="card shadow mb-4">
               <div class="card-header">
                 <h4 class="card-title">
-                  <span class="fas fa-coins"></span> To'lovlar tarixi
+                  <span class="fas fa-coins"></span> Nasiyalar tarixi
                 </h4>
               </div>
               <div class="card-body">
@@ -33,13 +32,6 @@
                     </tbody>
                   </table>
                 </div>
-              </div>
-              <div class="text-center mb-2">
-                <a href="#" class="blocks">&laquo;</a>
-                <a href="#" class="blocks">1</a>
-                <a href="#" class="blocks">2</a>
-                <a href="#" class="blocks">3</a>
-                <a href="#" class="blocks">&raquo;</a>
               </div>
             </div>
           </div>
@@ -74,18 +66,42 @@
                   </table>
                 </div>
               </div>
-              <div class="text-center mb-2">
-                <a href="#" class="blocks">&laquo;</a>
-                <a href="#" class="blocks">1</a>
-                <a href="#" class="blocks">2</a>
-                <a href="#" class="blocks">3</a>
-                <a href="#" class="blocks">&raquo;</a>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>   
+  </div>
+  <isloading :isloading="isloading"/>
 </template>
 
+<script>
+import { instance } from '../Api'
+import isloading from "../../Anime/Anime.vue"
+export default {
+  components: { isloading },
+  data() {
+    return {
+      isloading: false,
+    }
+  },
+  methods: {
+    getData() {
+      this.isloading = true
+      instance.get("this_customer_orders/" + this.$route.params.id).then((response) => {
+        console.log(response.data)
+        this.isloading = false
+      })
+
+      isloading = true
+      instance.get("this_customer_loans/" + this.$route.params.id).then((response) => {
+        console.log(response.data)
+      })
+    },
+  },
+  mounted() {
+    console.clear()
+    this.getData()
+  },
+}
+</script>

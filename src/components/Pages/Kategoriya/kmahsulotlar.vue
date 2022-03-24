@@ -36,6 +36,9 @@
                   <tr
                     v-for="(mahsulotlar, idx) in mahsulotlars"
                     :key="mahsulotlar"
+                    data-toggle="modal"
+                    data-target="#code"
+                    @click="code(mahsulotlar.code)"
                   >
                     <th scope="row">{{ idx + 1 }}</th>
                     <td>{{ mahsulotlar.code }}</td>
@@ -65,10 +68,26 @@
                       }}
                       {{ mahsulotlar.currency_id_for_sell }}
                     </td>
-                    <td v-if="mahsulotlar.quantity_note &gt; mahsulotlar.quantity" class="bg-danger">{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
-                    <td v-else-if="mahsulotlar.quantity_note == mahsulotlar.quantity" class="bg-warning">{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
-                    <td v-else>{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
-                    <td>{{ mahsulotlar.quantity_note }} {{ mahsulotlar.measure }} </td>
+                    <td
+                      v-if="mahsulotlar.quantity_note &gt; mahsulotlar.quantity"
+                      class="bg-danger"
+                    >
+                      {{ mahsulotlar.quantity }} {{ mahsulotlar.measure }}
+                    </td>
+                    <td
+                      v-else-if="
+                        mahsulotlar.quantity_note == mahsulotlar.quantity
+                      "
+                      class="bg-warning"
+                    >
+                      {{ mahsulotlar.quantity }} {{ mahsulotlar.measure }}
+                    </td>
+                    <td v-else>
+                      {{ mahsulotlar.quantity }} {{ mahsulotlar.measure }}
+                    </td>
+                    <td>
+                      {{ mahsulotlar.quantity_note }} {{ mahsulotlar.measure }}
+                    </td>
                     <td>
                       <span v-if="mahsulotlar.kpi">
                         <span v-if="mahsulotlar.kpi.percent == 0">
@@ -333,12 +352,22 @@
     </div>
   </div>
   <!-- Modal put KPI end -->
+  <div class="modal fade" id="code">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img id="barcode"/>
+        </div>
+      </div>
+    </div>
+  </div>
   <isloading :isloading="isloading" />
 </template>
 
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
+import JsBarcode from "jsbarcode";
 export default {
   components: { isloading },
   data() {
@@ -416,7 +445,7 @@ export default {
                 kpi: res.data,
               };
               this.mahsulotlars.push(mahsulot);
-              this.isloading = false
+              this.isloading = false;
             });
           });
           console.log(this.mahsulotlars);
@@ -434,8 +463,8 @@ export default {
           console.log(response.data);
         })
         .finally((this.isloading = false));
-      
-      console.log(this.editT.kpi)
+
+      console.log(this.editT.kpi);
       // if (this.editT.kpi.currency_id == "percent") {
       //   (this.editT.kpi.percent = Number(this.editT.kpi.price)),
       //     (this.editT.kpi.price = 0),
@@ -443,10 +472,11 @@ export default {
       // } else {
       //   this.editT.kpi.percent = 0;
       // }
-      instance.put("this_kpi_update/" + this.editT.kpi.id,this.editT.kpi)
-      .then((res) => {
-        console.log(res.data)
-      })
+      instance
+        .put("this_kpi_update/" + this.editT.kpi.id, this.editT.kpi)
+        .then((res) => {
+          console.log(res.data);
+        });
     },
 
     editk(mahsulot) {
@@ -466,9 +496,18 @@ export default {
         kpi: mahsulot.kpi,
       };
     },
+
+    code(code) {
+      console.log(code)
+      JsBarcode("#barcode", code)
+      // document.querySelector("#code").JsBarcode(code)
+    },
   },
   mounted() {
     this.getData();
   },
 };
 </script>
+
+<style>
+</style>

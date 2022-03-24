@@ -346,6 +346,7 @@
                         <input
                           type="date"
                           id="date"
+                          v-model="new_loan"
                           class="form-control form-control-sm"
                           required
                         />
@@ -375,8 +376,6 @@
 import isloading from "../../Anime/Anime.vue"
 import { instance } from "../Api";
 import swal from "sweetalert";
-// import { getButtonListOpts } from 'sweetalert/typings/modules/options/buttons';
-// import { setActionValue } from 'sweetalert/typings/modules/state';
 export default {
   components: { isloading },
   data() {
@@ -385,7 +384,7 @@ export default {
       buyurtmalar: [],
       mahsulotlar: [],
       buyurtmaMahsulotlar: [],
-      balance: [],
+      balance: {},
       mijozlar: [],
       tradesLength: 0,
       orderId: "",
@@ -402,6 +401,7 @@ export default {
         comment: "plastik"
       },
       nasiyaSumma: 0,
+      new_loan: "",
     };
   },
   methods: {
@@ -461,8 +461,9 @@ export default {
     },
     getBalances(id) {
       this.isloading = true,
-      (this.balance = []),
+      (this.balance = {}),
         instance.get("this_order_balances/" + id).then((res) => {
+          console.log(res.data)
           this.balance = res.data[0]
           // res.data.forEach((element) => {
           //   instance
@@ -533,8 +534,8 @@ export default {
       this.isloading = true
       // let date = new Date();
       let new_loan = {
-        return_date: document.querySelector("#date").value
-      };
+        return_date: this.new_loan
+      }
 
       if (this.client == true && this.client_id == "") {
         swal({
@@ -557,7 +558,7 @@ export default {
           .post("order_confirmation/" + this.orderId + "/unknown", {new_incomes, new_loan})
           .then((res) => {
             console.log(res.data);
-            if (res.data == null || res.data == "success") {
+            if (res.data == null || res.data == "success" || res.data == []) {
               swal({
                 icon: "success",
                 title: "Savdo tugatildi",
@@ -588,7 +589,7 @@ export default {
           )
           .then((res) => {
             console.log(res.data);
-            if (res.data == null || res.data == "success") {
+            if (res.data == null || res.data == "success" || res.data == []) {
               swal({
                 icon: "success",
                 title: "Savdo tugatildi",
