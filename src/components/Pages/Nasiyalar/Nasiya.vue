@@ -16,7 +16,8 @@
             <thead>
               <tr>
                 <th scope="col">№</th>
-
+                <th scope="col">Mijoz ismi</th>
+                <th scope="col">Telefon raqami</th>                
                 <th scope="col">Miqdori</th>
                 <th scope="col">Sana</th>
                 <th scope="col">Qaytarish vaqti</th>
@@ -26,8 +27,10 @@
             <tbody>
               <tr v-for="(gets, idx) in get" :key="gets">
                 <th scope="row">{{ idx + 1 }}</th>
-                <td class="text-center col-md-4">{{ gets.price }}</td>
-                <td class="text-center col-md-4">{{ gets.time }}</td>
+                <th class="text-center col-md-3"></th>
+                <th class="text-center col-md-3"></th>
+                <td class="text-center col-md-3">{{ gets.price }}</td>
+                <td class="text-center col-md-3">{{ gets.time }}</td>
                 <td class="text-center col-md-4">{{ gets.return_date }}</td>
                 <td>
                   <button

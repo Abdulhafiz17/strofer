@@ -11,8 +11,9 @@
               <input
                 type="search"
                 class="form-control"
-                v-model="search"
-                placeholder="Search"
+                 v-model="search"
+                
+                placeholder="Qidiruv"
               />
               <div class="input-group-append">
                 <span class="input-group-text">
@@ -36,7 +37,7 @@
         <div class="row">
           <div
             class="col-md-4 mt-3"
-            v-for="mijozgets in searchHandler"
+            v-for="mijozgets in filteredCards"
             :key="mijozgets"
           >
             <div class="card shadow">
@@ -303,7 +304,6 @@ export default {
         console.log(response.data);
         this.getData();
         window.location.reload();
-       
       });
     },
 
@@ -311,7 +311,6 @@ export default {
       instance.get("all_customers").then((response) => {
         this.mijozget = response.data;
         console.log(response.data);
-        
       });
     },
 
@@ -344,6 +343,13 @@ export default {
           return u.name.toLowerCase().match(this.search.toLowerCase());
         });
       },
+    },
+  },
+  computed: {
+    filteredCards: function () {
+      return this.mijozget.filter((taminotchis) => {
+        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+      });
     },
   },
   mounted() {
