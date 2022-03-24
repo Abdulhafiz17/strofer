@@ -5,7 +5,7 @@
       style="box-shadow: none"
       data-toggle="dropdown"
     >
-      <span class="fa fa-bell" style="color: white; font-size: 25px" />
+      <span class="fa fa-bell" style="color: white; font-size: 15px" />
       <sup> {{ notice }} </sup>
     </button>
     <ul class="dropdown-menu">

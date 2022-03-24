@@ -8,7 +8,12 @@
           </div>
 
           <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="qidiruv" />
+            <input
+              type="text"
+              class="form-control"
+              placeholder="qidiruv"
+              v-model="search"
+            />
           </div>
         </div>
         <div class="card-body">
@@ -16,8 +21,7 @@
             <thead>
               <tr>
                 <th scope="col">№</th>
-                <th scope="col">Mijoz ismi</th>
-                <th scope="col">Telefon raqami</th>                
+                <th scope="col">Mijoz</th>
                 <th scope="col">Miqdori</th>
                 <th scope="col">Sana</th>
                 <th scope="col">Qaytarish vaqti</th>
@@ -25,18 +29,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(gets, idx) in get" :key="gets">
+              <tr v-for="(gets, idx) in filterRow" :key="gets">
                 <th scope="row">{{ idx + 1 }}</th>
-                <th class="text-center col-md-3"></th>
-                <th class="text-center col-md-3"></th>
-                <td class="text-center col-md-3">{{ gets.price }}</td>
+                <td class="text-center col-md-3">{{ gets.customer }}</td>
+                <td class="text-center col-md-3">
+                  {{
+                    Intl.NumberFormat({ style: "currency" }).format(gets.price)
+                  }}
+                  so'm
+                </td>
                 <td class="text-center col-md-3">{{ gets.time }}</td>
-                <td class="text-center col-md-4">{{ gets.return_date }}</td>
+                <td class="text-center col-md-3">{{ gets.return_date }}</td>
                 <td>
                   <button
                     class="btn btn-outline-success float-right btn-sm mr-2"
                     data-toggle="modal"
                     data-target="#exampleModal"
+                    @click="loan_id = gets.id"
                   >
                     <i class="fa fa-coins"></i>
                   </button>
@@ -60,7 +69,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Post</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Nasiyani to'lash</h5>
           <button
             type="button"
             class="close"
@@ -70,27 +79,42 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <label>Narx</label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="narxni kiriting"
-            v-model="post.price"
-          />
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-success" @click.prevent="postData">
-            Tasdiqlash
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline-danger"
-            data-dismiss="modal"
-          >
-            Bekok qilish
-          </button>
-        </div>
+        <form @submit.prevent="payToLoan(loan_id)">
+          <div class="modal-body">
+            <label>Narx</label>
+            <div class="input-group mb-2">
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Summani kiriting"
+                v-model="post.price"
+              />
+              <div class="input-group-append">
+                <div class="input-group-text">so'm</div>
+              </div>
+            </div>
+            <textarea
+              class="form-control"
+              placeholder="Izoh"
+              v-model="post.comment"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="submit"
+              class="btn btn-outline-success"
+            >
+              Tasdiqlash
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              data-dismiss="modal"
+            >
+              Bekor qilish
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -106,21 +130,50 @@ export default {
       get: [],
       post: {
         price: null,
+        comment: "",
       },
+      loan_id: "",
+      search: "",
     };
   },
   methods: {
-    postData(id) {
-      instance.post("pay_to_loan/" + id, this.post).then((response) => {
-        console.log(response.data);
-       
+    getData() {
+      this.get = [];
+      instance.get("all_loans").then((response) => {
+        response.data.forEach((element) => {
+          instance.get("this_customer/" + element.customer_id).then((res) => {
+            let loan = {
+              id: element.id,
+              customer: res.data.name,
+              price: element.price,
+              return_date: element.return_date,
+              time: element.time.replace("T", " "),
+            };
+            this.get.push(loan);
+          });
+        });
+        console.log(this.get);
       });
     },
-
-    getData() {
-      instance.get("all_loans").then((response) => {
-        this.get = response.data;
-        console.log(response.data);
+    payToLoan(id) {
+      instance.post("pay_to_loan/" + id, this.post).then(() => {
+        window.location.reload()
+      });
+    },
+  },
+  computed: {
+    filterRow: function () {
+      return this.get.filter((items) => {
+        for (let item in items) {
+          if (
+            String(items[item])
+              .toLowerCase()
+              .indexOf(this.search.toLowerCase()) !== -1
+          ) {
+            return true;
+          }
+        }
+        return false;
       });
     },
   },

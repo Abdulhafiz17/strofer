@@ -21,11 +21,17 @@ const routes = [
   },
 
   {
-  path: "/hodimlar/:id",
-    meta: { requiresAuth: true },
-    name: "Hodimlar",
-    component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
-  },
+    path: "/hodimlar/:id",
+      meta: { requiresAuth: true },
+      name: "Hodimlar",
+      component: () => import("../components/Pages/Hodimlar/Hodimlar.vue"),
+    },
+    {
+    path: "/hodimHaqida/:id",
+      meta: { requiresAuth: true },
+      name: "HodimHaqida",
+      component: () => import("../components/Pages/Hodimlar/HodimHaqida.vue"),
+    },
   {
     path: "/blocklanganHodimlar/:id",
     meta: { requiresAuth: true },

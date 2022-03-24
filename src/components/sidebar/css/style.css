@@ -36,7 +36,6 @@
 .sidebar-link {
   margin-top: 85px;
   padding-left: 8px;
-  padding-right: 3px;
 }
 
 :root {
@@ -53,12 +52,8 @@
   position: relative;
   font-weight: 400;
   user-select: none;
-  margin: 0.1em 0;
-  /* padding: 0.6em; */
-  /* height: 1.5em; */
   color: #6c7383;
   text-decoration: none;
-  /* padding: 1.6rem; */
   font-size: 14px;
 }
 

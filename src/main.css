@@ -191,7 +191,7 @@ li {
 
 .my-custom-scrollbar {
     position: relative;
-    height: 50vh;
+    max-height: 50vh;
     overflow: auto;
 }
 

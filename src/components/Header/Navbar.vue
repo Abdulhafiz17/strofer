@@ -27,28 +27,8 @@
       </div>
     </div>
 
-    <div class="input-group input-group-sm w-25 mx-auto">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-          <strong> 1 </strong> $ =
-        </div>
-      </div>
-      <input
-        type="number"
-        class="form-control text-center"
-        placeholder="Dollar kursi"
-        v-model="valyuta.price"
-      />
-      <div class="input-group-append">
-        <div class="input-group-text">
-          so'm
-        </div>
-      </div>
-    </div>
-
     <div class="inline-block d-flex justify-content-between align-items-center">
-
-      <Notificaion/>
+      <Notificaion />
 
       <Toggle :mode="mode" @toggle="$emit('toggle')" />
 
@@ -62,13 +42,10 @@
 <script>
 import Toggle from "@/components/Mode/Toggle.vue";
 import { collapsed, toggleSidebar } from "@/components/sidebar/state";
-import Notificaion from './Notificaion.vue';
-import { instance } from '../Pages/Api';
+import Notificaion from "./Notificaion.vue";
 export default {
   data() {
-    return {
-      valyuta: {},
-    };
+    return {};
   },
 
   methods: {
@@ -76,15 +53,6 @@ export default {
       localStorage.removeItem("access_token");
       this.$router.push("/");
     },
-    getData() {
-      instance.get("this_currency/dollar")
-      .then((res) => {
-        this.valyuta = res.data
-      })
-    },
-  },
-  mounted() {
-    this.getData();
   },
 
   props: ["mode"],

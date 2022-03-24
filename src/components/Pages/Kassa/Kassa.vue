@@ -454,7 +454,6 @@ export default {
               this.buyurtmaMahsulotlar.push(mahsulot);
             });
         });
-        console.log(this.buyurtmaMahsulotlar);
       }).finally(
         this.getBalances(this.orderId),
         this.isloading = false
@@ -473,7 +472,6 @@ export default {
           //       };
           //       this.balance.push(buyurtmaBalance);
           // });
-          console.log(this.balance)
         }).finally(
           this.isloading = false
         )

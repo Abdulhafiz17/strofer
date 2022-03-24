@@ -270,7 +270,6 @@
                 v-model="kpi.currency_id"
               >
                 <option value="so'm">so'm</option>
-                <option value="dollar">dollar</option>
                 <option value="percent">%</option>
               </select>
             </div>
@@ -435,6 +434,19 @@ export default {
           console.log(response.data);
         })
         .finally((this.isloading = false));
+      
+      console.log(this.editT.kpi)
+      // if (this.editT.kpi.currency_id == "percent") {
+      //   (this.editT.kpi.percent = Number(this.editT.kpi.price)),
+      //     (this.editT.kpi.price = 0),
+      //     (this.editT.kpi.currency_id = "string");
+      // } else {
+      //   this.editT.kpi.percent = 0;
+      // }
+      instance.put("this_kpi_update/" + this.editT.kpi.id,this.editT.kpi)
+      .then((res) => {
+        console.log(res.data)
+      })
     },
 
     editk(mahsulot) {

@@ -94,7 +94,7 @@
               </div>
               <div class="card-footer text-center">
                 <div class="row d-flex justify-content-around">
-                  <div class="col-md-4" style="width: 80px">
+                  <div class="col-md" style="width: 80px">
                     <router-link
                       class="btn btn-block btn-outline-success mt-2"
                       :to="'/taminotOlish/' + taminotchi.id"
@@ -102,7 +102,7 @@
                       <span class="fa fa-box"></span>
                     </router-link>
                   </div>
-                  <div class="col-md-4" style="width: 80px">
+                  <div class="col-md" style="width: 80px">
                     <button
                       class="btn btn-block btn-outline-primary mt-2"
                       data-toggle="modal"
@@ -112,7 +112,7 @@
                       <span class="fa fa-coins"></span>
                     </button>
                   </div>
-                  <div class="col-md-4" style="width: 80px">
+                  <div class="col-md" style="width: 80px">
                     <router-link
                       class="btn btn-block btn-outline-warning mt-2"
                       :to="'/tarix/' + taminotchi.id"
