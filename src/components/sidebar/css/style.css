@@ -59,7 +59,7 @@
 
 .link {
   /* padding: 0.6rem; */
-  border-radius: 5px;
+  border-radius: 3px;
 }
 .link:hover {
   background-color: var(--sidebar-item-hover);

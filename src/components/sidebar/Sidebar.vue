@@ -41,10 +41,10 @@ export default {
           <p class="ripple">Kassa</p>
         </SidebarLink>
 
-        <SidebarLink to="/savdo" v-if="role === 'branch_admin'">
+        <!-- <SidebarLink to="/savdo" v-if="role === 'branch_admin'">
           <span class="fas fa-shopping-cart"></span>
           <p class="ripple">Savdo</p>
-        </SidebarLink>
+        </SidebarLink> -->
 
         <SidebarLink to="/filiallar" v-if="role === 'admin'">
           <span class="fas fa-code-branch"></span>

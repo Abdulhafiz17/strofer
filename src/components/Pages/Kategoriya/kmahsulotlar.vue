@@ -36,6 +36,9 @@
                   <tr
                     v-for="(mahsulotlar, idx) in filteredCards"
                     :key="mahsulotlar"
+                    data-toggle="modal"
+                    data-target="#code"
+                    @click="code(mahsulotlar)"
                   >
                     <th scope="row">{{ idx + 1 }}</th>
                     <td>{{ mahsulotlar.code }}</td>
@@ -65,10 +68,26 @@
                       }}
                       {{ mahsulotlar.currency_id_for_sell }}
                     </td>
-                    <td v-if="mahsulotlar.quantity_note &gt; mahsulotlar.quantity" class="bg-danger">{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
-                    <td v-else-if="mahsulotlar.quantity_note == mahsulotlar.quantity" class="bg-warning">{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
-                    <td v-else>{{ mahsulotlar.quantity }} {{ mahsulotlar.measure }} </td>
-                    <td>{{ mahsulotlar.quantity_note }} {{ mahsulotlar.measure }} </td>
+                    <td
+                      v-if="mahsulotlar.quantity_note &gt; mahsulotlar.quantity"
+                      class="bg-danger"
+                    >
+                      {{ mahsulotlar.quantity }} {{ mahsulotlar.measure }}
+                    </td>
+                    <td
+                      v-else-if="
+                        mahsulotlar.quantity_note == mahsulotlar.quantity
+                      "
+                      class="bg-warning"
+                    >
+                      {{ mahsulotlar.quantity }} {{ mahsulotlar.measure }}
+                    </td>
+                    <td v-else>
+                      {{ mahsulotlar.quantity }} {{ mahsulotlar.measure }}
+                    </td>
+                    <td>
+                      {{ mahsulotlar.quantity_note }} {{ mahsulotlar.measure }}
+                    </td>
                     <td>
                       <span v-if="mahsulotlar.kpi">
                         <span v-if="mahsulotlar.kpi.percent == 0">
@@ -333,12 +352,50 @@
     </div>
   </div>
   <!-- Modal put KPI end -->
+  <div class="modal fade" id="code">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body d-flex justify-content-center">
+          <div id="price">
+            <table class="table table-hover table-borderless" style="font-size: 25px">
+              <tbody>
+                <tr>
+                  <th> Mahsulot : </th>
+                  <td> {{ mahsulot.name }} </td>
+                </tr>
+                <tr>
+                  <th> Brend : </th>
+                  <td> {{ mahsulot.brand }} </td>
+                </tr>
+                <tr>
+                  <th> Narx : </th>
+                  <td> {{ Intl.NumberFormat({style: "currency" }).format(mahsulot.selling_price) }} {{ mahsulot.currency_id }} </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row">
+              <img 
+                id="barcode" 
+                class="col-md-10 mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-primary" @click="print()">
+            <span class="fa fa-print"/>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   <isloading :isloading="isloading" />
 </template>
 
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
+import JsBarcode from "jsbarcode";
 export default {
   components: { isloading },
   data() {
@@ -354,8 +411,12 @@ export default {
       editT: [],
       kpiget: [],
       isloading: false,
+<<<<<<< HEAD
       backgroun: null,
       search: "",
+=======
+      mahsulot: {},
+>>>>>>> 4513963627af3dae4cef7c6d4aaf8483fb0b0411
     };
   },
 
@@ -417,7 +478,7 @@ export default {
                 kpi: res.data,
               };
               this.mahsulotlars.push(mahsulot);
-              this.isloading = false
+              this.isloading = false;
             });
           });
           console.log(this.mahsulotlars);
@@ -435,8 +496,8 @@ export default {
           console.log(response.data);
         })
         .finally((this.isloading = false));
-      
-      console.log(this.editT.kpi)
+
+      console.log(this.editT.kpi);
       // if (this.editT.kpi.currency_id == "percent") {
       //   (this.editT.kpi.percent = Number(this.editT.kpi.price)),
       //     (this.editT.kpi.price = 0),
@@ -444,10 +505,11 @@ export default {
       // } else {
       //   this.editT.kpi.percent = 0;
       // }
-      instance.put("this_kpi_update/" + this.editT.kpi.id,this.editT.kpi)
-      .then((res) => {
-        console.log(res.data)
-      })
+      instance
+        .put("this_kpi_update/" + this.editT.kpi.id, this.editT.kpi)
+        .then((res) => {
+          console.log(res.data);
+        });
     },
 
     editk(mahsulot) {
@@ -467,8 +529,35 @@ export default {
         kpi: mahsulot.kpi,
       };
     },
+
+    code(mahsulot) {
+      this.mahsulot = mahsulot
+      JsBarcode("#barcode", mahsulot.code, {
+        height: 50,
+        width: 3,
+        displayValue: false,
+      })
+    },
+    print() {
+      let barcode = document.querySelector("#price").outerHTML
+      let windowPrint = window.open("_blank", "Barcode", "width=400; height=600")
+      windowPrint.document.write(
+        `
+            <head>
+              <title> Barcode </title>
+              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            </head>
+        ` + barcode 
+      )
+      windowPrint.print()
+      document.addEventListener("#price", (e) => {
+        ctrkay 
+      })
+    },
   },
   mounted() {
+    console.clear()
     this.getData();
   },
   computed: {
@@ -480,3 +569,23 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#price {
+  width: 350px;
+  height: 550px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid var(--success);
+  background: white;
+}
+
+#price * {
+  color: black !important;
+}
+
+#barcode {
+  width: 310px;
+  height: 100px;
+}
+</style>

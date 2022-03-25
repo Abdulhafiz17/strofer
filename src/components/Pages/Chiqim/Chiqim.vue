@@ -63,17 +63,18 @@
                     </h3>
                     <!-- input input-group -->
                     <div class="input-group">
-                      <input
-                        type="number"
-                        placeholder="summa"
-                        class="form-control"
-                        aria-label="Text input with segmented dropdown button"
-                        id="price"
-                      />
-                      <select class="custom-select" id="currency">
-                        <option value="dollar">dollar</option>
-                        <option value="so'm">so'm</option>
-                      </select>
+                      <div class="input-group">
+                        <input
+                          type="number"
+                          :id="'price' + card.id"
+                          placeholder="summa"
+                          class="form-control"
+                          aria-label="Text input with segmented dropdown button"
+                        />
+                        <div class="input-group-append">
+                          <div class="input-group-text">so'm</div>
+                        </div>
+                      </div>
 
                       <!-- input input-group end -->
                       <div class="input-group mt-3">
@@ -81,7 +82,7 @@
                           class="form-control"
                           aria-label="With textarea"
                           placeholder="izoh"
-                          id="comment"
+                          :id="'comment' + card.id"
                         ></textarea>
                       </div>
                     </div>
@@ -277,11 +278,12 @@
     </div>
     <!-- Modal end -->
   </div>
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" />
 </template>
 <script>
 import { instance } from "../Api";
-import isloading from "../../Anime/Anime.vue"
+import isloading from "../../Anime/Anime.vue";
+import swal from 'sweetalert';
 export default {
   components: { isloading },
   data() {
@@ -312,20 +314,19 @@ export default {
   },
   methods: {
     birmartachiqimpost() {
-      this.isloading = true
+      this.isloading = true;
       instance
         .post("pay_for_variable_expense", this.birmartachiqim)
         .then((response) => {
           // this.getData();
           console.log(response.data);
           window.location.reload();
-        }).finally(
-          this.isloading = false
-        )
+        })
+        .finally((this.isloading = false));
     },
 
     doimiychiqimpost() {
-      this.isloading = true
+      this.isloading = true;
       if (this.doimiychiqim.name == "") {
         alert("Formani to'ldiring");
       } else {
@@ -333,16 +334,12 @@ export default {
           .post("create_fixed_expense", this.doimiychiqim)
           .then((response) => {
             console.log(response.data);
-            this.getData();
-            // window.location.reload();
-
             if (response.data == "success") {
               this.errorr = alert("Qo'shildi");
               this.getData();
             }
-          }).finally(
-            this.isloading = false
-          )
+          })
+          .finally((this.isloading = false));
       }
       if (this.doimiychiqim == "Bunday chiqim turi mavjud") {
         alert("Bunday chiqim turi mavjud");
@@ -358,29 +355,29 @@ export default {
               this.errorr = alert("Qo'shildi");
               this.getData();
             }
-          }).finally(
-            this.isloading = false
-          )
+          })
+          .finally((this.isloading = false));
       }
     },
 
     chiqimidpost(id) {
-      this.isloading = true
-      this.chiqimData = {
-        price: Number(document.getElementById("price").value),
-        currency_id: String(document.getElementById("currency").value),
-        comment: String(document.getElementById("comment").value),
+      this.isloading = true;
+      this.chiqimid = {
+        price: Number(document.getElementById("price" + id).value),
+        currency_id: "so'm",
+        comment: String(document.getElementById("comment" + id).value),
       };
-      console.log(id, this.chiqimData);
+      console.log(id, this.chiqimid);
       instance
-        .post("pay_for_fixed_expense/" + id, this.chiqimData)
+        .post("pay_for_fixed_expense/" + id, this.chiqimid)
         .then((response) => {
-          // this.getData();
-          console.log(response.data);
-          // window.location.reload();
-        }).finally(
-          this.isloading = false
-        )
+          swal({
+            icon: "success",
+          })
+          document.getElementById("price" + id).value = null
+          document.getElementById("comment" + id).value = ""
+        })
+        .finally((this.isloading = false));
     },
 
     getcurrency() {
@@ -393,13 +390,14 @@ export default {
       // )
     },
     getData() {
-      this.isloading = true
-      instance.get("all_fixed_expenses").then((response) => {
-        this.cards = response.data;
-        console.log(response.data);
-      }).finally(
-        this.isloading = false
-      )
+      this.isloading = true;
+      instance
+        .get("all_fixed_expenses")
+        .then((response) => {
+          this.cards = response.data;
+          console.log(response.data);
+        })
+        .finally((this.isloading = false));
     },
 
     editk(id, nomi) {
@@ -410,18 +408,18 @@ export default {
     },
 
     putData(id) {
-      this.isloading = true
+      this.isloading = true;
       instance
         .put("update_this_fixed_expense/" + id, this.editT)
         .then((response) => {
           this.getData();
           window.location.reload();
-        }).finally(
-          this.isloading = false
-        )
+        })
+        .finally((this.isloading = false));
     },
   },
   mounted() {
+    console.clear()
     this.getData();
     this.getcurrency();
   },

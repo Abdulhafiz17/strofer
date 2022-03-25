@@ -148,7 +148,7 @@ const routes = [
   },
 
   {
-    path: "/mijozhaqida",
+    path: "/mijozhaqida/:id",
     meta: { requiresAuth: true },
     name: "MijozHaqida",
     component: () => import("../components/Pages/Mijozlar/MijozHaqida.vue"),
