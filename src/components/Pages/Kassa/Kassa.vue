@@ -424,10 +424,9 @@ export default {
     },
     deleteOrder(id) {
       this.isloading = true
-      instance.delete("remove_this_order/" + id).then(() => {
-        setTimeout(() => {
-          this.getBuyurtma();
-        }, 400);
+      this.buyurtmalar = []
+      instance.delete("remove_this_order/" + id).then((res) => {
+        this.buyurtmalar = res.data
       }).finally(
         this.isloading = false
       )

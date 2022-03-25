@@ -36,9 +36,6 @@
                   <tr
                     v-for="(mahsulotlar, idx) in mahsulotlars"
                     :key="mahsulotlar"
-                    data-toggle="modal"
-                    data-target="#code"
-                    @click="code(mahsulotlar)"
                   >
                     <th scope="row">{{ idx + 1 }}</th>
                     <td>{{ mahsulotlar.code }}</td>
@@ -96,7 +93,7 @@
                               mahsulotlar.kpi.price
                             )
                           }}
-                          {{ mahsulotlar.kpi.currency_id }}
+                          {{ mahsulotlar.kpi.currency_id }} so'm
                         </span>
                         <span v-else> {{ mahsulotlar.kpi.percent }} % </span>
                       </span>
@@ -109,6 +106,15 @@
                         @click="kpi.product_id = mahsulotlar.id"
                       >
                         <i class="fa fa-coins"></i>
+                      </button>
+
+                      <button 
+                        class="btn btn-outline-primary btn-sm"
+                        data-toggle="modal"
+                        data-target="#code"
+                        @click="code(mahsulotlar)"
+                      >
+                        <span class="fa fa-barcode"/>
                       </button>
 
                       <button

@@ -29,7 +29,7 @@
         <div class="row">
           <div
             class="col-md-4 mb-2"
-            v-for="taminotchi in filteredCards"
+            v-for="taminotchi in taminotchilar || []"
             :key="taminotchi"
           >
             <div class="card shadow">
@@ -323,7 +323,7 @@ export default {
         this.taminotchilar.forEach((element) => {
           instance.get("market_balances_all/" + element.id).then((res) => {
             element.balances = res.data
-            element.balances.forEach((balance) => {
+            res.data.forEach((balance) => {
               instance.get("this_currency/" + balance.currency_id)
               .then((res) => {
                 balance.currency_id = res.data.currency
@@ -381,25 +381,27 @@ export default {
         })
         .finally(this.isloading = false)
     },
-    render() {
-      window.location.reload(1);
-    },
   },
   computed: {
-    filteredCards: function () {
-      return this.taminotchilar.filter((items) => {
-        for (let item in items) {
-          if (String(items[item]).toLowerCase().indexOf(this.search.toLowerCase()) !== -1) {
-            return true;
-          }
-        }
-        return false;
-      });
-    },
+    // filteredCards: function () {
+    //   return this.taminotchilar.filter((taminotchi) => {
+    //     return taminotchi.name.toLowerCase().match(this.search.toLowerCase());
+    //     // taminotchis.tel.match(this.search)
+    //   });
+    // },
   },
   mounted() {
-    this.getData();
-    // this.render(1);
+    console.clear()
+    this.getData()
+    if (localStorage.getItem('reloaded')) {
+        // The page was just reloaded. Clear the value from local storage
+        // so that it will reload the next time this page is visited.
+        localStorage.removeItem('reloaded');
+    } else {
+        // Set a flag so that we know not to reload the page twice.
+        localStorage.setItem('reloaded', '1');
+        location.reload();
+    }
   },
 };
 </script>

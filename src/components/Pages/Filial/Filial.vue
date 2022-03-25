@@ -22,8 +22,8 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="row">
-          <div class="col-md-4 mb-2" v-for="filial in filter" :key="filial">
+        <div class="row" id="branches">
+          <div class="col-md-4 mb-2" v-for="filial in filiallar || []" :key="filial">
             <div class="card shadow">
               <div class="card-header">
                 <div class="row">
@@ -267,6 +267,7 @@ export default {
   components: { isloading },
   data() {
     return {
+      role: localStorage.getItem("role"),
       search: "",
       isLoading: false,
       filiallar: [],
@@ -290,16 +291,16 @@ export default {
   },
   methods: {
     getData() {
+      console.log(this.role)
       this.isloading = true
+      this.filiallar = []
         instance.get("all_branches")
         .then((res) => {
             this.filiallar = res.data
+            console.log(res.data)
         }).finally(
           this.isLoading = false
         )
-        // setTimeout(() => {
-        //   window.location.reload(1)
-        // }, 1000);
     },
 
     postData() {
@@ -386,17 +387,20 @@ export default {
     },
   },
   computed: {
-    filter: function() {
-      return this.filiallar.filter((filial) =>{
-        return filial.name.toLowerCase().match(this.search.toLowerCase())
-      })
-      // return this.filiallar.filter((filial) => {
-      //   filial.match(/this.search/g)
-      // })
-    }
+    filter: function () {
+    },
   },
   mounted() {
-    this.getData();
+    this.getData()
+    if (localStorage.getItem('reloaded')) {
+        // The page was just reloaded. Clear the value from local storage
+        // so that it will reload the next time this page is visited.
+        localStorage.removeItem('reloaded');
+    } else {
+        // Set a flag so that we know not to reload the page twice.
+        localStorage.setItem('reloaded', '1');
+        location.reload();
+    }
   },
 };
 </script>

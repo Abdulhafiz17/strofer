@@ -49,7 +49,6 @@
                           type="password"
                           class="form-control"
                           v-model="hodim.password"
-                          required
                         />
                       </div>
                     </div>
@@ -95,6 +94,7 @@ export default {
           role: res.data.role,
           branch_id: res.data.branch_id,
           phone: res.data.phone,
+          password: "none",
         };
       })
       .finally(this.isloading = false)
