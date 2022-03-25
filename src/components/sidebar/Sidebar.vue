@@ -17,7 +17,7 @@ export default {
   methods: {
     getData() {
       instance.get("this_currency/dollar").then((res) => {
-        this.kurs = res.data
+        this.kurs = res.data;
       });
     },
     putData() {
@@ -120,13 +120,15 @@ export default {
               type="number"
               class="form-control text-center"
               placeholder="Dollar kursi"
-              @change="putData()"
               v-model="kurs.price"
             />
             <div class="input-group-append">
               <div class="input-group-text">so'm</div>
             </div>
           </div>
+          <button type="button" class="btn btn-block btn-success text-center" @click="putData()">
+            Tasdiqlash
+          </button>
         </div>
       </div>
     </div>

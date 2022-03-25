@@ -167,6 +167,14 @@ const routes = [
     name: "Vozvrat",
     component: () => import("../components/Pages/Vozvrat/Vozvrat.vue"),
   },
+
+  {
+    path: "/kirim/:id",
+    meta: { requiresAuth: true },
+    name: "kirim",
+    component: () => import("../components/Pages/Nasiyalar/kirim.vue"),
+  },
+
 ];
 
 const router = createRouter({

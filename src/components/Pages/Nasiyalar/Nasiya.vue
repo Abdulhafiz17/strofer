@@ -26,6 +26,7 @@
                 <th scope="col">Sana</th>
                 <th scope="col">Qaytarish vaqti</th>
                 <th scope="col"></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -49,6 +50,14 @@
                   >
                     <i class="fa fa-coins"></i>
                   </button>
+                </td>
+                <td>
+                  <a
+                    :href="'/kirim/' + gets.id"
+                    class="btn btn-outline-secondary float-right btn-sm mb-2"
+                  >
+                    <i class="fa fa-clock-rotate-left"></i>
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -100,10 +109,7 @@
             />
           </div>
           <div class="modal-footer">
-            <button
-              type="submit"
-              class="btn btn-outline-success"
-            >
+            <button type="submit" class="btn btn-outline-success">
               Tasdiqlash
             </button>
             <button
@@ -157,7 +163,7 @@ export default {
     },
     payToLoan(id) {
       instance.post("pay_to_loan/" + id, this.post).then(() => {
-        window.location.reload()
+        window.location.reload();
       });
     },
   },
