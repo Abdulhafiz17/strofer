@@ -38,7 +38,7 @@
                     :key="mahsulotlar"
                     data-toggle="modal"
                     data-target="#code"
-                    @click="code(mahsulotlar.code)"
+                    @click="code(mahsulotlar)"
                   >
                     <th scope="row">{{ idx + 1 }}</th>
                     <td>{{ mahsulotlar.code }}</td>
@@ -355,8 +355,36 @@
   <div class="modal fade" id="code">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-body">
-          <img id="barcode"/>
+        <div class="modal-body d-flex justify-content-center">
+          <div id="price">
+            <table class="table table-hover table-borderless" style="font-size: 25px">
+              <tbody>
+                <tr>
+                  <th> Mahsulot : </th>
+                  <td> {{ mahsulot.name }} </td>
+                </tr>
+                <tr>
+                  <th> Brend : </th>
+                  <td> {{ mahsulot.brand }} </td>
+                </tr>
+                <tr>
+                  <th> Narx : </th>
+                  <td> {{ Intl.NumberFormat({style: "currency" }).format(mahsulot.selling_price) }} {{ mahsulot.currency_id }} </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row">
+              <img 
+                id="barcode" 
+                class="col-md-10 mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-primary" @click="print()">
+            <span class="fa fa-print"/>
+          </button>
         </div>
       </div>
     </div>
@@ -383,7 +411,7 @@ export default {
       editT: [],
       kpiget: [],
       isloading: false,
-      backgroun: null,
+      mahsulot: {},
     };
   },
 
@@ -497,17 +525,55 @@ export default {
       };
     },
 
-    code(code) {
-      console.log(code)
-      JsBarcode("#barcode", code)
-      // document.querySelector("#code").JsBarcode(code)
+    code(mahsulot) {
+      this.mahsulot = mahsulot
+      JsBarcode("#barcode", mahsulot.code, {
+        height: 50,
+        width: 3,
+        displayValue: false,
+      })
+    },
+    print() {
+      let barcode = document.querySelector("#price").outerHTML
+      let windowPrint = window.open("_blank", "Barcode", "width=400; height=600")
+      windowPrint.document.write(
+        `
+            <head>
+              <title> Barcode </title>
+              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            </head>
+        ` + barcode 
+      )
+      windowPrint.print()
+      document.addEventListener("#price", (e) => {
+        ctrkay 
+      })
     },
   },
   mounted() {
+    console.clear()
     this.getData();
   },
 };
 </script>
 
-<style>
+<style scoped>
+#price {
+  width: 350px;
+  height: 550px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid var(--success);
+  background: white;
+}
+
+#price * {
+  color: black !important;
+}
+
+#barcode {
+  width: 310px;
+  height: 100px;
+}
 </style>
