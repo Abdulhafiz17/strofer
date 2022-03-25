@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-md-4"><h3>Mahsulotlar</h3></div>
           <div class="col-md-4">
-            <input type="search" class="form-control" placeholder="qidiruv" />
+            <input type="search" class="form-control" placeholder="qidiruv"  v-model="search"/>
           </div>
           <div class="col-md-4"></div>
         </div>
@@ -34,7 +34,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="(mahsulotlar, idx) in mahsulotlars"
+                    v-for="(mahsulotlar, idx) in filteredCards"
                     :key="mahsulotlar"
                   >
                     <th scope="row">{{ idx + 1 }}</th>
@@ -417,7 +417,12 @@ export default {
       editT: [],
       kpiget: [],
       isloading: false,
+<<<<<<< HEAD
+      backgroun: null,
+      search: "",
+=======
       mahsulot: {},
+>>>>>>> 4513963627af3dae4cef7c6d4aaf8483fb0b0411
     };
   },
 
@@ -560,6 +565,13 @@ export default {
   mounted() {
     console.clear()
     this.getData();
+  },
+  computed: {
+    filteredCards: function () {
+      return this.mahsulotlars.filter((taminotchis) => {
+        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+      });
+    },
   },
 };
 </script>

@@ -11,8 +11,7 @@
               <input
                 type="search"
                 class="form-control"
-                 v-model="search"
-                
+                v-model="search"
                 placeholder="Qidiruv"
               />
               <div class="input-group-append">
@@ -37,7 +36,7 @@
         <div class="row">
           <div
             class="col-md-4 mt-3"
-            v-for="mijozgets in mijozget"
+            v-for="mijozgets in filteredCards"
             :key="mijozgets.id"
           >
             <div class="card shadow">
@@ -238,12 +237,6 @@
                     aria-describedby="inputGroup-sizing-default"
                   />
                 </div>
-                <select v-model="mijozpost.comment" class="form-control mt-4">
-                  <option disabled value="">Iltimos, birini tanlang</option>
-                  <option>A'lo</option>
-                  <option>Yaxshi</option>
-                  <option>Yomon</option>
-                </select>
               </div>
             </div>
           </div>
