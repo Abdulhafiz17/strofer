@@ -417,12 +417,9 @@ export default {
       editT: [],
       kpiget: [],
       isloading: false,
-<<<<<<< HEAD
       backgroun: null,
       search: "",
-=======
       mahsulot: {},
->>>>>>> 4513963627af3dae4cef7c6d4aaf8483fb0b0411
     };
   },
 
