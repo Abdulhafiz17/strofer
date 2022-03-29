@@ -47,20 +47,20 @@ export default {
   },
   methods: {
     getData() {
-      // (this.mahsulotlar = []),
-      //   (this.notice = 0),
-      //   instance.get("all_categories").then((response) => {
-      //     response.data.forEach((element) => {
-      //       instance.get("all_products/" + element.id).then((res) => {
-      //         res.data.forEach((element) => {
-      //           if (element.quantity_note >= element.quantity) {
-      //             this.mahsulotlar.push(element);
-      //             this.notice++;
-      //           }
-      //         });
-      //       });
-      //     });
-      //   });
+      (this.mahsulotlar = []),
+        (this.notice = 0),
+        instance.get("all_categories").then((response) => {
+          response.data.forEach((element) => {
+            instance.get("all_products/" + element.id).then((res) => {
+              res.data.forEach((element) => {
+                if (element.quantity_note >= element.quantity) {
+                  this.mahsulotlar.push(element);
+                  this.notice++;
+                }
+              });
+            });
+          });
+        });
     },
   },
   mounted() {

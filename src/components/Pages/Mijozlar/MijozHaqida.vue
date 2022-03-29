@@ -93,7 +93,7 @@ export default {
         this.isloading = false
       })
 
-      isloading = true
+      this.isloading = true
       instance.get("this_customer_loans/" + this.$route.params.id).then((response) => {
         console.log(response.data)
       })

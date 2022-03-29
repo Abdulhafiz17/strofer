@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     getData() {
-      const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/block";
+      const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/true";
       axios
         .create({
           baseURL: BASEURL,

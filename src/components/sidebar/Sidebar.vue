@@ -36,15 +36,16 @@ export default {
   <transition name="fade-SidebarLink">
     <div class="sidebar" :style="{ width: sidebarWidth }">
       <div class="sidebar-link SidebarLink">
-        <SidebarLink to="/kassa" v-if="role === 'branch_admin'">
+
+        <SidebarLink to="/statistic" v-if="role == 'admin' || role == 'branch_admin'">
+          <span class="fas fa-chart-line"></span>
+          <p class="ripple">Statistika</p>
+        </SidebarLink>
+
+        <SidebarLink to="/kassa" v-if="role === 'cashier'">
           <span class="fas fa-cash-register"></span>
           <p class="ripple">Kassa</p>
         </SidebarLink>
-
-        <!-- <SidebarLink to="/savdo" v-if="role === 'branch_admin'">
-          <span class="fas fa-shopping-cart"></span>
-          <p class="ripple">Savdo</p>
-        </SidebarLink> -->
 
         <SidebarLink to="/filiallar" v-if="role === 'admin'">
           <span class="fas fa-code-branch"></span>
@@ -84,7 +85,7 @@ export default {
           <p class="ripple">Nasiyalar</p>
         </SidebarLink>
 
-        <SidebarLink to="/vozvrat" v-if="role === 'branch_admin'">
+        <SidebarLink to="/vozvrat" v-if="role === 'cashier'">
           <span class="fas fa-undo"></span>
           <p class="ripple">Vozvrat</p>
         </SidebarLink>
@@ -126,7 +127,7 @@ export default {
               <div class="input-group-text">so'm</div>
             </div>
           </div>
-          <button type="button" class="btn btn-block btn-success text-center" @click="putData()">
+          <button type="button" class="btn btn-sm btn-block btn-success text-center" @click="putData()">
             Tasdiqlash
           </button>
         </div>

@@ -48,6 +48,7 @@
 <script>
 import axios from "axios";
 import isloading from "../Anime/Anime.vue"
+import swal from 'sweetalert';
 export default {
   components: { isloading },
   name: "Login",
@@ -91,9 +92,17 @@ export default {
         .catch((err) => {
           this.isloading = false
           if (err.message == "Request failed with status code 401") {
-            alert("Login yoki parolda xatolik")
+            // alert("Login yoki parolda xatolik")
+            swal({
+              icon: "error",
+              title: "Login yoki parolda xatolik"
+            })
           } else if (err.message == "Network Error") {
-            alert("Tarmoq bilan aloqa mavjud emas")
+            // alert("Tarmoq bilan aloqa mavjud emas")
+            swal({
+              icon: "warning",
+              title: "Tarmoq bilan aloqa mavjud emas"
+            })
           }
         });
       // if (this.username === 'admin' && this.password === "admin") {

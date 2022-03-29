@@ -92,7 +92,7 @@
                       <th>
                         <span class="fa fa-coins text-secondary"></span>
                       </th>
-                      <td> {{ Intl.NumberFormat({style: "currency" }).format(hodim.balance.balance) }} so'm</td>
+                      <td v-if="hodim.balance"> {{ Intl.NumberFormat({style: "currency" }).format(hodim.balance.balance) }} so'm</td>
                     </tr>
                   </tbody>
                 </table>
@@ -190,7 +190,7 @@
                   >
                     <option value="branch_admin">Filial admin</option>
                     <option value="seller">Sotuvchi</option>
-                    <option value="kassir">Kassir</option>
+                    <option value="cashier">Kassir</option>
                   </select>
                 </div>
               </div>
@@ -454,7 +454,7 @@ export default {
         this.branch_id = localStorage.getItem("branch_id");
       }
       instance
-        .get("branch_users/" + this.branch_id + "/unblock")
+        .get("branch_users/" + this.branch_id + "/false")
         .then((response) => {
           response.data.forEach((element) => {
             instance.get("this_user_balances/" + element.id)

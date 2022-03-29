@@ -107,6 +107,7 @@ export default {
     },
   },
   mounted() {
+    console.clear()
     this.timeDark();
   },
 };

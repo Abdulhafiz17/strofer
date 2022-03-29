@@ -19,6 +19,13 @@ const routes = [
     name: "Me",
     component: () => import("../components/Pages/Me/Me.vue"),
   },
+  
+  {
+    path: "/statistic",
+    meta: { requiresAuth: true },
+    name: "Statistic",
+    component: () => import("../components/Pages/AsosiyKo'rsatkichlar/Statistic.vue"),
+  },
 
   {
     path: "/hodimlar/:id",

@@ -417,12 +417,7 @@ export default {
       editT: [],
       kpiget: [],
       isloading: false,
-<<<<<<< HEAD
-      backgroun: null,
-      search: "",
-=======
       mahsulot: {},
->>>>>>> 4513963627af3dae4cef7c6d4aaf8483fb0b0411
     };
   },
 
@@ -490,6 +485,7 @@ export default {
           console.log(this.mahsulotlars);
         })
         .finally();
+        
     },
 
     putData(id) {
@@ -564,12 +560,12 @@ export default {
   },
   mounted() {
     console.clear()
-    this.getData();
+    this.getData()
   },
   computed: {
     filteredCards: function () {
-      return this.mahsulotlars.filter((taminotchis) => {
-        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+      return this.mahsulotlars.filter((mahsulot) => {
+        return mahsulot.name.toLowerCase().match(this.search.toLowerCase());
       });
     },
   },
