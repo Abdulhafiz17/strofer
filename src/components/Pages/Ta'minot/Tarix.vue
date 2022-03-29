@@ -210,8 +210,8 @@ export default {
             });
           });
         });
-      }).finally(
-        )
+        this.getData2()
+      })
     },
     getData2() {
       this.isloading = true
@@ -237,19 +237,18 @@ export default {
                         currency: response.data.currency,
                       };
                       this.taminotTarix.push(this.tarix);
+                      this.isloading = false
                     });
                 });
               });
           });
-        }).finally(this.isloading = false)
+        })
     },
     searchByDate(from, to) {
       this.isloading = true
       let tarix = []
-      let from2 = Number(from[8] + from[9])
-      let to2 = Number(to[8] + to[9])
       this.tolovTarix.forEach(element => {
-        if (Number(element.date_time[8] + element.date_time[9]) >= from2 && Number(element.date_time[8] + element.date_time[9]) <= to2) {
+        if (element.date_time > from && element.date_time < to) {
           tarix.push(element)
         }
       });
@@ -259,7 +258,7 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getData2();
+    // this.getData2();
   },
   computed: {
     filterRow: function () {

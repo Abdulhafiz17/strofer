@@ -341,23 +341,23 @@ export default {
           })
           .finally((this.isloading = false));
       }
-      if (this.doimiychiqim == "Bunday chiqim turi mavjud") {
-        alert("Bunday chiqim turi mavjud");
-      } else {
-        instance
-          .post("create_fixed_expense", this.doimiychiqim)
-          .then((response) => {
-            console.log(response.data);
-            this.getData();
-            // window.location.reload();
+      // if (this.doimiychiqim == "Bunday chiqim turi mavjud") {
+      //   alert("Bunday chiqim turi mavjud");
+      // } else {
+      //   instance
+      //     .post("create_fixed_expense", this.doimiychiqim)
+      //     .then((response) => {
+      //       console.log(response.data);
+      //       this.getData();
+      //       // window.location.reload();
 
-            if (response.data == "success") {
-              this.errorr = alert("Qo'shildi");
-              this.getData();
-            }
-          })
-          .finally((this.isloading = false));
-      }
+      //       if (response.data == "success") {
+      //         this.errorr = alert("Qo'shildi");
+      //         this.getData();
+      //       }
+      //     })
+      //     .finally((this.isloading = false));
+      // }
     },
 
     chiqimidpost(id) {
@@ -380,15 +380,6 @@ export default {
         .finally((this.isloading = false));
     },
 
-    getcurrency() {
-      // this.isloading = true
-      // instance.get("all_currencies").then((response) => {
-      //   this.kurs = response.data;
-      //   console.log(response.data);
-      // }).finally(
-      //   this.isloading = false
-      // )
-    },
     getData() {
       this.isloading = true;
       instance
@@ -421,7 +412,6 @@ export default {
   mounted() {
     console.clear()
     this.getData();
-    this.getcurrency();
   },
 };
 </script>

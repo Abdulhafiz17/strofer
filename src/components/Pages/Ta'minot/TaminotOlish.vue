@@ -147,8 +147,8 @@
                       class="custom-select"
                       v-model="postMahsulot.product.currency_id_for_sell"
                     >
-                    <option value="dollar">dollar</option>
-                    <option value="so'm">so'm</option>
+                      <option value="dollar">dollar</option>
+                      <option value="so'm">so'm</option>
                     </select>
                   </div>
                 </div>
@@ -165,8 +165,8 @@
                       class="custom-select"
                       v-model="postMahsulot.product.currency_id_for_sell"
                     >
-                    <option value="dollar">dollar</option>
-                    <option value="so'm">so'm</option>
+                      <option value="dollar">dollar</option>
+                      <option value="so'm">so'm</option>
                     </select>
                   </div>
                 </div>
@@ -267,6 +267,15 @@
                     {{ kategoriya.name }}
                   </option>
                 </select>
+              </div>
+              <div class="col-sm">
+                <label> Yaroqlilik muddati </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  required
+                  v-model="postMahsulot.product.validity_period"
+                />
               </div>
             </div>
             <div class="row m-2">
@@ -450,7 +459,7 @@
                   <td>{{ taminot.mahsulot }}</td>
                   <td>{{ taminot.hajm }} {{ taminot.olchov }}</td>
                   <td>{{ taminot.narx }} {{ taminot.kurs }}</td>
-                  <td>{{ taminot.hajm * taminot.narx }} {{ taminot.kurs }} </td>
+                  <td>{{ taminot.hajm * taminot.narx }} {{ taminot.kurs }}</td>
                   <td>
                     <button
                       class="btn btn-sm btn-outline-danger"
@@ -504,6 +513,7 @@ export default {
           currency_id_for_sell: "",
           quantity_note: null,
           measure: "",
+          validity_period: "",
         },
         new_supply: {
           quantity: null,
@@ -549,90 +559,96 @@ export default {
         .finally((this.isLoading = false));
     },
     postCode() {
-      this.isloading = true
-      instance.get("this_product/empty/" + this.barcode).then((res) => {
-        console.log(res.data);
-        if (res.data.length !== 0 ) {
-          this.openRow = true;
-          this.postMahsulot.product = {
-            category_id: res.data[0].category_id,
-            name: res.data[0].name,
-            brand: res.data[0].brand,
-            price: res.data[0].price,
-            currency_id: res.data[0].currency_id,
-            selling_price: res.data[0].selling_price,
-            final_price: res.data[0].final_price,
-            currency_id_for_sell: res.data[0].currency_id_for_sell,
-            quantity_note: res.data[0].quantity_note,
-            measure: res.data[0].measure,
-          };
-          this.getMahsulot(this.postMahsulot.product);
-        } else {
-          this.postMahsulot.product = {};
-          this.openRow = false;
-          this.alert = "null";
-        }
-      })
-      .finally(this.isloading = false)
+      this.isloading = true;
+      instance
+        .get("this_product/empty/" + this.barcode)
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.length !== 0) {
+            this.openRow = true;
+            this.postMahsulot.product = {
+              category_id: res.data[0].category_id,
+              name: res.data[0].name,
+              brand: res.data[0].brand,
+              price: res.data[0].price,
+              currency_id: res.data[0].currency_id,
+              selling_price: res.data[0].selling_price,
+              final_price: res.data[0].final_price,
+              currency_id_for_sell: res.data[0].currency_id_for_sell,
+              quantity_note: res.data[0].quantity_note,
+              measure: res.data[0].measure,
+            };
+            this.getMahsulot(this.postMahsulot.product);
+          } else {
+            this.postMahsulot.product = {};
+            this.openRow = false;
+            this.alert = "null";
+          }
+        })
+        .finally((this.isloading = false));
     },
     getMahsulot(mahsulot) {
-      this.isloading = true
-      instance.get("this_currency/" + mahsulot.currency_id).then((res) => {
-        this.kurs_id.price_kurs = res.data;
-      })
-      .finally(this.isloading = false)
-      this.isloading = true
+      this.isloading = true;
+      instance
+        .get("this_currency/" + mahsulot.currency_id)
+        .then((res) => {
+          this.kurs_id.price_kurs = res.data;
+        })
+        .finally((this.isloading = false));
+      this.isloading = true;
       instance
         .get("this_currency/" + mahsulot.currency_id_for_sell)
         .then((res) => {
           this.kurs_id.sellling_price_kurs = res.data;
         })
-        .finally(this.isloading = false)
+        .finally((this.isloading = false));
     },
     postTaminot() {
-      this.isloading = true
+      this.isloading = true;
       this.postMahsulot.product.code = String(this.barcode);
-      // this.postMahsulot.push(this.product, this.new_supply);
-      instance.post("take_supply", this.postMahsulot).then((res) => {
-        console.log(res.data);
-        if (res.data == "Bunday mahsulot olinganlar royhatida mavjud") {
-          swal({
-            icon: "warning",
-            title: "Bunday mahsulot ro'yxatga qo'shilgan",
-            closeOnClickOutside: false,
-          });
-        } else if (res.status == 200) {
-          this.openRow = null;
-          this.barcode = "";
-          this.alert = ""
-          this.postMahsulot = {
-            product: {
-              category_id: "",
-              code: "",
-              name: "",
-              brand: "",
-              price: null,
-              currency_id: "",
-              selling_price: null,
-              final_price: null,
-              currency_id_for_sell: "",
-              quantity_note: null,
-              measure: "",
-            },
-            new_supply: {
-              quantity: null,
-              price: null,
-              currency_id: "",
-              market_id: this.$route.params.id,
-            },
-          };
-        }
-      console.log(this.postMahsulot);
-      })
-      .finally(this.isloading = false)
+      instance
+        .post("take_supply", this.postMahsulot)
+        .then((res) => {
+          console.log(res.data);
+          if (res.data == "Bunday mahsulot olinganlar royhatida mavjud") {
+            swal({
+              icon: "warning",
+              title: "Bunday mahsulot ro'yxatga qo'shilgan",
+              closeOnClickOutside: false,
+            });
+          } else if (res.status == 200) {
+            this.openRow = null;
+            this.barcode = "";
+            this.alert = "";
+            this.postMahsulot = {
+              product: {
+                category_id: "",
+                code: "",
+                name: "",
+                brand: "",
+                price: null,
+                currency_id: "",
+                selling_price: null,
+                final_price: null,
+                currency_id_for_sell: "",
+                quantity_note: null,
+                measure: "",
+                validity_period: "",
+              },
+              new_supply: {
+                quantity: null,
+                price: null,
+                currency_id: "",
+                market_id: this.$route.params.id,
+              },
+            };
+          }
+          console.log(this.postMahsulot);
+        })
+        .finally((this.isloading = false));
     },
     getTaminot() {
-      this.isloading = true
+      this.isloading = true;
       this.taminotlar = [];
       instance
         .get("all_supplies/" + this.$route.params.id + "/false")
@@ -651,21 +667,23 @@ export default {
                   kurs: element.currency_id,
                 };
                 this.taminotlar.push(this.taminot);
+                this.isloading = false;
               });
           });
           console.log(this.taminotlar);
-        })
-        .finally(this.isloading = false)
+        });
     },
     deleteTaminot(id) {
-      this.isLoading = true
-      instance.delete("remove_this_supply/" + id).then(() => {
-        this.getTaminot();
-      })
-      .finally(this.isloading = false)
+      this.isLoading = true;
+      instance
+        .delete("remove_this_supply/" + id)
+        .then(() => {
+          this.getTaminot();
+        })
+        .finally((this.isloading = false));
     },
     confirmTaminot() {
-      this.isloading = true
+      this.isloading = true;
       let button = document.createElement("button");
       button.class = "btn btn-outline-succcess";
       instance
@@ -685,7 +703,7 @@ export default {
             // }, 3000);
           }
         })
-        .finally(this.isloading = false)
+        .finally((this.isloading = false));
     },
   },
   mounted() {

@@ -129,7 +129,7 @@
           </div>
         </div>
         <hr />
-        <Chart v-if="role == 'admin' || role == 'branch_admin'"/>
+        <!-- <Chart v-if="role == 'admin' || role == 'branch_admin'"/> -->
       </div>
     </div>
   </div>
@@ -303,18 +303,18 @@ export default {
     },
 
     getStatistic() {
-      this.isloading = true
-      this.allIncomes = 0
-      instance.get("all_orders/true").then((orders) => {
-        orders.data.forEach((element) => {
-          instance.get("this_order_incomes/" + element.id).then((incomes) => {
-            incomes.data.forEach((element2) => {
-              this.allIncomes += element2.price
-            })
-            this.isloading = false
-            })
-        })
-      })
+      // this.isloading = true
+      // this.allIncomes = 0
+      // instance.get("all_orders/true").then((orders) => {
+      //   orders.data.forEach((element) => {
+      //     instance.get("this_order_incomes/" + element.id).then((incomes) => {
+      //       incomes.data.forEach((element2) => {
+      //         this.allIncomes += element2.price
+      //       })
+      //       this.isloading = false
+      //       })
+      //   })
+      // })
     },
   },
   mounted() {

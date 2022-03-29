@@ -323,13 +323,17 @@ export default {
         this.taminotchilar.forEach((element) => {
           instance.get("market_balances_all/" + element.id).then((res) => {
             element.balances = res.data
-            res.data.forEach((balance) => {
-              instance.get("this_currency/" + balance.currency_id)
-              .then((res) => {
-                balance.currency_id = res.data.currency
-                this.isloading = false
+            if (res.data.length > 0) {
+              res.data.forEach((balance) => {
+                instance.get("this_currency/" + balance.currency_id)
+                .then((res) => {
+                  balance.currency_id = res.data.currency
+                  this.isloading = false
+                })
               })
-            })
+            } else {
+              this.isloading = false
+            }
           });
         });
         // instance.get("all_currencies").then((res) => {
@@ -383,12 +387,12 @@ export default {
     },
   },
   computed: {
-    // filteredCards: function () {
-    //   return this.taminotchilar.filter((taminotchi) => {
-    //     return taminotchi.name.toLowerCase().match(this.search.toLowerCase());
-    //     // taminotchis.tel.match(this.search)
-    //   });
-    // },
+    filteredCards: function () {
+      return this.taminotchilar.filter((taminotchi) => {
+        return taminotchi.name.toLowerCase().match(this.search.toLowerCase());
+        // taminotchis.tel.match(this.search)
+      });
+    },
   },
   mounted() {
     console.clear()

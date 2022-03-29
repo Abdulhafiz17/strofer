@@ -150,12 +150,6 @@ export default {
           // this.isloading = false
         });
 
-<<<<<<< HEAD
-      this.isloading = true
-      instance.get("this_customer_loans/" + this.$route.params.id).then((response) => {
-        console.log(response.data)
-      })
-=======
       // isloading = true
       instance
         .get("this_customer_loans/" + this.$route.params.id)
@@ -181,7 +175,6 @@ export default {
             });
         });
       });
->>>>>>> b0ed7760c4c788ed848dbf537e0f6614c4eee457
     },
   },
   mounted() {

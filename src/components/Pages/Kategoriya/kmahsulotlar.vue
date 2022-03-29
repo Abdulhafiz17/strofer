@@ -5,7 +5,12 @@
         <div class="row">
           <div class="col-md-4"><h3>Mahsulotlar</h3></div>
           <div class="col-md-4">
-            <input type="search" class="form-control" placeholder="qidiruv"  v-model="search"/>
+            <input
+              type="search"
+              class="form-control"
+              placeholder="qidiruv"
+              v-model="search"
+            />
           </div>
           <div class="col-md-4"></div>
         </div>
@@ -108,13 +113,13 @@
                         <i class="fa fa-coins"></i>
                       </button>
 
-                      <button 
-                        class="btn btn-outline-primary btn-sm"
+                      <button
+                        class="btn btn-primary btn-sm"
                         data-toggle="modal"
                         data-target="#code"
                         @click="code(mahsulotlar)"
                       >
-                        <span class="fa fa-barcode"/>
+                        <span class="fa fa-barcode" />
                       </button>
 
                       <button
@@ -236,6 +241,15 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="col-sm">
+              <label> Yaroqlilik muddati </label>
+              <input
+                type="date"
+                class="form-control"
+                v-model="editT.validity_period"
+                required
+              />
             </div>
           </div>
         </div>
@@ -363,33 +377,40 @@
       <div class="modal-content">
         <div class="modal-body d-flex justify-content-center">
           <div id="price">
-            <table class="table table-hover table-borderless" style="font-size: 25px">
+            <table
+              class="table table-hover table-borderless"
+              style="font-size: 25px"
+            >
               <tbody>
                 <tr>
-                  <th> Mahsulot : </th>
-                  <td> {{ mahsulot.name }} </td>
+                  <th>Mahsulot :</th>
+                  <td>{{ mahsulot.name }}</td>
                 </tr>
                 <tr>
-                  <th> Brend : </th>
-                  <td> {{ mahsulot.brand }} </td>
+                  <th>Brend :</th>
+                  <td>{{ mahsulot.brand }}</td>
                 </tr>
                 <tr>
-                  <th> Narx : </th>
-                  <td> {{ Intl.NumberFormat({style: "currency" }).format(mahsulot.selling_price) }} {{ mahsulot.currency_id }} </td>
+                  <th>Narx :</th>
+                  <td>
+                    {{
+                      Intl.NumberFormat({ style: "currency" }).format(
+                        mahsulot.selling_price
+                      )
+                    }}
+                    {{ mahsulot.currency_id }}
+                  </td>
                 </tr>
               </tbody>
             </table>
             <div class="row">
-              <img 
-                id="barcode" 
-                class="col-md-10 mx-auto"
-              />
+              <img id="barcode" class="col-md-10 mx-auto" />
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-outline-primary" @click="print()">
-            <span class="fa fa-print"/>
+          <button class="btn btn-primary" @click="print()">
+            <span class="fa fa-print" />
           </button>
         </div>
       </div>
@@ -417,11 +438,8 @@ export default {
       editT: [],
       kpiget: [],
       isloading: false,
-<<<<<<< HEAD
-=======
       backgroun: null,
       search: "",
->>>>>>> b0ed7760c4c788ed848dbf537e0f6614c4eee457
       mahsulot: {},
     };
   },
@@ -465,32 +483,35 @@ export default {
       instance
         .get("all_products/" + this.$route.params.id)
         .then((response) => {
-          response.data.forEach((element) => {
-            instance.get("this_product_kpi/" + element.id).then((res) => {
-              let mahsulot = {
-                id: element.id,
-                name: element.name,
-                code: element.code,
-                brand: element.brand,
-                price: element.price,
-                category_id: element.category_id,
-                selling_price: element.selling_price,
-                final_price: element.final_price,
-                currency_id: element.currency_id,
-                currency_id_for_sell: element.currency_id_for_sell,
-                quantity: element.quantity,
-                quantity_note: element.quantity_note,
-                measure: element.measure,
-                kpi: res.data,
-              };
-              this.mahsulotlars.push(mahsulot);
-              this.isloading = false;
+          if (response.data.length > 0) {
+            response.data.forEach((element) => {
+              instance.get("this_product_kpi/" + element.id).then((res) => {
+                let mahsulot = {
+                  id: element.id,
+                  name: element.name,
+                  code: element.code,
+                  brand: element.brand,
+                  price: element.price,
+                  category_id: element.category_id,
+                  selling_price: element.selling_price,
+                  final_price: element.final_price,
+                  currency_id: element.currency_id,
+                  currency_id_for_sell: element.currency_id_for_sell,
+                  quantity: element.quantity,
+                  quantity_note: element.quantity_note,
+                  measure: element.measure,
+                  kpi: res.data,
+                };
+                this.mahsulotlars.push(mahsulot);
+                this.isloading = false;
+              });
             });
-          });
+          } else {
+            this.isloading = false;
+          }
           console.log(this.mahsulotlars);
         })
         .finally();
-        
     },
 
     putData(id) {
@@ -534,20 +555,25 @@ export default {
         quantity_note: mahsulot.quantity_note,
         measure: mahsulot.measure,
         kpi: mahsulot.kpi,
+        validity_period: mahsulot.validity_period
       };
     },
 
     code(mahsulot) {
-      this.mahsulot = mahsulot
+      this.mahsulot = mahsulot;
       JsBarcode("#barcode", mahsulot.code, {
         height: 50,
         width: 3,
-        displayValue: false,
-      })
+        displayValue: true,
+      });
     },
     print() {
-      let barcode = document.querySelector("#price").outerHTML
-      let windowPrint = window.open("_blank", "Barcode", "width=400; height=600")
+      let barcode = document.querySelector("#price").outerHTML;
+      let windowPrint = window.open(
+        "_blank",
+        "Barcode",
+        "width=400; height=600"
+      );
       windowPrint.document.write(
         `
             <head>
@@ -555,17 +581,17 @@ export default {
               <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
             </head>
-        ` + barcode 
-      )
-      windowPrint.print()
+        ` + barcode
+      );
+      windowPrint.print();
       document.addEventListener("#price", (e) => {
-        ctrkay 
-      })
+        ctrkay;
+      });
     },
   },
   mounted() {
-    console.clear()
-    this.getData()
+    console.clear();
+    this.getData();
   },
   computed: {
     filteredCards: function () {

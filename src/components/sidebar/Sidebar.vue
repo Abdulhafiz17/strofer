@@ -1,4 +1,5 @@
 <script>
+import swal from 'sweetalert';
 import { instance } from "../Pages/Api";
 import SidebarLink from "./SidebarLink";
 import { sidebarWidth, collapsed, toggleSidebar } from "./state";
@@ -23,6 +24,12 @@ export default {
     putData() {
       instance.put("this_currency_update/dollar", this.kurs).then((res) => {
         console.log(res.data);
+        if (res.status == 200) {
+          swal({
+            icon: "success",
+            timer: 2000
+          })
+        }
       });
     },
   },

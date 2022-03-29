@@ -51,6 +51,9 @@
                       <td>
                         <button
                           class="btn btn-sm btn-outline-warning float-right"
+                          data-toggle="modal"
+                          data-target="#example"
+                          @click="editT = mijozgets"
                         >
                           <span class="fa fa-edit" />
                         </button>
@@ -281,7 +284,7 @@ export default {
         comment: "",
       },
       mijozget: [],
-      editT: [],
+      editT: {},
       search: "",
     };
   },
@@ -302,17 +305,8 @@ export default {
       });
     },
 
-    editk(id, name, phone, address, comment) {
-      this.editT = {
-        id: id,
-        name: name,
-        phone: phone,
-        address: address,
-        comment: comment,
-      };
-    },
-
     putData(id) {
+      console.log(this.editT)
       instance
         .put("this_customer_update/" + id, this.editT)
         .then((response) => {
