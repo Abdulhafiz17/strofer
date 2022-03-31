@@ -12,6 +12,7 @@
               class="form-control"
               v-model="search"
               placeholder="Qidiruv"
+              
             />
           </div>
           <div class="col-md">
@@ -196,6 +197,7 @@
                   type="number"
                   min="0"
                   id=""
+                  step="any"
                   class="form-control"
                   placeholder="Summa"
                   v-model="tolov.price"
@@ -286,6 +288,7 @@
 </template>
 
 <script>
+import swal from 'sweetalert';
 import isloading from "../../Anime/Anime.vue"
 import { instance } from "../Api";
 export default {
@@ -312,7 +315,7 @@ export default {
       },
       kurslar: [],
       search: "",
-      isloading: false,
+      isloading: true,
     };
   },
   methods: {
@@ -381,6 +384,11 @@ export default {
           console.log(res.data);
           if (res.status == 200) {
             window.location.reload();
+          } else if (res.status == 400) {
+            swal({
+              icon: "warning",
+              title: "Ushbu ta'minotchidan hali mahsulot olinmagan"
+            })
           }
         })
         .finally(this.isloading = false)

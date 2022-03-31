@@ -3,9 +3,8 @@
     <div class="card shadow">
       <div class="card-header text-center">
         <h3>{{ filial.name }}</h3>
-        <div class="row text-center">
-          <div class="col-md-3"></div>
-          <div class="col-md-2">
+        <div class="row text-center d-flex justify-content-center">
+          <div class="col-md-3 mb-1">
             <div class="card shadow border-0">
               <a :href="'tel:+998' + filial.phone">
                 <div class="card-body">
@@ -14,7 +13,7 @@
               </a>
             </div>
           </div>
-          <div class="col-md-2">
+          <div class="col-md-3 mb-1">
             <div class="card shadow border-0">
               <a href="#filialMap" data-toggle="modal">
                 <div class="card-body">
@@ -23,13 +22,19 @@
               </a>
             </div>
           </div>
-          <div class="col-md-2">
+          <div class="col-md-3 mb-1">
             <div class="card shadow border-0">
-              <a @click="shareToHodimlar()" style="cursor: pointer">
+              <router-link 
+                :to="{
+                  name: 'Hodimlar',
+                  id: this.branch_id
+                }"
+                style="cursor: pointer"
+              >
                 <div class="card-body">
                   <span class="fa fa-user" /> {{ hodimlar }} ta hodim
                 </div>
-              </a>
+              </router-link>
             </div>
           </div>
         </div>
@@ -82,30 +87,20 @@ export default {
     getData() {
       this.isloading = true
       instance.get("this_branch/" + this.branch_id).then((res) => {
-        console.log(res.data)
         this.filial = res.data;
         this.map(res.data.lat, res.data.long)
-      }).finally(
-        this.isloading = false
-      )
+        instance
+          .get("branch_users/" + this.branch_id + "/false")
+          .then((res) => {
+            this.hodimlar = res.data.length;
+            this.isloading = false
+          })
+      })
 
-      this.isloading = true
-      instance
-        .get("branch_users/" + this.branch_id + "/unblock")
-        .then((res) => {
-          this.hodimlar = res.data.length;
-        }).finally(
-          this.isloading = false
-        )
-    },
-
-    shareToHodimlar() {
-      this.$router.push({ name: "Hodimlar", params: { id: this.branch_id } });
     },
 
     map(lat, long) {
       this.isloading = true
-      console.log(lat, long)
       ymaps.ready(init);
       function init() {
         var myMap = new ymaps.Map("map", {

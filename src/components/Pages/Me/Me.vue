@@ -94,18 +94,21 @@ export default {
           role: res.data.role,
           branch_id: res.data.branch_id,
           phone: res.data.phone,
-          password: "none",
+          password: "",
         };
       })
       .finally(this.isloading = false)
     },
     putData() {
       this.isloading = true
+      if (this.hodim.password.length == 0) {
+        this.hodim.password = "none"
+      }
       console.log(this.hodim);
       instance.put("this_user_update/" + this.hodim.id, this.hodim).then((res) => {
         console.log(res.data);
         if (res.status == 200) {
-          window.location.reload();
+          // window.location.reload();
         }
       })
       .finally(this.isloading = false)

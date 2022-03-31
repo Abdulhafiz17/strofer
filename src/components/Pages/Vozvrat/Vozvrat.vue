@@ -63,26 +63,29 @@ export default {
       this.vozvratlar = [];
       this.isloading = true;
       instance.get("all_returned_products").then((products) => {
-        console.log(products.data);
-        products.data.forEach((element) => {
-              instance.get("this_user/" + element.owner_id).then((user) => {
-                instance
-                  .get("this_product/" + element.product_id + "/empty")
-                  .then((product) => {
-                    this.vozvratlar.push({
-                      product: product.data.name,
-                      brand: product.data.brand,
-                      measure: product.data.measure,
-                      user: user.data.name,
-                      price: element.price,
-                      customer: element.customer,
-                      quantity: element.quantity,
-                      time: element.time,
+        if (products.data.length > 0) {
+          products.data.forEach((element) => {
+                instance.get("this_user/" + element.owner_id).then((user) => {
+                  instance
+                    .get("this_product/" + element.product_id + "/empty")
+                    .then((product) => {
+                      this.vozvratlar.push({
+                        product: product.data.name,
+                        brand: product.data.brand,
+                        measure: product.data.measure,
+                        user: user.data.name,
+                        price: element.price,
+                        customer: element.customer,
+                        quantity: element.quantity,
+                        time: element.time,
+                      });
+                      this.isloading = false;
                     });
-                    this.isloading = false;
-                  });
-              });
-        });
+                });
+          });
+        } else {
+          this.isloading = false
+        }
       });
     },
   },

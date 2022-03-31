@@ -142,6 +142,7 @@ import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import swal from "sweetalert";
 import Chart from './Chart.vue';
+import axios from 'axios';
 export default {
   components: { isloading, Chart },
   data() {
@@ -170,33 +171,42 @@ export default {
       this.savdolar = [];
       this.isloading = true;
       instance.get("all_orders/true").then((orders) => {
-        orders.data.forEach((element) => {
-          element.time = element.time.replace("T", " ");
-          if (element.time >= this.fromDate && element.time <= this.toDate) {
-            instance.get("this_order_trades/" + element.id).then((trades) => {
-              trades.data.forEach((element2) => {
-                instance
-                  .get("this_product/empty/" + element2.product_code)
-                  .then((product) => {
-                    this.savdolar.push({
-                      trade_id: element2.id,
-                      client: element.client_id,
-                      owner: element.owner_id,
-                      time: element.time,
-                      quantity: element2.quantity,
-                      selling_price: element2.selling_price,
-                      product: product.data[0].name,
-                      brand: product.data[0].brand,
-                      measure: product.data[0].measure,
+        console.log(orders.data)
+        if (orders.data.length > 0) {
+          orders.data.forEach((element) => {
+            element.time = element.time.replace("T", " ");
+            if (element.time >= this.fromDate && element.time <= this.toDate) {
+              instance.get("this_order_trades/" + element.id).then((trades) => {
+                trades.data.forEach((element2) => {
+                  instance
+                    .get("this_product/empty/" + element2.product_code)
+                    .then((product) => {
+                      this.savdolar.push({
+                        trade_id: element2.id,
+                        client: element.client_id,
+                        owner: element.owner_id,
+                        time: element.time,
+                        quantity: element2.quantity,
+                        selling_price: element2.selling_price,
+                        product: product.data[0].name,
+                        brand: product.data[0].brand,
+                        measure: product.data[0].measure,
+                      });
+                      this.savdolar2 = this.savdolar;
+                      this.isloading = false;
+                      this.table = true;
                     });
-                    this.savdolar2 = this.savdolar;
-                    this.isloading = false;
-                    this.table = true;
-                  });
+                });
               });
-            });
-          }
-        });
+            }
+          });
+        } else {
+          this.isloading = false,
+          swal({
+            icon: "warning",
+            title: "Buyurtmalar topilmadi",
+          })
+        }
       });
     },
     returnProduct(savdo) {
@@ -306,20 +316,29 @@ export default {
       // this.isloading = true
       // this.allIncomes = 0
       // instance.get("all_orders/true").then((orders) => {
-      //   orders.data.forEach((element) => {
-      //     instance.get("this_order_incomes/" + element.id).then((incomes) => {
-      //       incomes.data.forEach((element2) => {
-      //         this.allIncomes += element2.price
-      //       })
-      //       this.isloading = false
-      //       })
-      //   })
+      //   console.log(orders.data)
+      //   if (orders.data.length > 0) {
+      //     orders.data.forEach((element) => {
+      //       instance.get("this_order_incomes/" + element.id).then((incomes) => {
+      //         incomes.data.forEach((element2) => {
+      //           this.allIncomes += element2.price
+      //         })
+      //         this.isloading = false
+      //         })
+      //     })
+      //   } else {
+      //     this.isloading = false
+      //   }
       // })
     },
   },
   mounted() {
     console.clear();
     this.getStatistic()
+    
+    // instance.get("all_products_for_trade_to_search").then((res) => {
+    //   console.log(res.data)
+    // })
   },
 };
 </script>

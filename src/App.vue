@@ -38,7 +38,7 @@
           ]"
         >
           <Router-view />
-          <Footer />
+          <Footer v-if="this.$route.name !== 'Login'"/>
         </div>
       </div>
     </div>

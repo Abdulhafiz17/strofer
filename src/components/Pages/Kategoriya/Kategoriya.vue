@@ -228,7 +228,7 @@ export default {
       search: "",
       kategoriyass: [],
 
-      isloading: false,
+      isloading: true,
     };
   },
 

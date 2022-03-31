@@ -5,12 +5,12 @@
         <form @submit.prevent="handleSubmit">
           <div class="autho-form-light text-left py-5 px-4 px-sm-5">
             <div class="brand-logo text-center">
-              <img src="crud-logo.jpg" class="w-25" alt="logo" />
+              <img src="../../../public/photo_2021-11-12_17-55-00.jpg" class="w-25" alt="logo" />
             </div>
-            <h4 class="text-center">Hush kelibsiz!</h4>
-            <h6 class="font-weight-light">
+            <h4 class="text-center">Xush kelibsiz !</h4>
+            <!-- <h6 class="font-weight-light">
               Kirish uchun ushbu formani to'ldiring.
-            </h6>
+            </h6> -->
             <input type="hidden" />
             <div class="form-group field-loginform-username required">
               <label for="loginform-username">Login :</label>
