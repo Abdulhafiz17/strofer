@@ -182,43 +182,43 @@ export default {
         date_time: "",
       },
       search: "",
-      isloading: false
+      isloading: true
     };
   },
   methods: {
     getData() {
       this.tolovTarix = []
-      this.dateFrom = ""
-      this.dateTo = ""
       instance.get("this_market/" + this.$route.params.id).then((res) => {
-        this.isloading = true
         this.taminotchi = res.data;
       })
       instance.get("market_expenses/" + this.$route.params.id).then((res) => {
+        console.log(res.data)
         res.data.forEach((element) => {
           instance.get("this_user/" + element.owner_id).then((response) => {
-            instance.get("this_currency/" + element.currency_id).then((res) => {
-              this.tarix = {
-                currency: res.data.currency,
+              this.tolovTarix.push({
+                currency: element.currency_id,
                 price: element.price,
                 comment: element.comment,
                 date_time: element.time.replace("T", " "),
                 user: response.data.name,
-              };
-              this.tolovTarix.push(this.tarix);
+              });
+              console.log(
+                element.currency_id,
+                element.price,
+                element.comment,
+                element.time.replace("T", " "),
+                response.data.name,
+              )
               this.isloading = false
-            });
           });
         });
-        this.getData2()
       })
     },
     getData2() {
-      this.isloading = true
+      this.taminotTarix = []
       instance
         .get("all_supplies/" + this.$route.params.id + "/true")
         .then((res) => {
-          console.log(res.data);
           res.data.forEach((element) => {
             instance
               .get("this_currency/" + element.currency_id)
@@ -227,7 +227,7 @@ export default {
                   instance
                     .get("this_product/" + element.product_id + "/empty")
                     .then((resp) => {
-                      this.tarix = {
+                      this.taminotTarix.push({
                         quantity: element.quantity,
                         price: element.price,
                         date_time: element.time.replace("T", " "),
@@ -235,8 +235,7 @@ export default {
                         hajm: resp.data.measure,
                         user: res.data.name,
                         currency: response.data.currency,
-                      };
-                      this.taminotTarix.push(this.tarix);
+                      });
                       this.isloading = false
                     });
                 });
@@ -251,7 +250,7 @@ export default {
       this.isloading = true
       let tarix = []
       this.tolovTarix.forEach(element => {
-        if (element.date_time > from && element.date_time < to) {
+        if (element.date_time >= from && element.date_time <= to) {
           tarix.push(element)
         }
       });
@@ -260,8 +259,10 @@ export default {
     },
   },
   mounted() {
-    this.getData();
-    // this.getData2();
+    setTimeout(() => {
+      this.getData();
+      this.getData2();
+    }, 100);
   },
   computed: {
     filterRow: function () {

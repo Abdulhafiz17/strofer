@@ -86,6 +86,7 @@
                           Filial admin
                         </span>
                         <span v-if="hodim.role == 'seller'"> Sotuvchi </span>
+                        <span v-if="hodim.role == 'cashier'"> Kassir </span>
                       </td>
                     </tr>
                     <tr>
@@ -106,7 +107,7 @@
               </div>
               <div class="card-footer">
                 <div class="row d-flex justify-content-around">
-                  <div class="col-md" style="width: 84px">
+                  <div class="col-md" :style="role == 'admin' ? 'width: 100px' : 'width: 84px'">
                     <button
                       class="btn btn-block btn-outline-danger"
                       @click="block(hodim.id)"
@@ -114,7 +115,7 @@
                       <i class="fa fa-user-slash"></i>
                     </button>
                   </div>
-                  <div class="col-md" style="width: 84px">
+                  <div class="col-md" style="width: 84px" v-if="role !== 'admin'">
                     <button
                       class="btn btn-block btn-outline-success"
                       data-toggle="modal"
@@ -124,7 +125,7 @@
                       <span class="fa fa-coins" />
                     </button>
                   </div>
-                  <div class="col-md" style="width: 84px">
+                  <div class="col-md" :style="role == 'admin' ? 'width: 100px' : 'width: 84px'">
                     <router-link
                       :to="'/hodimHaqida/' + hodim.id"
                       class="btn btn-block btn-outline-info"
@@ -194,10 +195,18 @@
                     class="custom-select"
                     v-model="yangiHodim.role"
                     required
+                    v-if="role !== 'admin'"
                   >
-                    <option value="branch_admin">Filial admin</option>
                     <option value="seller">Sotuvchi</option>
                     <option value="cashier">Kassir</option>
+                  </select>
+                  <select
+                    class="custom-select"
+                    v-model="yangiHodim.role"
+                    required
+                    v-else
+                  >
+                    <option value="branch_admin">Filial admin</option>
                   </select>
                 </div>
               </div>
@@ -331,6 +340,7 @@
             <h4>Hodimga pul berish</h4>
           </div>
           <form @submit.prevent="payToUser(payUser)">
+<<<<<<< HEAD
             <div class="modal-body">
               <div class="row mb-2">
                 <div class="input-group input-group-sm">
@@ -346,6 +356,24 @@
                     <div class="input-group-text">
                       {{ payUser.currency_id }}
                     </div>
+=======
+          <div class="modal-body">
+            <div class="row mb-2">
+              <div class="input-group input-group-sm">
+                <input
+                  id="moneyUser"
+                  type="number"
+                  step="any"
+                  class="form-control"
+                  placeholder="Summa"
+                  min="0"
+                  v-model="payUser.price"
+                  required
+                />
+                <div id="moneyUserText" class="input-group-append">
+                  <div class="input-group-text">
+                    {{ payUser.currency_id }}
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
                   </div>
                 </div>
               </div>
@@ -386,7 +414,7 @@ export default {
       branch_id: "",
       access_token: localStorage.getItem("access_token"),
       role: localStorage.getItem("role"),
-      isloading: false,
+      isloading: true,
       hodimlar: [],
       yangiHodim: {
         name: "",
@@ -411,7 +439,11 @@ export default {
         comment: "",
       },
       search: "",
+<<<<<<< HEAD
       errorr: [],
+=======
+      number: Intl.NumberFormat()
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     };
   },
   methods: {
@@ -562,6 +594,9 @@ export default {
   },
   mounted() {
     this.getData();
+    if (this.role == "admin") {
+      this.yangiHodim.role = "branch_admin"
+    }
   },
 };
 </script>

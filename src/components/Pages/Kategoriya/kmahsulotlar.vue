@@ -242,7 +242,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm">
+            <!-- <div class="col-sm">
               <label> Yaroqlilik muddati </label>
               <input
                 type="date"
@@ -250,7 +250,7 @@
                 v-model="editT.validity_period"
                 required
               />
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="modal-footer">
@@ -437,7 +437,7 @@ export default {
       },
       editT: [],
       kpiget: [],
-      isloading: false,
+      isloading: true,
       backgroun: null,
       search: "",
       mahsulot: {},

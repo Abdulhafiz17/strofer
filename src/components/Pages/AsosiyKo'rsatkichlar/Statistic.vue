@@ -150,7 +150,12 @@
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import swal from "sweetalert";
+<<<<<<< HEAD
 import Chart from "./Chart.vue";
+=======
+import Chart from './Chart.vue';
+import axios from 'axios';
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
 export default {
   components: { isloading, Chart },
   data() {
@@ -179,9 +184,15 @@ export default {
     getData() {
       this.savdolar = [];
       this.isloading = true;
+<<<<<<< HEAD
       instance
         .get("all_orders/true")
         .then((orders) => {
+=======
+      instance.get("all_orders/true").then((orders) => {
+        console.log(orders.data)
+        if (orders.data.length > 0) {
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
           orders.data.forEach((element) => {
             element.time = element.time.replace("T", " ");
             if (element.time >= this.fromDate && element.time <= this.toDate) {
@@ -204,19 +215,34 @@ export default {
                       this.savdolar2 = this.savdolar;
                       this.isloading = false;
                       this.table = true;
+<<<<<<< HEAD
                     }).catch((err) => {
             this.isloading = false;
              this.errorr = err.message
           });
+=======
+                    });
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
                 });
               });
             }
           });
+<<<<<<< HEAD
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         });
+=======
+        } else {
+          this.isloading = false,
+          swal({
+            icon: "warning",
+            title: "Buyurtmalar topilmadi",
+          })
+        }
+      });
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     },
     returnProduct(savdo) {
       this.returnP.quantity = Number(this.returnP.quantity);
@@ -329,20 +355,33 @@ export default {
       // this.isloading = true
       // this.allIncomes = 0
       // instance.get("all_orders/true").then((orders) => {
-      //   orders.data.forEach((element) => {
-      //     instance.get("this_order_incomes/" + element.id).then((incomes) => {
-      //       incomes.data.forEach((element2) => {
-      //         this.allIncomes += element2.price
-      //       })
-      //       this.isloading = false
-      //       })
-      //   })
+      //   console.log(orders.data)
+      //   if (orders.data.length > 0) {
+      //     orders.data.forEach((element) => {
+      //       instance.get("this_order_incomes/" + element.id).then((incomes) => {
+      //         incomes.data.forEach((element2) => {
+      //           this.allIncomes += element2.price
+      //         })
+      //         this.isloading = false
+      //         })
+      //     })
+      //   } else {
+      //     this.isloading = false
+      //   }
       // })
     },
   },
   mounted() {
     console.clear();
+<<<<<<< HEAD
     this.getStatistic();
+=======
+    this.getStatistic()
+    
+    // instance.get("all_products_for_trade_to_search").then((res) => {
+    //   console.log(res.data)
+    // })
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
   },
 };
 </script>

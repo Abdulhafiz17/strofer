@@ -3,7 +3,7 @@ export const CONTENT_TOP = 50;
 export const contentTop =
   `${CONTENT_TOP}px`;
 
-  import { ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 export const collapsed = ref(false)
 export let toggleSidebar = () => (collapsed.value = !collapsed.value)
@@ -11,7 +11,7 @@ export let close_sidebar
 
 export const SIDEBAR_WIDTH = 170
 export const SIDEBAR_WIDTH_COLLAPSED = 0
-export let  sidebarWidth = computed( () => `${collapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`)
+export let sidebarWidth = computed(() => `${collapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`)
 export let sidebarPadding = sidebarWidth
 
 function myFunction(x) {

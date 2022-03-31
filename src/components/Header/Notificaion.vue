@@ -34,14 +34,11 @@
 
 <script>
 import { instance } from "../Pages/Api";
-import isloading from "../Anime/Anime.vue";
 export default {
-  components: { isloading },
   data() {
     return {
       mahsulotlar: [],
       notice: 0,
-      isloading: false,
       getter: true,
     };
   },
@@ -50,16 +47,18 @@ export default {
       (this.mahsulotlar = []),
         (this.notice = 0),
         instance.get("all_categories").then((response) => {
-          response.data.forEach((element) => {
-            instance.get("all_products/" + element.id).then((res) => {
-              res.data.forEach((element) => {
-                if (element.quantity_note >= element.quantity) {
-                  this.mahsulotlar.push(element);
-                  this.notice++;
-                }
+          if (response.data.length > 0 && response.data !== 'Sizga ruhsat berilmagan') {
+            response.data.forEach((element) => {
+              instance.get("all_products/" + element.id).then((res) => {
+                res.data.forEach((element) => {
+                  if (element.quantity_note >= element.quantity) {
+                    this.mahsulotlar.push(element);
+                    this.notice++;
+                  }
+                });
               });
             });
-          });
+          }
         });
     },
   },

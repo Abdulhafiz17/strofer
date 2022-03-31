@@ -132,6 +132,15 @@
                     </div>
                   </div>
                 </div>
+                <!-- <div class="col-sm">
+                  <label> Yaroqlilik muddati </label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    required
+                    v-model="postMahsulot.product.validity_period"
+                  />
+                </div> -->
               </div>
               <div class="row m-2">
                 <div class="col-sm">
@@ -221,8 +230,8 @@
                     v-model="postMahsulot.new_supply.currency_id"
                     required
                   >
+                    <option value="so'm" selected>so'm</option>
                     <option value="dollar">dollar</option>
-                    <option value="so'm">so'm</option>
                   </select>
                 </div>
               </div>
@@ -268,7 +277,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col-sm">
+              <!-- <div class="col-sm">
                 <label> Yaroqlilik muddati </label>
                 <input
                   type="date"
@@ -276,7 +285,7 @@
                   required
                   v-model="postMahsulot.product.validity_period"
                 />
-              </div>
+              </div> -->
             </div>
             <div class="row m-2">
               <div class="col-sm">
@@ -294,8 +303,8 @@
                     v-model="postMahsulot.product.currency_id_for_sell"
                     required
                   >
+                    <option value="so'm" selected>so'm</option>
                     <option value="dollar">dollar</option>
-                    <option value="so'm">so'm</option>
                   </select>
                 </div>
               </div>
@@ -314,8 +323,8 @@
                     v-model="postMahsulot.product.currency_id_for_sell"
                     required
                   >
+                    <option value="so'm" selected>so'm</option>
                     <option value="dollar">dollar</option>
-                    <option value="so'm">so'm</option>
                   </select>
                 </div>
               </div>
@@ -334,7 +343,7 @@
                     v-model="postMahsulot.product.measure"
                     required
                   >
-                    <option value="dona">dona</option>
+                    <option value="dona" selected>dona</option>
                     <option value="kg">kg</option>
                     <option value="litr">litr</option>
                     <option value="metr">metr</option>
@@ -374,8 +383,8 @@
                     v-model="postMahsulot.new_supply.currency_id"
                     required
                   >
+                    <option value="so'm" selected>so'm</option>
                     <option value="dollar">dollar</option>
-                    <option value="so'm">so'm</option>
                   </select>
                 </div>
               </div>
@@ -507,22 +516,21 @@ export default {
           name: "",
           brand: "",
           price: null,
-          currency_id: "",
+          currency_id: "so'm",
           selling_price: null,
           final_price: null,
-          currency_id_for_sell: "",
+          currency_id_for_sell: "so'm",
           quantity_note: null,
-          measure: "",
-          validity_period: "",
+          measure: "dona",
+          validity_period: "0",
         },
         new_supply: {
           quantity: null,
           price: null,
-          currency_id: "",
+          currency_id: "so'm",
           market_id: this.$route.params.id,
         },
       },
-      kurslar: [],
       kategoriyalar: [],
       jami_summa: null,
       taminotlar: [],
@@ -548,9 +556,6 @@ export default {
       this.isLoading = true;
       instance.get("this_market/" + this.$route.params.id).then((res) => {
         this.taminotchi = res.data;
-      });
-      instance.get("all_currencies").then((res) => {
-        this.kurslar = res.data;
       });
       instance
         .get("all_categories")
@@ -584,7 +589,20 @@ export default {
             };
             this.getMahsulot(this.postMahsulot.product);
           } else {
-            this.postMahsulot.product = {};
+            this.postMahsulot.product = {
+              category_id: "",
+              code: "",
+              name: "",
+              brand: "",
+              price: null,
+              currency_id: "so'm",
+              selling_price: null,
+              final_price: null,
+              currency_id_for_sell: "so'm",
+              quantity_note: null,
+              measure: "dona",
+              validity_period: "0",              
+            };
             this.openRow = false;
             this.alert = "null";
           }
@@ -617,6 +635,7 @@ export default {
           });
     },
     postTaminot() {
+      // console.log(this.postMahsulot)
       this.isloading = true;
       this.postMahsulot.product.code = String(this.barcode);
       instance
@@ -646,7 +665,6 @@ export default {
                 currency_id_for_sell: "",
                 quantity_note: null,
                 measure: "",
-                validity_period: "",
               },
               new_supply: {
                 quantity: null,
@@ -711,27 +729,35 @@ export default {
       this.isloading = true;
       let button = document.createElement("button");
       button.class = "btn btn-outline-succcess";
-      instance
-        .put("confirmation_all_supplies/" + this.$route.params.id)
-        .then((res) => {
-          console.log(res.data);
-          if (res.status == 200) {
-            swal({
-              icon: "success",
-              title: "Ta'minot olindi",
-              closeOnClickOutside: false,
-            }).then(() => {
-              window.location.reload();
-            });
-            // setTimeout(() => {
-            //   window.location.reload();
-            // }, 3000);
-          }
+      if (this.taminotlar.length > 0) {
+        instance
+          .put("confirmation_all_supplies/" + this.$route.params.id)
+          .then((res) => {
+            console.log(res.data);
+            if (res.status == 200) {
+              swal({
+                icon: "success",
+                title: "Ta'minot olindi",
+                closeOnClickOutside: false,
+              }).then(() => {
+                window.location.reload();
+              });
+            }
+          })
+          .finally((this.isloading = false));
+      } else {
+        swal({
+          icon: "warning",
+          title: "Ta'minot bo'sh"
         })
+<<<<<<< HEAD
         .finally((this.isloading = false)).catch((err) => {
             this.isloading = false;
              this.errorr = err.message
           });
+=======
+      }
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     },
   },
   mounted() {

@@ -45,7 +45,9 @@ import { collapsed, toggleSidebar } from "@/components/sidebar/state";
 import Notificaion from "./Notificaion.vue";
 export default {
   data() {
-    return {};
+    return {
+      number: null,
+    };
   },
 
   methods: {

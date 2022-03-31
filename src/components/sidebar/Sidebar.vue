@@ -1,10 +1,10 @@
 <script>
-import swal from 'sweetalert';
+import swal from "sweetalert";
 import { instance } from "../Pages/Api";
 import SidebarLink from "./SidebarLink";
 import { sidebarWidth, collapsed, toggleSidebar } from "./state";
 export default {
-  components: { SidebarLink },
+  components: { SidebarLink, toggleSidebar },
   data() {
     return {
       role: localStorage.getItem("role"),
@@ -27,14 +27,27 @@ export default {
         if (res.status == 200) {
           swal({
             icon: "success",
-            timer: 2000
-          })
+            timer: 2000,
+          });
         }
       });
     },
   },
   mounted() {
     this.getData();
+
+    function myFunction(x) {
+      if (x.matches) {
+        let link = document.querySelector(".SidebarLink")
+        link.onclick = function() {
+          this.toggleSidebar = (collapsed.value = !collapsed.value)
+        }
+      }
+    }
+
+    var x = window.matchMedia("(max-width: 800px)");
+    myFunction(x); // Call listener function at run time
+    x.addListener(myFunction); // Attach listener function on state changesА
   },
 };
 </script>
@@ -43,8 +56,10 @@ export default {
   <transition name="fade-SidebarLink">
     <div class="sidebar" :style="{ width: sidebarWidth }">
       <div class="sidebar-link SidebarLink">
-
-        <SidebarLink to="/statistic" v-if="role == 'admin' || role == 'branch_admin'">
+        <SidebarLink
+          to="/statistic"
+          v-if="role == 'admin' || role == 'branch_admin'"
+        >
           <span class="fas fa-chart-line"></span>
           <p class="ripple">Statistika</p>
         </SidebarLink>
@@ -134,7 +149,11 @@ export default {
               <div class="input-group-text">so'm</div>
             </div>
           </div>
-          <button type="button" class="btn btn-sm btn-block btn-success text-center" @click="putData()">
+          <button
+            type="button"
+            class="btn btn-sm btn-block btn-success text-center"
+            @click="putData()"
+          >
             Tasdiqlash
           </button>
         </div>
