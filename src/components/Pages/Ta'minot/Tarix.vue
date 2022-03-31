@@ -121,7 +121,6 @@
                         <th>To'lov summa</th>
                         <th>Sana</th>
                         <th>Izoh</th>
-                        <th>Hodim</th>
                       </thead>
                       <tbody>
                         <tr v-for="(tarix, n) in tolovTarix" :key="tarix.id">
@@ -136,7 +135,6 @@
                           </td>
                           <td>{{ tarix.date_time }}</td>
                           <td>{{ tarix.comment }}</td>
-                          <td>{{ tarix.user }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -188,29 +186,15 @@ export default {
   methods: {
     getData() {
       this.tolovTarix = []
-      instance.get("this_market/" + this.$route.params.id).then((res) => {
-        this.taminotchi = res.data;
-      })
       instance.get("market_expenses/" + this.$route.params.id).then((res) => {
-        console.log(res.data)
         res.data.forEach((element) => {
-          instance.get("this_user/" + element.owner_id).then((response) => {
               this.tolovTarix.push({
                 currency: element.currency_id,
                 price: element.price,
                 comment: element.comment,
                 date_time: element.time.replace("T", " "),
-                user: response.data.name,
               });
-              console.log(
-                element.currency_id,
-                element.price,
-                element.comment,
-                element.time.replace("T", " "),
-                response.data.name,
-              )
               this.isloading = false
-          });
         });
       })
     },
@@ -247,7 +231,9 @@ export default {
       this.isloading = true
       let tarix = []
       this.tolovTarix.forEach(element => {
+        element.date_time.substring(0, 10)
         if (element.date_time >= from && element.date_time <= to) {
+          console.log(element)
           tarix.push(element)
         }
       });
@@ -256,10 +242,14 @@ export default {
     },
   },
   mounted() {
+    console.clear()
     setTimeout(() => {
       this.getData();
       this.getData2();
-    }, 100);
+    }, 300);
+    instance.get("this_market/" + this.$route.params.id).then((res) => {
+      this.taminotchi = res.data;
+    })
   },
   computed: {
     filterRow: function () {

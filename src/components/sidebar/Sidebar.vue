@@ -183,6 +183,11 @@ button:hover {
   color: white;
 }
 
+.dark .SidebarLink button * :hover {
+  background: #35393d;
+  color: white !important;
+}
+
 button p {
   font-size: 12px;
 }

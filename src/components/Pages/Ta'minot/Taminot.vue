@@ -310,7 +310,7 @@ export default {
       tolov: {
         id: "",
         price: null,
-        currency_id: "",
+        currency_id: "so'm",
         comment: "",
       },
       kurslar: [],
