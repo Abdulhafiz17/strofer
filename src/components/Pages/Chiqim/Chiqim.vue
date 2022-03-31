@@ -278,12 +278,12 @@
     </div>
     <!-- Modal end -->
   </div>
-  <isloading :isloading="isloading" />
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 export default {
   components: { isloading },
   data() {
@@ -296,19 +296,17 @@ export default {
       doimiychiqim: {
         name: "",
       },
-
       chiqimid: {
         price: null,
         currency_id: "",
         comment: "",
       },
-
       kurs: [],
       cards: [],
       kurscard: [],
       editT: [],
       chiqimData: [],
-      errorr: [],
+      errorr: "",
       isloading: false,
     };
   },
@@ -320,11 +318,26 @@ export default {
         .then((response) => {
           // this.getData();
           console.log(response.data);
-          window.location.reload();
+          if (response.status == 200) {
+            swal({
+              icon: "success",
+            }).then(() => {
+              window.location.reload();
+            });
+          }
+          this.isloading = false
+        })
+        .catch((err) => {
+          this.errorr = err.message;
+          if (err.message == "Request failed with status code 422") {
+            swal({
+              icon: "warning",
+              title: "Malumotlar to'liq emas",
+            });
+          }
         })
         .finally((this.isloading = false));
     },
-
     doimiychiqimpost() {
       this.isloading = true;
       if (this.doimiychiqim.name == "") {
@@ -339,7 +352,9 @@ export default {
               this.getData();
             }
           })
-          .finally((this.isloading = false));
+          .catch((err) => {
+            this.errorr = err.message;
+          });
       }
       // if (this.doimiychiqim == "Bunday chiqim turi mavjud") {
       //   alert("Bunday chiqim turi mavjud");
@@ -350,7 +365,6 @@ export default {
       //       console.log(response.data);
       //       this.getData();
       //       // window.location.reload();
-
       //       if (response.data == "success") {
       //         this.errorr = alert("Qo'shildi");
       //         this.getData();
@@ -359,7 +373,6 @@ export default {
       //     .finally((this.isloading = false));
       // }
     },
-
     chiqimidpost(id) {
       this.isloading = true;
       this.chiqimid = {
@@ -373,13 +386,12 @@ export default {
         .then((response) => {
           swal({
             icon: "success",
-          })
-          document.getElementById("price" + id).value = null
-          document.getElementById("comment" + id).value = ""
+          });
+          document.getElementById("price" + id).value = null;
+          document.getElementById("comment" + id).value = "";
         })
         .finally((this.isloading = false));
     },
-
     getData() {
       this.isloading = true;
       instance
@@ -388,16 +400,17 @@ export default {
           this.cards = response.data;
           console.log(response.data);
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.errorr = err.message
+        })
     },
-
     editk(id, nomi) {
       this.editT = {
         id: id,
         name: nomi,
       };
     },
-
     putData(id) {
       this.isloading = true;
       instance
@@ -410,7 +423,7 @@ export default {
     },
   },
   mounted() {
-    console.clear()
+    console.clear();
     this.getData();
   },
 };

@@ -101,7 +101,9 @@ export default {
             // alert("Tarmoq bilan aloqa mavjud emas")
             swal({
               icon: "warning",
-              title: "Tarmoq bilan aloqa mavjud emas"
+              title: "Tarmoq bilan aloqa mavjud emas",
+              closeOnClickOutside:false,
+              closeOnEsc: false,
             })
           }
         });

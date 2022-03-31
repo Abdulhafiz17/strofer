@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-header">
-        <h3 v-if="role == 'cashier'"> Vozvrat qilish </h3>
+        <h3 v-if="role == 'cashier'">Vozvrat qilish</h3>
         <h3 v-else>Asosiy ko'rsatgichlar</h3>
       </div>
       <div class="card-body">
@@ -23,7 +23,16 @@
           </div>
         </div>
         <div class="my-2">
-          <div class="table-responsive text-center table-bordered my-custom-scrollbar table-wrapper-scroll-y" v-if="table">
+          <div
+            class="
+              table-responsive
+              text-center
+              table-bordered
+              my-custom-scrollbar
+              table-wrapper-scroll-y
+            "
+            v-if="table"
+          >
             <table class="table-sm table-hover">
               <thead>
                 <tr>
@@ -134,14 +143,14 @@
     </div>
   </div>
 
-  <isloading :isloading="isloading" />
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script type="text/javascript">
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import swal from "sweetalert";
-import Chart from './Chart.vue';
+import Chart from "./Chart.vue";
 export default {
   components: { isloading, Chart },
   data() {
@@ -163,41 +172,51 @@ export default {
       searchQ: "",
       searchS: "",
       searchC: "",
+      errorr: [],
     };
   },
   methods: {
     getData() {
       this.savdolar = [];
       this.isloading = true;
-      instance.get("all_orders/true").then((orders) => {
-        orders.data.forEach((element) => {
-          element.time = element.time.replace("T", " ");
-          if (element.time >= this.fromDate && element.time <= this.toDate) {
-            instance.get("this_order_trades/" + element.id).then((trades) => {
-              trades.data.forEach((element2) => {
-                instance
-                  .get("this_product/empty/" + element2.product_code)
-                  .then((product) => {
-                    this.savdolar.push({
-                      trade_id: element2.id,
-                      client: element.client_id,
-                      owner: element.owner_id,
-                      time: element.time,
-                      quantity: element2.quantity,
-                      selling_price: element2.selling_price,
-                      product: product.data[0].name,
-                      brand: product.data[0].brand,
-                      measure: product.data[0].measure,
-                    });
-                    this.savdolar2 = this.savdolar;
-                    this.isloading = false;
-                    this.table = true;
-                  });
+      instance
+        .get("all_orders/true")
+        .then((orders) => {
+          orders.data.forEach((element) => {
+            element.time = element.time.replace("T", " ");
+            if (element.time >= this.fromDate && element.time <= this.toDate) {
+              instance.get("this_order_trades/" + element.id).then((trades) => {
+                trades.data.forEach((element2) => {
+                  instance
+                    .get("this_product/empty/" + element2.product_code)
+                    .then((product) => {
+                      this.savdolar.push({
+                        trade_id: element2.id,
+                        client: element.client_id,
+                        owner: element.owner_id,
+                        time: element.time,
+                        quantity: element2.quantity,
+                        selling_price: element2.selling_price,
+                        product: product.data[0].name,
+                        brand: product.data[0].brand,
+                        measure: product.data[0].measure,
+                      });
+                      this.savdolar2 = this.savdolar;
+                      this.isloading = false;
+                      this.table = true;
+                    }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
+                });
               });
-            });
-          }
+            }
+          });
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
-      });
     },
     returnProduct(savdo) {
       this.returnP.quantity = Number(this.returnP.quantity);
@@ -232,7 +251,11 @@ export default {
                   title: "Mahsulot qaytarib olindi",
                 }).then(this.getData());
               }
-            });
+            })
+            .catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
         }
       });
     },
@@ -319,7 +342,7 @@ export default {
   },
   mounted() {
     console.clear();
-    this.getStatistic()
+    this.getStatistic();
   },
 };
 </script>

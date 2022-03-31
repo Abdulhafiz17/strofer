@@ -416,7 +416,7 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading" />
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
@@ -441,6 +441,7 @@ export default {
       backgroun: null,
       search: "",
       mahsulot: {},
+      errorr: [],
     };
   },
 
@@ -464,7 +465,10 @@ export default {
           if (response.status == 200) {
           }
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     getkpi() {
@@ -474,7 +478,10 @@ export default {
         .then((response) => {
           this.kpiget = response.data;
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     getData() {
@@ -511,7 +518,10 @@ export default {
           }
           console.log(this.mahsulotlars);
         })
-        .finally();
+        .finally().catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     putData(id) {
@@ -523,7 +533,10 @@ export default {
           this.getData();
           console.log(response.data);
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
 
       console.log(this.editT.kpi);
       // if (this.editT.kpi.currency_id == "percent") {
@@ -537,7 +550,10 @@ export default {
         .put("this_kpi_update/" + this.editT.kpi.id, this.editT.kpi)
         .then((res) => {
           console.log(res.data);
-        });
+        }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     editk(mahsulot) {

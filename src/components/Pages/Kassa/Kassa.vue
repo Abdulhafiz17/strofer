@@ -149,7 +149,8 @@
                                 Intl.NumberFormat({ style: "currency" }).format(
                                   balance.selling_price
                                 )
-                              }} so'm
+                              }}
+                              so'm
                               <span class="fa fa-coin" />
                             </span>
                           </td>
@@ -215,8 +216,18 @@
                   </button>
                 </li>
               </ul>
-              <strong class="my-2"> <center> Umumiy summa : {{ Intl.NumberFormat({style: "currency"}).format(balance.selling_price) }} so'm </center> </strong>
-              <hr/>
+              <strong class="my-2">
+                <center>
+                  Umumiy summa :
+                  {{
+                    Intl.NumberFormat({ style: "currency" }).format(
+                      balance.selling_price
+                    )
+                  }}
+                  so'm
+                </center>
+              </strong>
+              <hr />
               <div class="tab-content" id="pills-tabContent">
                 <div
                   class="tab-pane fade"
@@ -237,9 +248,7 @@
                           :max="balance.selling_price"
                         />
                         <div class="input-group-append">
-                          <div class="input-group-text">
-                            so'm
-                          </div>
+                          <div class="input-group-text">so'm</div>
                         </div>
                       </span>
                     </div>
@@ -255,9 +264,7 @@
                           @keyup="count2()"
                         />
                         <div class="input-group-append">
-                          <div class="input-group-text">
-                            so'm
-                          </div>
+                          <div class="input-group-text">so'm</div>
                         </div>
                       </span>
                     </div>
@@ -298,9 +305,7 @@
                           @keyup="nasiya1()"
                         />
                         <div class="input-group-append">
-                          <div class="input-group-text">
-                            so'm
-                          </div>
+                          <div class="input-group-text">so'm</div>
                         </div>
                       </span>
                     </div>
@@ -316,9 +321,7 @@
                           @keyup="nasiya2()"
                         />
                         <div class="input-group-append">
-                          <div class="input-group-text">
-                            so'm
-                          </div>
+                          <div class="input-group-text">so'm</div>
                         </div>
                       </span>
                     </div>
@@ -334,9 +337,7 @@
                           readonly
                         />
                         <div class="input-group-append">
-                          <div class="input-group-text bg-gray">
-                            so'm
-                          </div>
+                          <div class="input-group-text bg-gray">so'm</div>
                         </div>
                       </div>
                     </div>
@@ -369,11 +370,11 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
-import isloading from "../../Anime/Anime.vue"
+import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 import swal from "sweetalert";
 export default {
@@ -394,90 +395,115 @@ export default {
       isloading: false,
       naxtSavdo: {
         price: null,
-        comment: "naxt"
+        comment: "naxt",
       },
       plastikSavdo: {
         price: null,
-        comment: "plastik"
+        comment: "plastik",
       },
       nasiyaSumma: 0,
       new_loan: "",
+      errorr: [],
     };
   },
   methods: {
     getBuyurtma() {
-      this.isloading = true
+      this.isloading = true;
       this.buyurtmalar = [];
-      instance.get("all_orders/false").then((res) => {
-        this.buyurtmalar = res.data;
-        // console.log(res.data);
-      }).finally(
-        this.isloading = false
-      )
+      instance
+        .get("all_orders/false")
+        .then((res) => {
+          this.buyurtmalar = res.data;
+          // console.log(res.data);
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
 
-      this.isloading = true
-      instance.get("all_customers").then((res) => {
-        this.mijozlar = res.data;
-      }).finally(
-        this.isloading = false
-      )
+      this.isloading = true;
+      instance
+        .get("all_customers")
+        .then((res) => {
+          this.mijozlar = res.data;
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     deleteOrder(id) {
-      this.isloading = true
-      this.buyurtmalar = []
-      instance.delete("remove_this_order/" + id).then((res) => {
-        this.buyurtmalar = res.data
-      }).finally(
-        this.isloading = false
-      )
+      this.isloading = true;
+      this.buyurtmalar = [];
+      instance
+        .delete("remove_this_order/" + id)
+        .then((res) => {
+          this.buyurtmalar = res.data;
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     getTrades(id) {
-      this.isloading = true
+      this.isloading = true;
       this.buyurtmaMahsulotlar = [];
-      instance.get("this_order_trades/" + id).then((res) => {
-        res.data.forEach((element) => {
-          instance
-            .get("this_product/empty/" + element.product_code)
-            .then((response) => {
-              let mahsulot = {
-                code: element.product_code,
-                name: response.data[0].name,
-                brand: response.data[0].brand,
-                hajm: element.quantity,
-                qoldiq: response.data[0].quantity,
-                olchov: response.data[0].measure,
-                narx: element.selling_price,
-                oxirgi_narx: response.data[0].final_price,
-                currency: response.data[0].currency_id_for_sell,
-              };
-              this.buyurtmaMahsulotlar.push(mahsulot);
-            });
+      instance
+        .get("this_order_trades/" + id)
+        .then((res) => {
+          res.data.forEach((element) => {
+            instance
+              .get("this_product/empty/" + element.product_code)
+              .then((response) => {
+                let mahsulot = {
+                  code: element.product_code,
+                  name: response.data[0].name,
+                  brand: response.data[0].brand,
+                  hajm: element.quantity,
+                  qoldiq: response.data[0].quantity,
+                  olchov: response.data[0].measure,
+                  narx: element.selling_price,
+                  oxirgi_narx: response.data[0].final_price,
+                  currency: response.data[0].currency_id_for_sell,
+                };
+                this.buyurtmaMahsulotlar.push(mahsulot);
+              });
+          });
+        })
+        .finally(this.getBalances(this.orderId), (this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
-      }).finally(
-        this.getBalances(this.orderId),
-        this.isloading = false
-      )
     },
     getBalances(id) {
-      this.isloading = true,
-      (this.balance = {}),
-        instance.get("this_order_balances/" + id).then((res) => {
-          console.log(res.data)
-          this.balance = res.data[0]
-          // res.data.forEach((element) => {
-          //   instance
-          //       let buyurtmaBalance = {
-          //         price: element.selling_price,
-          //         currency_id: element.currency_id_for_sell,
-          //       };
-          //       this.balance.push(buyurtmaBalance);
-          // });
-        }).finally(
-          this.isloading = false
-        )
+      (this.isloading = true),
+        (this.balance = {}),
+        instance
+          .get("this_order_balances/" + id)
+          .then((res) => {
+            console.log(res.data);
+            this.balance = res.data[0];
+            // res.data.forEach((element) => {
+            //   instance
+            //       let buyurtmaBalance = {
+            //         price: element.selling_price,
+            //         currency_id: element.currency_id_for_sell,
+            //       };
+            //       this.balance.push(buyurtmaBalance);
+            // });
+          })
+          .finally((this.isloading = false))
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          });
     },
     postOrder(mahsulot, order) {
-      this.isloading = true
+      this.isloading = true;
       if (mahsulot.hajm > mahsulot.qoldiq) {
         alert(
           "Ushbu mahsulotta yetarli qoldiq mavjud emas ! Qoldiq : " +
@@ -491,50 +517,67 @@ export default {
           selling_price: mahsulot.narx,
           order_id: order.id,
         };
-        instance.put("update_this_trade", product).then((res) => {
-          mahsulot = {
-            hajm: product.quantity,
-            narx: product.selling_price,
-          };
-          // setTimeout(() => {
-          //   this.getTrades(this.orderId)
-          // }, 3000);
-        }).then(() => {
-          this.getBalances(this.orderId);
-        }).finally(
-          this.isloading = false
-        )
+        instance
+          .put("update_this_trade", product)
+          .then((res) => {
+            mahsulot = {
+              hajm: product.quantity,
+              narx: product.selling_price,
+            };
+            // setTimeout(() => {
+            //   this.getTrades(this.orderId)
+            // }, 3000);
+          })
+          .then(() => {
+            this.getBalances(this.orderId);
+          })
+          .finally((this.isloading = false))
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          });
       }
     },
     deleteTrade(code) {
-      this.isloading = true
+      this.isloading = true;
       console.log(code, this.orderId);
       instance
         .delete("remove_this_trade/" + code + "/" + this.orderId)
         .then((res) => {
           console.log(res.data);
-        }).finally(
-          this.isloading = false
-        )
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     count1() {
-      this.plastikSavdo.price = this.balance.selling_price - this.naxtSavdo.price
+      this.plastikSavdo.price =
+        this.balance.selling_price - this.naxtSavdo.price;
     },
     count2() {
-      this.naxtSavdo.price = this.balance.selling_price - this.plastikSavdo.price
+      this.naxtSavdo.price =
+        this.balance.selling_price - this.plastikSavdo.price;
     },
     nasiya1() {
-      this.nasiyaSumma = (this.balance.selling_price - this.plastikSavdo.price) - this.naxtSavdo.price
+      this.nasiyaSumma =
+        this.balance.selling_price -
+        this.plastikSavdo.price -
+        this.naxtSavdo.price;
     },
     nasiya2() {
-      this.nasiyaSumma = (this.balance.selling_price - this.naxtSavdo.price) - this.plastikSavdo.price
+      this.nasiyaSumma =
+        this.balance.selling_price -
+        this.naxtSavdo.price -
+        this.plastikSavdo.price;
     },
     payToCass(naxt, plastik) {
-      this.isloading = true
+      this.isloading = true;
       // let date = new Date();
       let new_loan = {
-        return_date: this.new_loan
-      }
+        return_date: this.new_loan,
+      };
 
       if (this.client == true && this.client_id == "") {
         swal({
@@ -547,14 +590,17 @@ export default {
       } else if (this.client == false && this.client_id == "") {
         let new_incomes = [];
         if (naxt.price == 0 || naxt.price == null) {
-          new_incomes.push(plastik)
+          new_incomes.push(plastik);
         } else if (plastik.price == 0 || plastik.price == null) {
-          new_incomes.push(naxt)
+          new_incomes.push(naxt);
         } else {
-          new_incomes.push(naxt, plastik)
+          new_incomes.push(naxt, plastik);
         }
         instance
-          .post("order_confirmation/" + this.orderId + "/unknown", {new_incomes, new_loan})
+          .post("order_confirmation/" + this.orderId + "/unknown", {
+            new_incomes,
+            new_loan,
+          })
           .then((res) => {
             console.log(res.data);
             if (res.data == null || res.data == "success" || res.data == []) {
@@ -562,30 +608,31 @@ export default {
                 icon: "success",
                 title: "Savdo tugatildi",
                 timer: 1500,
-              }).then(
-                window.location.reload()
-              )
+              }).then(window.location.reload());
             }
-          }).finally(
-            this.isloading = false
-          )
+          })
+          .finally((this.isloading = false))
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          });
       } else {
         let new_incomes = [];
         if (naxt.price == 0 || naxt.price == null) {
-          new_incomes = []
-          new_incomes.push(plastik)
+          new_incomes = [];
+          new_incomes.push(plastik);
         } else if (plastik.price == 0 || plastik.price == null) {
-          new_incomes = []
-          new_incomes.push(naxt)
+          new_incomes = [];
+          new_incomes.push(naxt);
         } else {
-          new_incomes = []
-          new_incomes.push(naxt, plastik)
+          new_incomes = [];
+          new_incomes.push(naxt, plastik);
         }
         instance
-          .post(
-            "order_confirmation/" + this.orderId + "/" + this.client_id,
-            {new_incomes, new_loan}
-          )
+          .post("order_confirmation/" + this.orderId + "/" + this.client_id, {
+            new_incomes,
+            new_loan,
+          })
           .then((res) => {
             console.log(res.data);
             if (res.data == null || res.data == "success" || res.data == []) {
@@ -593,13 +640,14 @@ export default {
                 icon: "success",
                 title: "Savdo tugatildi",
                 timer: 1500,
-              }).then(
-                window.location.reload()
-              )
+              }).then(window.location.reload());
             }
-          }).finally(
-            this.isloading = false
-          )
+          })
+          .finally((this.isloading = false))
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          });
       }
     },
   },

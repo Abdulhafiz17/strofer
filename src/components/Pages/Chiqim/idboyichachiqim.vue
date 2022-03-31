@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading" />
+  <isloading :isloading="isloading" :message="errorr"/>
 </template>
 
 <script>
@@ -44,32 +44,34 @@ export default {
         sana: "",
       },
       isloading: false,
+      errorr: [],
     };
   },
   methods: {
     getData() {
-      this.isloading = true
+      this.isloading = true;
       instance
         .get("this_fixed_expense/" + this.$route.params.id)
         .then((response) => {
           response.data.forEach((element) => {
-            instance
-              .get("this_currency/" + element.currency_id)
-              .then((res) => {
-                this.chiqim = {
-                  narxi: element.price,
-                  valyuta: res.data.currency,
-                  comment: element.comment,
-                  sana: element.time.replace("T", " "),
-                };
-                this.idboyicha.push(this.chiqim);
-              })
+            instance.get("this_currency/" + element.currency_id).then((res) => {
+              this.chiqim = {
+                narxi: element.price,
+                valyuta: res.data.currency,
+                comment: element.comment,
+                sana: element.time.replace("T", " "),
+              };
+              this.idboyicha.push(this.chiqim);
+            });
           });
           // this.idboyicha = response.data;
           console.log(this.idboyicha);
-        }).finally(
-          this.isloading = false
-        )
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
   },
   mounted() {

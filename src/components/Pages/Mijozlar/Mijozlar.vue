@@ -268,13 +268,15 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading" :message="error"/>
 </template>
 
 <script>
 import { instance } from "../Api";
 import _ from "underscore";
-
+import isloading from "../../Anime/Anime.vue"
 export default {
+  components: { isloading },
   data() {
     return {
       mijozpost: {
@@ -286,6 +288,8 @@ export default {
       mijozget: [],
       editT: {},
       search: "",
+      isloading: false,
+      error: "",
     };
   },
 
@@ -302,7 +306,10 @@ export default {
       instance.get("all_customers").then((response) => {
         this.mijozget = response.data;
         console.log(response.data);
-      });
+      }).catch((err) => {
+        this.error = err.message
+        // console.log(this.error)
+      })
     },
 
     putData(id) {

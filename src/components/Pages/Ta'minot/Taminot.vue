@@ -201,7 +201,11 @@
                   v-model="tolov.price"
                   required
                 />
-                <select class="custom-select" v-model="tolov.currency_id" required>
+                <select
+                  class="custom-select"
+                  v-model="tolov.currency_id"
+                  required
+                >
                   <option value="dollar">dollar</option>
                   <option value="so'm">so'm</option>
                 </select>
@@ -282,11 +286,11 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
-import isloading from "../../Anime/Anime.vue"
+import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 export default {
   components: { isloading },
@@ -313,46 +317,63 @@ export default {
       kurslar: [],
       search: "",
       isloading: false,
+      errorr: [],
     };
   },
   methods: {
     getData() {
-      instance.get("all_markets").then((res) => {
-        this.isloading = true
-        this.taminotchilar = res.data;
-        this.taminotchilar.forEach((element) => {
-          instance.get("market_balances_all/" + element.id).then((res) => {
-            element.balances = res.data
-            if (res.data.length > 0) {
-              res.data.forEach((balance) => {
-                instance.get("this_currency/" + balance.currency_id)
-                .then((res) => {
-                  balance.currency_id = res.data.currency
-                  this.isloading = false
-                })
-              })
-            } else {
-              this.isloading = false
-            }
+      instance
+        .get("all_markets")
+        .then((res) => {
+          this.isloading = true;
+          this.taminotchilar = res.data;
+          this.taminotchilar.forEach((element) => {
+            instance.get("market_balances_all/" + element.id).then((res) => {
+              element.balances = res.data;
+              if (res.data.length > 0) {
+                res.data.forEach((balance) => {
+                  instance
+                    .get("this_currency/" + balance.currency_id)
+                    .then((res) => {
+                      balance.currency_id = res.data.currency;
+                      this.isloading = false;
+                    })
+                    .catch((err) => {
+                      this.isloading = false;
+                      this.errorr = err.message;
+                    });
+                });
+              } else {
+                this.isloading = false;
+              }
+            });
           });
+          // instance.get("all_currencies").then((res) => {
+          //   this.kurslar = res.data;
+          // });
+        })
+        .finally()
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
-        // instance.get("all_currencies").then((res) => {
-        //   this.kurslar = res.data;
-        // });
-      })
-      .finally(
-        )
     },
     postData() {
-      this.isloading = true
-      instance.post("market_create", this.yangiTaminotchi).then((res) => {
-        console.log(res.data);
-        if (res.status == 200) {
-          window.location.reload();
-          // this.getData();
-        }
-      })
-      .finally(this.isloading = false)
+      this.isloading = true;
+      instance
+        .post("market_create", this.yangiTaminotchi)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status == 200) {
+            window.location.reload();
+            // this.getData();
+          }
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     edit(id, name, phone, address) {
       this.editTaminotchi = {
@@ -363,7 +384,7 @@ export default {
       };
     },
     editData(id) {
-      this.isloading = true
+      this.isloading = true;
       console.log(id);
       instance
         .put("this_market_update/" + id, this.editTaminotchi)
@@ -371,10 +392,14 @@ export default {
           window.location.reload();
           console.log(res.data);
         })
-        .finally(this.isloading = false)
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     payToMarket() {
-      this.isloading = true
+      this.isloading = true;
       instance
         .post("pay_to_market/" + this.tolov.id, this.tolov)
         .then((res) => {
@@ -383,7 +408,11 @@ export default {
             window.location.reload();
           }
         })
-        .finally(this.isloading = false)
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
   },
   computed: {
@@ -395,16 +424,16 @@ export default {
     },
   },
   mounted() {
-    console.clear()
-    this.getData()
-    if (localStorage.getItem('reloaded')) {
-        // The page was just reloaded. Clear the value from local storage
-        // so that it will reload the next time this page is visited.
-        localStorage.removeItem('reloaded');
+    console.clear();
+    this.getData();
+    if (localStorage.getItem("reloaded")) {
+      // The page was just reloaded. Clear the value from local storage
+      // so that it will reload the next time this page is visited.
+      localStorage.removeItem("reloaded");
     } else {
-        // Set a flag so that we know not to reload the page twice.
-        localStorage.setItem('reloaded', '1');
-        location.reload();
+      // Set a flag so that we know not to reload the page twice.
+      localStorage.setItem("reloaded", "1");
+      location.reload();
     }
   },
 };

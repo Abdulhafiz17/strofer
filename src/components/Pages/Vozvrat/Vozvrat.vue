@@ -83,7 +83,10 @@ export default {
                   });
               });
         });
-      });
+      }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
   },
   mounted() {

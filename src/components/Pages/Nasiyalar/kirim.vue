@@ -15,7 +15,7 @@
           </thead>
           <tbody>
             <tr v-for="(get, idx) in gets" :key="get">
-              <th scope="row" class="text-center">{{ idx +1 }}</th>
+              <th scope="row" class="text-center">{{ idx + 1 }}</th>
               <td class="text-center">{{ get.price }}</td>
               <td class="text-center">{{ get.time }}</td>
               <td class="text-center">{{ get.comment }}</td>

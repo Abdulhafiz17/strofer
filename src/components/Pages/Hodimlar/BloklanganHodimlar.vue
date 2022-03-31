@@ -1,6 +1,9 @@
 <template>
   <div class="container-fluid">
-    <router-link class="btn btn-outline-success btn-sm mb-2" :to="'/hodimlar/' + branch_id">
+    <router-link
+      class="btn btn-outline-success btn-sm mb-2"
+      :to="'/hodimlar/' + branch_id"
+    >
       <span class="fa fa-arrow-left"></span> Chiqish
     </router-link>
     <div class="card shadow">
@@ -65,7 +68,7 @@
               </div>
               <div class="card-footer">
                 <div class="row d-flex justify-content-around">
-                  <div class="col-md-6" style="width: 118px;">
+                  <div class="col-md-6" style="width: 118px">
                     <button
                       class="btn btn-block btn-outline-danger"
                       @click="block(hodim.id)"
@@ -73,7 +76,7 @@
                       <i class="fa fa-user-slash"></i>
                     </button>
                   </div>
-                  <div class="col-md-6" style="width: 118px;">
+                  <div class="col-md-6" style="width: 118px">
                     <router-link
                       to="/kPITarixi"
                       class="btn btn-block btn-outline-primary"
@@ -89,22 +92,32 @@
       </div>
     </div>
   </div>
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
 import axios from "axios";
-import { instance } from '../Api';
+
+import { instance } from "../Api";
+import isloading from "../../Anime/Anime.vue";
+
 export default {
+  components:{
+    isloading
+  },
   data() {
     return {
       access_token: localStorage.getItem("access_token"),
       branch_id: localStorage.getItem("branch_id"),
       hodimlar: [],
+      isloading: false,
+      errorr: [],
     };
   },
   methods: {
     getData() {
-      const BASEURL = "https://savdo.crud.uz/branch_users/" + this.branch_id + "/true";
+      const BASEURL =
+        "https://savdo.crud.uz/branch_users/" + this.branch_id + "/true";
       axios
         .create({
           baseURL: BASEURL,
@@ -118,22 +131,31 @@ export default {
         .then((res) => {
           this.hodimlar = res.data;
           console.log(res.data);
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
     },
     block(id) {
-      instance.put("this_user_unblock/" + id)
-      .then((res) => {
-        console.log(res.data)
-        if (res.status == 200) {
-          // window.location.reload()
-          this.getData();
-        }
-      })
+      instance
+        .put("this_user_unblock/" + id)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status == 200) {
+            // window.location.reload()
+            this.getData();
+          }
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
   },
   mounted() {
-    this.getData()
-  }
+    this.getData();
+  },
 };
 </script>
 

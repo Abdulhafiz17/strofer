@@ -207,7 +207,7 @@
     </div>
   </div>
   <!-- Modal end -->
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="errorr"/>
 </template>
 
 <script>
@@ -227,7 +227,7 @@ export default {
 
       search: "",
       kategoriyass: [],
-
+      errorr:[],
       isloading: false,
     };
   },
@@ -252,7 +252,10 @@ export default {
         }
       }).finally(
         this.isloading = false
-      )
+      ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     getData() {
@@ -262,7 +265,10 @@ export default {
         console.log(response.data);
       }).finally(
         this.isloading = false
-      )
+      ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     editk(id, nomi) {
@@ -289,7 +295,10 @@ export default {
           }
         }).finally(
           this.isloading = false
-        )
+        ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
   },
   mounted() {

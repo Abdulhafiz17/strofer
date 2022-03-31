@@ -81,7 +81,7 @@
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">
-                            <span class="fa fa-search"/>
+                            <span class="fa fa-search" />
                           </div>
                         </div>
                       </div>
@@ -114,7 +114,8 @@
                               Intl.NumberFormat({ style: "currency" }).format(
                                 mahsulot.selling_price
                               )
-                            }} so'm
+                            }}
+                            so'm
                           </td>
                           <td>
                             {{ mahsulot.quantity }} {{ mahsulot.measure }}
@@ -171,21 +172,21 @@
                           Intl.NumberFormat({ style: "currency" }).format(
                             mahsulot.selling_price
                           )
-                        }} so'm
+                        }}
+                        so'm
                       </td>
                       <td>
                         {{
                           Intl.NumberFormat({ style: "currency" }).format(
                             mahsulot.selling_price * mahsulot.quantity
                           )
-                        }} so'm
+                        }}
+                        so'm
                       </td>
                       <td>
                         <button
                           class="btn btn-sm btn-outline-danger"
-                          @click="
-                            deleteTrade(mahsulot.code)
-                          "
+                          @click="deleteTrade(mahsulot.code)"
                         >
                           <span class="far fa-circle-xmark" />
                         </button>
@@ -200,13 +201,13 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
 import { instance } from "../Api";
 import swal from "sweetalert";
-import isloading from "../../Anime/Anime.vue"
+import isloading from "../../Anime/Anime.vue";
 export default {
   components: { isloading },
   data() {
@@ -218,48 +219,77 @@ export default {
       orderId: "",
       search: "",
       isloading: false,
+      errorr: [],
     };
   },
   methods: {
     getProducts() {
-      this.isloading = true
-      this.mahsulotlar = []
-      instance.get("all_categories").then((response) => {
-        response.data.forEach((element) => {
-          instance.get("all_products_for_trade/" + element.id).then((respon) => {
-            respon.data.forEach((elemen) => {
-              this.mahsulotlar.push(elemen)
-            })
-          })
+      this.isloading = true;
+      this.mahsulotlar = [];
+      instance
+        .get("all_categories")
+        .then((response) => {
+          response.data.forEach((element) => {
+            instance
+              .get("all_products_for_trade/" + element.id)
+              .then((respon) => {
+                respon.data.forEach((elemen) => {
+                  this.mahsulotlar.push(elemen);
+                });
+              });
+          });
         })
-      })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     getOrders() {
-      this.isloading = true
-      instance.get("all_orders/false")
-      .then((response) => {
-        this.buyurtmalar = response.data
-        this.isloading = false
-      })
+      this.isloading = true;
+      instance
+        .get("all_orders/false")
+        .then((response) => {
+          this.buyurtmalar = response.data;
+          this.isloading = false;
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     deleteOrder(id) {
       if (confirm("Ushbu buyurtma o'chirilsinmi ?")) {
-        this.isloading = true
-        instance.delete("remove_this_order/" + id)
-        .then((response) => {
-          this.buyurtmalar = response.data
-        }).finally(this.isloading = false)
+        this.isloading = true;
+        instance
+          .delete("remove_this_order/" + id)
+          .then((response) => {
+            this.buyurtmalar = response.data;
+          })
+          .finally((this.isloading = false))
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          })
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          });
       } else {
-        this.isloading = false
+        this.isloading = false;
       }
     },
     createOrder() {
-      this.isloading = true
-      instance.post("create_order")
-      .then((response) => {
-        this.buyurtmalar = response.data
-        this.isloading = false
-      })
+      this.isloading = true;
+      instance
+        .post("create_order")
+        .then((response) => {
+          this.buyurtmalar = response.data;
+          this.isloading = false;
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     toTrade(mahsulot, tab) {
       // console.log(mahsulot, tab)
@@ -271,57 +301,78 @@ export default {
             type: "number",
             min: "0",
             placeholder: "Hajm: " + mahsulot.measure,
-          }
-        }
-      }).then((value) => {
-        if (value < mahsulot.quantity) {
-          this.isloading = true
-          instance.post("to_trade/" + tab.id, {product_code: mahsulot.product_code, quantity: Number(value)}).then((response) => {
-            this.isloading = false
-            if (response.status == 200) {
-              this.mahsulotlar = response.data[response.data.length - 1].products
-              let mahsulotlar = response.data
-              this.sortProducts(mahsulotlar)
-              swal({
-                icon: "success",
-                title: "Mahsulot qo'shildi"
-              })
-            }
-          })
-        } else if (value > mahsulot.quantity) {
-          swal({
-            icon: "warning",
-            title: "Bu mahsulotda yetarli hajm mavjud emas !",
-            text: "Hajm : " + mahsulot.quantity + " " + mahsulot.measure
-          })
-        }
+          },
+        },
       })
+        .then((value) => {
+          if (value < mahsulot.quantity) {
+            this.isloading = true;
+            instance
+              .post("to_trade/" + tab.id, {
+                product_code: mahsulot.product_code,
+                quantity: Number(value),
+              })
+              .then((response) => {
+                this.isloading = false;
+                if (response.status == 200) {
+                  this.mahsulotlar =
+                    response.data[response.data.length - 1].products;
+                  let mahsulotlar = response.data;
+                  this.sortProducts(mahsulotlar);
+                  swal({
+                    icon: "success",
+                    title: "Mahsulot qo'shildi",
+                  });
+                }
+              });
+          } else if (value > mahsulot.quantity) {
+            swal({
+              icon: "warning",
+              title: "Bu mahsulotda yetarli hajm mavjud emas !",
+              text: "Hajm : " + mahsulot.quantity + " " + mahsulot.measure,
+            });
+          }
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     sortProducts(mahsulotlar) {
-      this.isloading = true
-      this.buyurtmaMahsulotlar = []
+      this.isloading = true;
+      this.buyurtmaMahsulotlar = [];
       mahsulotlar.forEach((element) => {
-        instance.get("this_product/empty/" + element.product_code).then((response) => {
-          let mahsulot = {
-            code: response.data[0].product_code,
-            name: response.data[0].name,
-            brand: response.data[0].brand,
-            selling_price: response.data[0].selling_price,
-            quantity: element.quantity,
-            measure: response.data[0].measure,
-          }
-          this.buyurtmaMahsulotlar.push(mahsulot)
-          this.isloading = false
-        })
-      })
-      console.log(this.buyurtmaMahsulotlar)
+        instance
+          .get("this_product/empty/" + element.product_code)
+          .then((response) => {
+            let mahsulot = {
+              code: response.data[0].product_code,
+              name: response.data[0].name,
+              brand: response.data[0].brand,
+              selling_price: response.data[0].selling_price,
+              quantity: element.quantity,
+              measure: response.data[0].measure,
+            };
+            this.buyurtmaMahsulotlar.push(mahsulot);
+            this.isloading = false;
+          })
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          });
+      });
+      console.log(this.buyurtmaMahsulotlar);
     },
   },
   computed: {
     filteredRows: function () {
       return this.mahsulotlar.filter((items) => {
         for (let item in items) {
-          if (String(items[item]).toLowerCase().indexOf(this.search.toLowerCase()) !== -1) {
+          if (
+            String(items[item])
+              .toLowerCase()
+              .indexOf(this.search.toLowerCase()) !== -1
+          ) {
             return true;
           }
         }
@@ -330,9 +381,9 @@ export default {
     },
   },
   mounted() {
-    console.clear()
-    this.getOrders()
-    this.getProducts()
+    console.clear();
+    this.getOrders();
+    this.getProducts();
   },
 };
 </script>

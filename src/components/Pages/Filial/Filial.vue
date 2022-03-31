@@ -257,7 +257,7 @@
       </div>
     </div>
   </div>
-  <isloading :isLoading="isLoading" />
+  <isloading :isLoading="isLoading" :message="errorr" />
 </template>
 
 <script>
@@ -287,6 +287,7 @@ export default {
         lat: "",
         address: ""
       },
+      errorr: [],
     };
   },
   methods: {
@@ -300,7 +301,10 @@ export default {
             console.log(res.data)
         }).finally(
           this.isLoading = false
-        )
+        ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     postData() {
@@ -315,7 +319,10 @@ export default {
             }
         }).finally(
           this.isloading = false
-        )
+        ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     edit(id, name, phone, address, lat, long) {
@@ -341,7 +348,10 @@ export default {
         })
         .finally(
             this.isLoading = false
-        )
+        ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     locatorButtonPressed() {
