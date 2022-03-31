@@ -60,12 +60,12 @@ const routes = [
     component: () => import("../components/Pages/Filial admin/Filialadmin.vue"),
   },
   
-  {
-    path: "/mahsulotlar",
-    meta: { requiresAuth: true },
-    name: "Mahsulotlar",
-    component: () => import("../components/Pages/Mahsulotlar/Mahsulotlar.vue"),
-  },
+  // {
+  //   path: "/mahsulotlar",
+  //   meta: { requiresAuth: true },
+  //   name: "Mahsulotlar",
+  //   component: () => import("../components/Pages/Mahsulotlar/Mahsulotlar.vue"),
+  // },
   {
     path: "/taminot",
     meta: { requiresAuth: true },

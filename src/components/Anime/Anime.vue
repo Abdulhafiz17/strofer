@@ -5,10 +5,32 @@
 </template>
 
 <script>
+import swal from "sweetalert";
 export default {
   name: "Isloading",
   props: {
     isloading: Boolean,
+    message: "",
+  },
+  mounted() {
+    console.log(this.message)
+    setTimeout(() => {
+      if (this.message == "Network Error") {
+        // alert("Tarmoq bilan aloqa mavjud emas")
+        swal({
+          icon: "warning",
+          title: "Tarmoq bilan aloqa mavjud emas",
+          closeOnClickOutside: false,
+          closeOnEsc: false,
+        });
+      } else if (this.message == "Request failed with status code 401") {
+        this.$router.push("/");
+        swal({
+          icon: "error",
+          title: "Login yoki parolda xatolik",
+        });
+      }
+    }, 100);
   },
 };
 </script>
@@ -23,7 +45,7 @@ export default {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background:  rgba(255,255,255,0.7);
+  background: rgba(255, 255, 255, 0.7);
   z-index: 999;
 }
 

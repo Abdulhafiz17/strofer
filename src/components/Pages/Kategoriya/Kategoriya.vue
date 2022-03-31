@@ -207,7 +207,7 @@
     </div>
   </div>
   <!-- Modal end -->
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="errorr"/>
 </template>
 
 <script>
@@ -227,8 +227,13 @@ export default {
 
       search: "",
       kategoriyass: [],
+<<<<<<< HEAD
+      errorr:[],
+      isloading: false,
+=======
 
       isloading: true,
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     };
   },
 
@@ -252,7 +257,10 @@ export default {
         }
       }).finally(
         this.isloading = false
-      )
+      ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     getData() {
@@ -262,7 +270,10 @@ export default {
         console.log(response.data);
       }).finally(
         this.isloading = false
-      )
+      ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
 
     editk(id, nomi) {
@@ -289,7 +300,10 @@ export default {
           }
         }).finally(
           this.isloading = false
-        )
+        ).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
   },
   mounted() {

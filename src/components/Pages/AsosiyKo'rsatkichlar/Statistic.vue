@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-header">
-        <h3 v-if="role == 'cashier'"> Vozvrat qilish </h3>
+        <h3 v-if="role == 'cashier'">Vozvrat qilish</h3>
         <h3 v-else>Asosiy ko'rsatgichlar</h3>
       </div>
       <div class="card-body">
@@ -23,7 +23,16 @@
           </div>
         </div>
         <div class="my-2">
-          <div class="table-responsive text-center table-bordered my-custom-scrollbar table-wrapper-scroll-y" v-if="table">
+          <div
+            class="
+              table-responsive
+              text-center
+              table-bordered
+              my-custom-scrollbar
+              table-wrapper-scroll-y
+            "
+            v-if="table"
+          >
             <table class="table-sm table-hover">
               <thead>
                 <tr>
@@ -134,15 +143,19 @@
     </div>
   </div>
 
-  <isloading :isloading="isloading" />
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script type="text/javascript">
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import swal from "sweetalert";
+<<<<<<< HEAD
+import Chart from "./Chart.vue";
+=======
 import Chart from './Chart.vue';
 import axios from 'axios';
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
 export default {
   components: { isloading, Chart },
   data() {
@@ -164,15 +177,22 @@ export default {
       searchQ: "",
       searchS: "",
       searchC: "",
+      errorr: [],
     };
   },
   methods: {
     getData() {
       this.savdolar = [];
       this.isloading = true;
+<<<<<<< HEAD
+      instance
+        .get("all_orders/true")
+        .then((orders) => {
+=======
       instance.get("all_orders/true").then((orders) => {
         console.log(orders.data)
         if (orders.data.length > 0) {
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
           orders.data.forEach((element) => {
             element.time = element.time.replace("T", " ");
             if (element.time >= this.fromDate && element.time <= this.toDate) {
@@ -195,11 +215,25 @@ export default {
                       this.savdolar2 = this.savdolar;
                       this.isloading = false;
                       this.table = true;
+<<<<<<< HEAD
+                    }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
+=======
                     });
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
                 });
               });
             }
           });
+<<<<<<< HEAD
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
+=======
         } else {
           this.isloading = false,
           swal({
@@ -208,6 +242,7 @@ export default {
           })
         }
       });
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     },
     returnProduct(savdo) {
       this.returnP.quantity = Number(this.returnP.quantity);
@@ -242,7 +277,11 @@ export default {
                   title: "Mahsulot qaytarib olindi",
                 }).then(this.getData());
               }
-            });
+            })
+            .catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
         }
       });
     },
@@ -334,11 +373,15 @@ export default {
   },
   mounted() {
     console.clear();
+<<<<<<< HEAD
+    this.getStatistic();
+=======
     this.getStatistic()
     
     // instance.get("all_products_for_trade_to_search").then((res) => {
     //   console.log(res.data)
     // })
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
   },
 };
 </script>

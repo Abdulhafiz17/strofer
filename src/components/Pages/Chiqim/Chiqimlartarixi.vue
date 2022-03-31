@@ -14,7 +14,7 @@
                 <th scope="col" class="text-center">№</th>
                 <th class="col-md-3 text-center">Narx</th>
                 <th class="col-md-4 text-center">Valyuta</th>
-                
+
                 <th class="col-md-4 text-center">Izoh</th>
               </tr>
             </thead>
@@ -31,13 +31,13 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="errorr"/>
 </template>
 
 <script>
 import { instance } from "../Api";
 import _ from "underscore";
-import isloading from "../../Anime/Anime.vue"
+import isloading from "../../Anime/Anime.vue";
 export default {
   components: { isloading },
   data() {
@@ -47,33 +47,39 @@ export default {
         narxi: null,
         valyuta: "",
         comment: "",
+        errorr: [],
       },
-      isloading: false
+      isloading: false,
     };
   },
 
   methods: {
     getData() {
-      this.isloading = true
-      instance.get("variable_expenses").then((response) => {
-        response.data.forEach((element) => {
-          instance.get("this_currency/" + element.currency_id).then((res) => {
-            this.chiqimtarix = {
-              narxi: element.price,
-              valyuta: res.data.currency,
-              comment: element.comment,
-            };
-            this.chiqimtarixi.push(this.chiqimtarix);
+      this.isloading = true;
+      instance
+        .get("variable_expenses")
+        .then((response) => {
+          response.data.forEach((element) => {
+            instance.get("this_currency/" + element.currency_id).then((res) => {
+              this.chiqimtarix = {
+                narxi: element.price,
+                valyuta: res.data.currency,
+                comment: element.comment,
+              };
+              this.chiqimtarixi.push(this.chiqimtarix);
+            });
           });
+          // this.chiqimtarixi = response.data;
+          console.log(this.chiqimtarixi);
+          // window.location.reload(this.getData)
+          // this.chiqimtarixi = response.data;
+          console.log(response.data);
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
-        // this.chiqimtarixi = response.data;
-        console.log(this.chiqimtarixi);
-        // window.location.reload(this.getData)
-        // this.chiqimtarixi = response.data;
-        console.log(response.data);
-      }).finally(
-        this.isloading = false
-      )
     },
   },
   mounted() {

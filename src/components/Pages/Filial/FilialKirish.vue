@@ -44,7 +44,7 @@
           <div class="col-sm-12">
             <div class="card shadow border-0">
               <div class="card-header text-center">
-                <h4> Mahsulotlar </h4>
+                <h4>Mahsulotlar</h4>
               </div>
             </div>
           </div>
@@ -65,13 +65,13 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
 import { instance } from "../Api";
-import isloading from "../../Anime/Anime.vue"
-let filial
+import isloading from "../../Anime/Anime.vue";
+let filial;
 export default {
   components: { isloading },
   data() {
@@ -81,10 +81,39 @@ export default {
       filial: {},
       hodimlar: "",
       isloading: false,
+      errorr: [],
     };
   },
   methods: {
     getData() {
+<<<<<<< HEAD
+      this.isloading = true;
+      instance
+        .get("this_branch/" + this.branch_id)
+        .then((res) => {
+          console.log(res.data);
+          this.filial = res.data;
+          this.map(res.data.lat, res.data.long);
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
+
+      this.isloading = true;
+      instance
+        .get("branch_users/" + this.branch_id + "/unblock")
+        .then((res) => {
+          this.hodimlar = res.data.length;
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
+    },
+=======
       this.isloading = true
       instance.get("this_branch/" + this.branch_id).then((res) => {
         this.filial = res.data;
@@ -96,11 +125,17 @@ export default {
             this.isloading = false
           })
       })
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
 
     },
 
     map(lat, long) {
+<<<<<<< HEAD
+      this.isloading = true;
+      console.log(lat, long);
+=======
       this.isloading = true
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
       ymaps.ready(init);
       function init() {
         var myMap = new ymaps.Map("map", {
@@ -115,13 +150,13 @@ export default {
           });
         myMap.geoObjects.add(myGeoObject);
       }
-      this.isloading = false
+      this.isloading = false;
     },
   },
   mounted() {
     this.getData();
     if (this.role == "admin") {
-      localStorage.setItem("branch_id", this.$route.params.id)
+      localStorage.setItem("branch_id", this.$route.params.id);
     }
   },
 };

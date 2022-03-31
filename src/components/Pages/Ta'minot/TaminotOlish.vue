@@ -494,7 +494,7 @@
     </div>
   </div>
 
-  <isloading :isLoading="isLoading" />
+  <isloading :isLoading="isLoading" :message="errorr" />
 </template>
 
 <script type="text/javascript">
@@ -548,6 +548,7 @@ export default {
       },
       openRow: Boolean,
       collapse: false,
+      errorr: [],
     };
   },
   methods: {
@@ -561,7 +562,10 @@ export default {
         .then((res) => {
           this.kategoriyalar = res.data;
         })
-        .finally((this.isLoading = false));
+        .finally((this.isLoading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
     postCode() {
       this.isloading = true;
@@ -603,7 +607,10 @@ export default {
             this.alert = "null";
           }
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
     getMahsulot(mahsulot) {
       this.isloading = true;
@@ -612,14 +619,20 @@ export default {
         .then((res) => {
           this.kurs_id.price_kurs = res.data;
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
       this.isloading = true;
       instance
         .get("this_currency/" + mahsulot.currency_id_for_sell)
         .then((res) => {
           this.kurs_id.sellling_price_kurs = res.data;
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
     postTaminot() {
       // console.log(this.postMahsulot)
@@ -663,7 +676,10 @@ export default {
           }
           console.log(this.postMahsulot);
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
     getTaminot() {
       this.isloading = true;
@@ -686,7 +702,10 @@ export default {
                 };
                 this.taminotlar.push(this.taminot);
                 this.isloading = false;
-              });
+              }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
           });
           console.log(this.taminotlar);
         });
@@ -698,7 +717,13 @@ export default {
         .then(() => {
           this.getTaminot();
         })
-        .finally((this.isloading = false));
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
     confirmTaminot() {
       this.isloading = true;
@@ -725,7 +750,14 @@ export default {
           icon: "warning",
           title: "Ta'minot bo'sh"
         })
+<<<<<<< HEAD
+        .finally((this.isloading = false)).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
+=======
       }
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     },
   },
   mounted() {

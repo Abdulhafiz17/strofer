@@ -125,12 +125,15 @@
     </div>
   </div>
   <!-- Modal post end -->
+  <isloading :isloading="isloading" :message="errorr"/>
 </template>
 
 <script>
 import { instance } from "../Api";
+import isloading from "../../Anime/Anime.vue"
 
 export default {
+  components: { isloading },
   data() {
     return {
       get: [],
@@ -140,6 +143,7 @@ export default {
       },
       loan_id: "",
       search: "",
+      errorr: "",
     };
   },
   methods: {
@@ -159,12 +163,18 @@ export default {
           });
         });
         console.log(this.get);
-      });
+      }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
     payToLoan(id) {
       instance.post("pay_to_loan/" + id, this.post).then(() => {
         window.location.reload();
-      });
+      }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
     },
   },
   computed: {

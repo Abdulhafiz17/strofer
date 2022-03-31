@@ -99,7 +99,7 @@
                 <th>product_code</th>
                 <th>Qoldiq</th>
                 <th>Sotuv narxi</th>
-                 <th>Dona</th>
+                <th>Dona</th>
               </tr>
             </thead>
             <tbody>
@@ -122,7 +122,7 @@
     </div>
   </div>
   <!-- Modal buyrutma tarixi end -->
-  <isloading :isloading="isloading" />
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
@@ -137,6 +137,7 @@ export default {
       customer: [],
       loans: [],
       tradies: [],
+      errorr: [],
     };
   },
   methods: {
@@ -148,6 +149,10 @@ export default {
           this.customer = response.data;
           // console.log(response.data);
           // this.isloading = false
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
 
       // isloading = true
@@ -156,6 +161,10 @@ export default {
         .then((response) => {
           this.loans = response.data;
           // console.log(response.data);
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
     },
     getData1(object) {
@@ -172,6 +181,10 @@ export default {
                 measure: element.measure,
               };
               this.tradies.push(mahuslot);
+            })
+            .catch((err) => {
+              this.isloading = false;
+              this.errorr = err.message;
             });
         });
       });

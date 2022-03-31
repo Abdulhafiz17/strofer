@@ -81,12 +81,23 @@ export default {
                       });
                       this.isloading = false;
                     });
+<<<<<<< HEAD
+                    this.isloading = false;
+                  });
+              });
+        });
+      }).catch((err) => {
+            this.isloading = false;
+             this.errorr = err.message
+          });
+=======
                 });
           });
         } else {
           this.isloading = false
         }
       });
+>>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     },
   },
   mounted() {
