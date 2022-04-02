@@ -207,13 +207,15 @@
     </div>
   </div>
   <!-- Modal end -->
-  <isloading :isloading="isloading" :message="errorr"/>
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
 import { instance } from "../Api";
 import _ from "underscore";
-import isloading from "../../Anime/Anime.vue"
+import isloading from "../../Anime/Anime.vue";
+import swal from 'sweetalert';
+
 export default {
   components: { isloading },
   data() {
@@ -227,53 +229,52 @@ export default {
 
       search: "",
       kategoriyass: [],
-<<<<<<< HEAD
-      errorr:[],
+      errorr: "",
       isloading: false,
-=======
-
-      isloading: true,
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     };
   },
 
   methods: {
     postData() {
-      this.isloading = true
-      instance.post("category_create", this.kategoriyalar).then((response) => {
-        this.getData();
-        console.log(response.data);
-        if (response.data == "Bunday kategoriya mavjud") {
-          this.error = "birxill";
+      this.isloading = true;
+      instance
+        .post("category_create", this.kategoriyalar)
+        .then((response) => {
           this.getData();
-        } else {
-          this.error = "";
-          this.getData();
-        }
-
-        if (response.data == "success") {
-          this.error = "birxilpost";
-          this.getData();
-        }
-      }).finally(
-        this.isloading = false
-      ).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+          console.log(response.data);
+          if (response.data == "Bunday kategoriya mavjud") {
+            swal({
+              icon: "warning",
+              title: "Bunday kategoriya mavjud !"
+            }).then(() => {
+              this.getData();
+            })
+          } else if (response.data == "success") {
+            swal({icon: "success"}).then(() => {
+              this.getData();
+            })
+          }
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false));
     },
 
     getData() {
-      this.isloading = true
-      instance.get("all_categories").then((response) => {
-        this.kategoriyas = response.data;
-        console.log(response.data);
-      }).finally(
-        this.isloading = false
-      ).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+      this.isloading = true;
+      instance
+        .get("all_categories")
+        .then((response) => {
+          this.kategoriyas = response.data;
+          console.log(response.data);
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
 
     editk(id, nomi) {
@@ -284,26 +285,30 @@ export default {
     },
 
     putData(id) {
-      this.isloading = true
+      console.log(this.editT)
+      this.isloading = true;
       instance
         .put("this_category_update/" + id, this.editT)
         .then((response) => {
           this.getData();
           if (response.data == "success") {
-            this.error = "birxilput";
-            this.getData();
+            swal({icon: "success"}).then(() => {
+              this.getData();
+            })
+          } else if (response.data == "So'rovda xatolik") {
+            swal({
+              icon: "warning",
+              title: "Bunday kategoriya mavjud !"
+            }).then(() => {
+              this.getData();
+            })
           }
-
-          if (response.data == "Bunday kategoriya mavjud") {
-            this.error = "birxilput2";
-            this.getData();
-          }
-        }).finally(
-          this.isloading = false
-        ).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false))
     },
   },
   mounted() {

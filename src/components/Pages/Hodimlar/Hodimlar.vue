@@ -107,7 +107,7 @@
               </div>
               <div class="card-footer">
                 <div class="row d-flex justify-content-around">
-                  <div class="col-md" :style="role == 'admin' ? 'width: 100px' : 'width: 84px'">
+                  <div class="col-md" :style="role == 'admin' ? 'width: 100%' : hodim.role == 'branch_admin' ? 'width: 100%' : 'width: 84px'">
                     <button
                       class="btn btn-block btn-outline-danger"
                       @click="block(hodim.id)"
@@ -115,7 +115,7 @@
                       <i class="fa fa-user-slash"></i>
                     </button>
                   </div>
-                  <div class="col-md" style="width: 84px" v-if="role !== 'admin'">
+                  <div class="col-md" style="width: 84px" v-if="role !== 'admin' && hodim.role !== 'branch_admin'">
                     <button
                       class="btn btn-block btn-outline-success"
                       data-toggle="modal"
@@ -125,7 +125,7 @@
                       <span class="fa fa-coins" />
                     </button>
                   </div>
-                  <div class="col-md" :style="role == 'admin' ? 'width: 100px' : 'width: 84px'">
+                  <div class="col-md" style="width: 84px" v-if="role !== 'admin' && hodim.role !== 'branch_admin'">
                     <router-link
                       :to="'/hodimHaqida/' + hodim.id"
                       class="btn btn-block btn-outline-info"
@@ -340,23 +340,6 @@
             <h4>Hodimga pul berish</h4>
           </div>
           <form @submit.prevent="payToUser(payUser)">
-<<<<<<< HEAD
-            <div class="modal-body">
-              <div class="row mb-2">
-                <div class="input-group input-group-sm">
-                  <input
-                    type="number"
-                    class="form-control"
-                    placeholder="Summa"
-                    min="0"
-                    v-model="payUser.price"
-                    required
-                  />
-                  <div class="input-group-append">
-                    <div class="input-group-text">
-                      {{ payUser.currency_id }}
-                    </div>
-=======
           <div class="modal-body">
             <div class="row mb-2">
               <div class="input-group input-group-sm">
@@ -373,7 +356,6 @@
                 <div id="moneyUserText" class="input-group-append">
                   <div class="input-group-text">
                     {{ payUser.currency_id }}
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
                   </div>
                 </div>
               </div>
@@ -386,6 +368,7 @@
                   />
                 </div>
               </div>
+            </div>
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-outline-primary">
@@ -439,11 +422,7 @@ export default {
         comment: "",
       },
       search: "",
-<<<<<<< HEAD
-      errorr: [],
-=======
-      number: Intl.NumberFormat()
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
+      errorr: "",
     };
   },
   methods: {
@@ -465,7 +444,6 @@ export default {
             if (res.data == "success") {
               swal({
                 icon: "success",
-                title: "Hodim qo'shildi",
               }).then(() => {
                 window.location.reload();
               });
@@ -474,7 +452,7 @@ export default {
             ) {
               swal({
                 icon: "warning",
-                title: "Bunday foydalanuvchi nomiga ega hodim mavjud",
+                title: "Bunday foydalanuvchi nomiga ega hodim mavjud !",
                 closeOnClickOutside: false,
                 closeOnEsc: false,
               }).then(() => {
@@ -491,7 +469,6 @@ export default {
     },
     getData() {
       this.hodimlar = [];
-      this.isloading = true;
       if (this.role == "admin") {
         this.branch_id = this.$route.params.id;
       }
@@ -501,28 +478,36 @@ export default {
       instance
         .get("branch_users/" + this.branch_id + "/false")
         .then((response) => {
-          response.data.forEach((element) => {
-            instance.get("this_user_balances/" + element.id).then((res) => {
-              let hodim = {
-                id: element.id,
-                name: element.name,
-                username: element.username,
-                password: element.password_hash,
-                phone: element.phone,
-                role: element.role,
-                status: element.status,
-                token: element.token,
-                balance: res.data[0],
-              };
-              this.hodimlar.push(hodim);
+          if (response.data.length > 0) {
+            response.data.forEach((element) => {
+              instance.get("this_user_balances/" + element.id).then((res) => {
+                let hodim = {
+                  id: element.id,
+                  name: element.name,
+                  username: element.username,
+                  password: element.password_hash,
+                  phone: element.phone,
+                  role: element.role,
+                  status: element.status,
+                  token: element.token,
+                  balance: res.data[0],
+                };
+                this.hodimlar.push(hodim);
+              });
             });
-          });
+          } else {
+            this.isloading = false
+            swal({
+              icon: "warning",
+              title: "Hodimlar mavjud emas !"
+            })
+          }
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
     edit(hodim) {
       this.editHodim = {
@@ -543,15 +528,16 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            window.location.reload();
-            // document.$("#exampleModal").modal("hide")
+            swal({icon: "success"}).then(() => {
+              window.location.reload();
+            })
           }
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
     block(id) {
       this.isloading = true;
@@ -560,15 +546,16 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            // window.location.reload();
-            this.getData();
+            swal({icon: "success"}).then(() => {
+              this.getData();
+            })
           }
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
     payToUser(object) {
       instance

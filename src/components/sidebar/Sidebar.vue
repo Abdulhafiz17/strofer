@@ -150,7 +150,7 @@ export default {
             </div>
           </div>
           <button
-            type="button"
+            data-dismiss="modal"
             class="btn btn-sm btn-block btn-success text-center"
             @click="putData()"
           >

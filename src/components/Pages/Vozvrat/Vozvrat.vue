@@ -43,19 +43,21 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading" />
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import Vozvrat from "../AsosiyKo'rsatkichlar/Statistic.vue"
+import swal from 'sweetalert';
 export default {
   components: { isloading, Vozvrat },
   data() {
     return {
       vozvratlar: [],
       isloading: false,
+      errorr: ""
     };
   },
   methods: {
@@ -81,23 +83,20 @@ export default {
                       });
                       this.isloading = false;
                     });
-<<<<<<< HEAD
                     this.isloading = false;
                   });
               });
-        });
+        } else {
+          swal({
+            icon: "warning",
+            title: "Qidiruv natijasi bo'sh !"
+          })
+          this.isloading = false
+        }
       }).catch((err) => {
             this.isloading = false;
              this.errorr = err.message
           });
-=======
-                });
-          });
-        } else {
-          this.isloading = false
-        }
-      });
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     },
   },
   mounted() {

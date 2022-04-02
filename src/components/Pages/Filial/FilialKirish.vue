@@ -15,7 +15,8 @@
           </div>
           <div class="col-md-3 mb-1">
             <div class="card shadow border-0">
-              <a href="#filialMap" data-toggle="modal">
+              <a data-toggle="modal">
+                <!-- href="#filialMap"  -->
                 <div class="card-body">
                   <span class="fa fa-location-arrow" /> {{ filial.address }}
                 </div>
@@ -80,62 +81,41 @@ export default {
       branch_id: this.$route.params.id,
       filial: {},
       hodimlar: "",
-      isloading: false,
+      isloading: true,
       errorr: [],
     };
   },
   methods: {
     getData() {
-<<<<<<< HEAD
-      this.isloading = true;
       instance
         .get("this_branch/" + this.branch_id)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.filial = res.data;
           this.map(res.data.lat, res.data.long);
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
 
-      this.isloading = true;
       instance
-        .get("branch_users/" + this.branch_id + "/unblock")
+        .get("branch_users/" + this.branch_id + "/false")
         .then((res) => {
           this.hodimlar = res.data.length;
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
-=======
-      this.isloading = true
-      instance.get("this_branch/" + this.branch_id).then((res) => {
-        this.filial = res.data;
-        this.map(res.data.lat, res.data.long)
-        instance
-          .get("branch_users/" + this.branch_id + "/false")
-          .then((res) => {
-            this.hodimlar = res.data.length;
-            this.isloading = false
-          })
-      })
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
 
     },
 
     map(lat, long) {
-<<<<<<< HEAD
-      this.isloading = true;
-      console.log(lat, long);
-=======
       this.isloading = true
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
       ymaps.ready(init);
       function init() {
         var myMap = new ymaps.Map("map", {
@@ -152,7 +132,6 @@ export default {
       }
       this.isloading = false;
     },
-  },
   mounted() {
     this.getData();
     if (this.role == "admin") {

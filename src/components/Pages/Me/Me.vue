@@ -67,6 +67,8 @@
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
+import swal from 'sweetalert';
+
 export default {
   components: { isloading },
   data() {
@@ -114,7 +116,9 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            window.location.reload();
+            swal({icon: "success"}).then(() => {
+              this.getData
+            })
           }
         })
         .catch((err) => {

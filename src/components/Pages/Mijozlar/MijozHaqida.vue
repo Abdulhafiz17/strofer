@@ -8,24 +8,26 @@
             <div class="card shadow mb-4">
               <div class="card-header">
                 <h4 class="card-title">
-                  <span class="fas fa-coins"></span> Nasiyalar tarixi
+                  <span class="fas fa-coins"></span> To'lo'vlar tarixi
                 </h4>
               </div>
               <div class="card-body">
-                <div class="table-responsive text-center">
-                  <table class="table table-sm table-hover table-borderless">
+                <div class="table-responsive text-center my-custom-scrollbar table-wrapper-scroll-y">
+                  <table class="table-sm table-hover table-borderless">
                     <thead>
                       <tr>
                         <th>№</th>
                         <th>Summa</th>
-                        <th>Sana</th>
+                        <th>Yozilgan sana</th>
+                        <th>Qaytarish sanasi</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="(loan, idx) in loans" :key="loan">
                         <td>{{ idx + 1 }}</td>
-                        <td>{{ loan.price }}</td>
-                        <td>{{ loan.time }}</td>
+                        <td>{{ Intl.NumberFormat().format(loan.price) }} so'm</td>
+                        <td>{{ loan.time.replace("T", " ") }}</td>
+                        <td>{{ loan.return_date }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -41,12 +43,13 @@
                 </h4>
               </div>
               <div class="card-body">
-                <div class="table-responsive text-center">
+                <div class="table-responsive text-center my-custom-scrollbar table-wrapper-scroll-y">
                   <table class="table table-sm table-borderless table-hover">
                     <thead>
                       <tr>
                         <th>№</th>
                         <th>Sana</th>
+                        <th>Summa</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -59,6 +62,7 @@
                         >
                           {{ customers.time }}
                         </td>
+                        <td> {{ Intl.NumberFormat().format(customers.balance) }} so'm</td>
                       </tr>
                     </tbody>
                   </table>
@@ -79,10 +83,10 @@
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Buyurtma mahsulotlari</h5>
           <button
             type="button"
             class="close"
@@ -93,23 +97,31 @@
           </button>
         </div>
         <div class="modal-body">
-          <table class="table table-sm table-bordered table-hover">
+          <table class="table table-sm table-borderless table-hover">
             <thead>
               <tr>
-                <th>product_code</th>
-                <th>Qoldiq</th>
+                <th>Mahsulot</th>
+                <th>Brend</th>
                 <th>Sotuv narxi</th>
-                <th>Dona</th>
+                <th>Hajm</th>
+                <th>Summa</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="tradis in tradies" :key="tradis">
                 <td class="text-center">{{ tradis.name }}</td>
-                <td class="text-center">{{ tradis.quantity }}</td>
-                <td class="text-center">{{ tradis.selling_price }}</td>
-                <td class="text-center">{{ tradis.measure }}</td>
+                <td class="text-center">{{ tradis.brand }}</td>
+                <td class="text-center">{{ Intl.NumberFormat().format(tradis.selling_price) }} so'm</td>
+                <td class="text-center">{{ tradis.quantity }} {{ tradis.measure }}</td>
+                <td class="text-center"> {{ Intl.NumberFormat().format(tradis.selling_price * tradis.quantity) }} so'm </td>
               </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3" class="text-center"> Jami : </th>
+                <th colspan="2"> {{ Intl.NumberFormat().format(tradeBalance) }} so'm </th>
+              </tr>
+            </tfoot>
           </table>
         </div>
         <!-- <div class="modal-footer">
@@ -128,39 +140,48 @@
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
-import { resolveDynamicComponent } from "@vue/runtime-core";
+import swal from 'sweetalert';
 export default {
   components: { isloading },
   data() {
     return {
-      isloading: false,
+      isloading: true,
       customer: [],
       loans: [],
       tradies: [],
-      errorr: [],
+      tradeBalance: Number,
+      errorr: "",
     };
   },
   methods: {
     getData() {
-      // this.isloading = true
+      this.customer = []
       instance
         .get("this_customer_orders/" + this.$route.params.id)
         .then((response) => {
-          this.customer = response.data;
-          // console.log(response.data);
-          // this.isloading = false
+          if (response.data.length > 0) {
+            this.isloading = false
+            response.data.forEach((element) => {
+              instance.get("this_order_balances/" + element.id).then((balance) => {
+                this.customer.push({
+                  id: element.id,
+                  time: element.time.replace("T", " "),
+                  balance: balance.data[0].selling_price,
+                })
+              })
+            })
+          }
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         });
 
-      // isloading = true
       instance
         .get("this_customer_loans/" + this.$route.params.id)
         .then((response) => {
           this.loans = response.data;
-          // console.log(response.data);
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
@@ -168,30 +189,37 @@ export default {
         });
     },
     getData1(object) {
+      this.isloading = true
+      this.tradeBalance = object.balance
       this.tradies = [];
       instance.get("this_order_trades/" + object.id).then((response) => {
-        response.data.forEach((element) => {
-          instance
-            .get("this_product/empty/" + element.product_code)
-            .then((response) => {
-              let mahuslot = {
-                name: response.data[0].name,
-                quantity: element.quantity,
-                selling_price: element.selling_price,
-                measure: element.measure,
-              };
-              this.tradies.push(mahuslot);
-            })
-            .catch((err) => {
-              this.isloading = false;
-              this.errorr = err.message;
-            });
-        });
+        if (response.data.length > 0) {
+          response.data.forEach((element) => {
+            instance
+              .get("this_product/empty/" + element.product_code)
+              .then((response) => {
+                this.tradies.push({
+                  name: response.data[0].name,
+                  brand: response.data[0].brand,
+                  quantity: element.quantity,
+                  selling_price: element.selling_price,
+                  measure: response.data[0].measure,
+                });
+                this.isloading = false
+              })
+              .catch((err) => {
+                this.isloading = false;
+                this.errorr = err.message;
+              });
+          });
+        } else {
+          this.isloading = false
+        }
       });
     },
   },
   mounted() {
-    // console.clear()
+    console.clear()
     this.getData();
   },
 };

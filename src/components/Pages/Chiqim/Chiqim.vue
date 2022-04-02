@@ -325,14 +325,14 @@ export default {
               window.location.reload();
             });
           }
-          this.isloading = false
+          this.isloading = false;
         })
         .catch((err) => {
           this.errorr = err.message;
           if (err.message == "Request failed with status code 422") {
             swal({
               icon: "warning",
-              title: "Malumotlar to'liq emas",
+              title: "Ma'lumot to'liq emas !",
             });
           }
         })
@@ -341,15 +341,20 @@ export default {
     doimiychiqimpost() {
       this.isloading = true;
       if (this.doimiychiqim.name == "") {
-        alert("Formani to'ldiring");
+        swal({
+          icon: "warning",
+          title: "Ma'lumot to'liq emas !",
+        });
+        this.isloading = false;
       } else {
         instance
           .post("create_fixed_expense", this.doimiychiqim)
           .then((response) => {
             console.log(response.data);
             if (response.data == "success") {
-              this.errorr = alert("Qo'shildi");
-              this.getData();
+              swal({ icon: "success" }).then(() => {
+                this.getData();
+              });
             }
           })
           .catch((err) => {
@@ -374,23 +379,33 @@ export default {
       // }
     },
     chiqimidpost(id) {
-      this.isloading = true;
       this.chiqimid = {
         price: Number(document.getElementById("price" + id).value),
         currency_id: "so'm",
         comment: String(document.getElementById("comment" + id).value),
       };
-      console.log(id, this.chiqimid);
-      instance
-        .post("pay_for_fixed_expense/" + id, this.chiqimid)
-        .then((response) => {
-          swal({
-            icon: "success",
-          });
-          document.getElementById("price" + id).value = null;
-          document.getElementById("comment" + id).value = "";
-        })
-        .finally((this.isloading = false));
+      if (this.chiqimid.price !== null && this.chiqimid.price !== 0) {
+        this.isloading = true;
+        console.log(id, this.chiqimid);
+        instance
+          .post("pay_for_fixed_expense/" + id, this.chiqimid)
+          .then((response) => {
+            swal({
+              icon: "success",
+            });
+            document.getElementById("price" + id).value = null;
+            document.getElementById("comment" + id).value = "";
+          })
+          .catch((err) => {
+            this.errorr = err.message;
+          })
+          .finally((this.isloading = false));
+      } else {
+        swal({
+          icon: "warning",
+          title: "Ma'lumot to'liq emas !",
+        });
+      }
     },
     getData() {
       this.isloading = true;
@@ -402,8 +417,8 @@ export default {
         })
         .finally((this.isloading = false))
         .catch((err) => {
-          this.errorr = err.message
-        })
+          this.errorr = err.message;
+        });
     },
     editk(id, nomi) {
       this.editT = {
@@ -416,8 +431,14 @@ export default {
       instance
         .put("update_this_fixed_expense/" + id, this.editT)
         .then((response) => {
-          this.getData();
-          window.location.reload();
+          if (response.status == 200) {
+            swal({ icon: "success" }).then(() => {
+              this.getData();
+            });
+          }
+        })
+        .catch((err) => {
+          this.errorr = err.message
         })
         .finally((this.isloading = false));
     },

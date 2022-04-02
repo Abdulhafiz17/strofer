@@ -26,9 +26,9 @@
               >
                 <span class="far fa-circle-xmark" />
               </button>
-              <center>
+              <center v-if="tab">
                 {{ n + 1 }} - buyutma <br />
-                {{ tab.time.split("T", 2)[1] }}
+                {{ tab.time.substr(11, 8) }}
               </center>
             </button>
           </div>
@@ -108,7 +108,7 @@
                               />
                               <div class="input-group-append">
                                 <div class="input-group-text">
-                                  {{ mahsulot.currency }}
+                                  so'm
                                 </div>
                               </div>
                             </div>
@@ -416,11 +416,11 @@ export default {
           this.buyurtmalar = res.data;
           // console.log(res.data);
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
 
       this.isloading = true;
       instance
@@ -428,11 +428,11 @@ export default {
         .then((res) => {
           this.mijozlar = res.data;
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
     deleteOrder(id) {
       this.isloading = true;
@@ -440,13 +440,23 @@ export default {
       instance
         .delete("remove_this_order/" + id)
         .then((res) => {
+          if (res.status == 200) {
+            swal({
+              icon: "success",
+              title: "Buyurtma o'chirildi !",
+              timer: 1500,
+            }).then(() => {
+              location.reload()
+              this.getBuyurtma()
+            })
+          }
           this.buyurtmalar = res.data;
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
     getTrades(id) {
       this.isloading = true;
@@ -473,11 +483,11 @@ export default {
               });
           });
         })
-        .finally(this.getBalances(this.orderId), (this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally(this.getBalances(this.orderId), (this.isloading = false))
     },
     getBalances(id) {
       (this.isloading = true),
@@ -485,7 +495,6 @@ export default {
         instance
           .get("this_order_balances/" + id)
           .then((res) => {
-            console.log(res.data);
             this.balance = res.data[0];
             // res.data.forEach((element) => {
             //   instance
@@ -496,19 +505,20 @@ export default {
             //       this.balance.push(buyurtmaBalance);
             // });
           })
-          .finally((this.isloading = false))
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
-          });
+          })
+          .finally((this.isloading = false))
     },
     postOrder(mahsulot, order) {
       this.isloading = true;
       if (mahsulot.hajm > mahsulot.qoldiq) {
-        alert(
-          "Ushbu mahsulotta yetarli qoldiq mavjud emas ! Qoldiq : " +
-            mahsulot.qoldiq
-        );
+        swal({
+          icon: "warning",
+          title: "Ushbu mahsulotta yetarli qoldiq mavjud emas !",
+          text: "Qoldiq : " + mahsulot.qoldiq
+        })
         mahsulot.hajm = mahsulot.qoldiq;
       } else {
         let product = {
@@ -531,11 +541,11 @@ export default {
           .then(() => {
             this.getBalances(this.orderId);
           })
-          .finally((this.isloading = false))
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
-          });
+          })
+          .finally((this.isloading = false))
       }
     },
     deleteTrade(code) {
@@ -546,11 +556,11 @@ export default {
         .then((res) => {
           console.log(res.data);
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
     count1() {
       this.plastikSavdo.price =
@@ -603,7 +613,7 @@ export default {
           })
           .then((res) => {
             console.log(res.data);
-            if (res.data == null || res.data == "success" || res.data == []) {
+            if (res.status == 200) {
               swal({
                 icon: "success",
                 title: "Savdo tugatildi",
@@ -611,11 +621,11 @@ export default {
               }).then(window.location.reload());
             }
           })
-          .finally((this.isloading = false))
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
-          });
+          })
+          .finally((this.isloading = false))
       } else {
         let new_incomes = [];
         if (naxt.price == 0 || naxt.price == null) {
@@ -635,7 +645,7 @@ export default {
           })
           .then((res) => {
             console.log(res.data);
-            if (res.data == null || res.data == "success" || res.data == []) {
+            if (res.status == 200) {
               swal({
                 icon: "success",
                 title: "Savdo tugatildi",
@@ -643,11 +653,11 @@ export default {
               }).then(window.location.reload());
             }
           })
-          .finally((this.isloading = false))
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
-          });
+          })
+          .finally((this.isloading = false))
       }
     },
   },

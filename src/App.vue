@@ -43,6 +43,7 @@
       </div>
     </div>
   </div>
+  <Network :network="network"/>
 </template>
 <script>
 import Navbar from "./components/Header/Navbar.vue";
@@ -57,11 +58,14 @@ import { sidebarWidthContent } from "@/components/sidebar/state";
 import { contentTop } from "@/components/sidebar/state";
 // import PageLoad from "./components/Preloader/PreloaderAnime.vue";
 import Footer from "./components/Footer/Footer.vue";
+import swal from 'sweetalert';
+import Network from "./components/Network/Network.vue"
 export default {
   data: () => {
     return {
       navOpen: true,
       mode: "light",
+      network: true
     };
   },
   components: {
@@ -69,6 +73,7 @@ export default {
     Navbar,
     // PageLoad,
     Footer,
+    Network,
   },
   setup() {
     return {
@@ -109,6 +114,12 @@ export default {
   mounted() {
     console.clear()
     this.timeDark();
+    window.addEventListener("offline", () => {
+      this.network = false
+    })
+    window.addEventListener("online", ()=> {
+      this.network = true
+    })
   },
 };
 </script>

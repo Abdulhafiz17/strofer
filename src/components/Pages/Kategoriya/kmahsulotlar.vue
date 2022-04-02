@@ -68,7 +68,7 @@
                           mahsulotlar.final_price
                         )
                       }}
-                      {{ mahsulotlar.currency_id_for_sell }}
+                      {{ mahsulotlar.currency_id_for_final }}
                     </td>
                     <td
                       v-if="mahsulotlar.quantity_note &gt; mahsulotlar.quantity"
@@ -197,21 +197,37 @@
           <div class="row">
             <div class="col-sm">
               <label>Sotuv narx:</label>
-              <input
-                placeholder="Sotuv narx"
-                type="number"
-                class="form-control"
-                v-model="editT.selling_price"
-              />
+              <div class="input-group">
+                <input
+                  placeholder="Sotuv narx"
+                  type="number"
+                  class="form-control"
+                  v-model="editT.selling_price"
+                />
+                <div class="input-group-append">
+                  <select class="form-control" v-model="editT.currency_id_for_sell">
+                    <option value="so'm">so'm</option>
+                    <option value="dollar">dollar</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <div class="col-sm">
               <label>Oxirgi narx:</label>
-              <input
-                placeholder="Oxirgi narx"
-                type="number"
-                class="form-control"
-                v-model="editT.final_price"
-              />
+              <div class="input-group">
+                <input
+                  placeholder="Oxirgi narx"
+                  type="number"
+                  class="form-control"
+                  v-model="editT.final_price"
+                />
+                <div class="input-group-append">
+                  <select class="form-control" v-model="editT.currency_id_for_final">
+                    <option value="so'm">so'm</option>
+                    <option value="dollar">dollar</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row" v-if="editT.kpi">
@@ -423,6 +439,8 @@
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import JsBarcode from "jsbarcode";
+import swal from 'sweetalert';
+
 export default {
   components: { isloading },
   data() {
@@ -465,10 +483,11 @@ export default {
           if (response.status == 200) {
           }
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false))
     },
 
     getkpi() {
@@ -478,14 +497,14 @@ export default {
         .then((response) => {
           this.kpiget = response.data;
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false))
     },
 
     getData() {
-      this.isloading = true;
       this.mahsulotlars = [];
       instance
         .get("all_products/" + this.$route.params.id)
@@ -504,6 +523,7 @@ export default {
                   final_price: element.final_price,
                   currency_id: element.currency_id,
                   currency_id_for_sell: element.currency_id_for_sell,
+                  currency_id_for_final: element.currency_id_for_final,
                   quantity: element.quantity,
                   quantity_note: element.quantity_note,
                   measure: element.measure,
@@ -515,13 +535,18 @@ export default {
             });
           } else {
             this.isloading = false;
+            swal({
+              icon: "warning",
+              title: "Ushbu kategoriya bo'sh !"
+            })
           }
           console.log(this.mahsulotlars);
         })
-        .finally().catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally()
     },
 
     putData(id) {
@@ -533,10 +558,11 @@ export default {
           this.getData();
           console.log(response.data);
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false))
 
       console.log(this.editT.kpi);
       // if (this.editT.kpi.currency_id == "percent") {
@@ -546,33 +572,37 @@ export default {
       // } else {
       //   this.editT.kpi.percent = 0;
       // }
-      instance
-        .put("this_kpi_update/" + this.editT.kpi.id, this.editT.kpi)
-        .then((res) => {
-          console.log(res.data);
-        }).catch((err) => {
+      if (this.editT.kpi) {
+        instance
+          .put("this_kpi_update/" + this.editT.kpi.id, this.editT.kpi)
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
             this.isloading = false;
-             this.errorr = err.message
-          });
+            this.errorr = err.message;
+          })
+      }
     },
 
     editk(mahsulot) {
       console.log(mahsulot);
-      this.editT = {
-        id: mahsulot.id,
-        name: mahsulot.name,
-        code: mahsulot.code,
-        brand: mahsulot.brand,
-        category_id: mahsulot.category_id,
-        selling_price: mahsulot.selling_price,
-        final_price: mahsulot.final_price,
-        currency_id: mahsulot.currency_id,
-        currency_id_for_sell: mahsulot.currency_id_for_sell,
-        quantity_note: mahsulot.quantity_note,
-        measure: mahsulot.measure,
-        kpi: mahsulot.kpi,
-        validity_period: mahsulot.validity_period
-      };
+      // this.editT = {
+      //   id: mahsulot.id,
+      //   name: mahsulot.name,
+      //   code: mahsulot.code,
+      //   brand: mahsulot.brand,
+      //   category_id: mahsulot.category_id,
+      //   selling_price: mahsulot.selling_price,
+      //   final_price: mahsulot.final_price,
+      //   currency_id: mahsulot.currency_id,
+      //   currency_id_for_sell: mahsulot.currency_id_for_sell,
+      //   quantity_note: mahsulot.quantity_note,
+      //   measure: mahsulot.measure,
+      //   kpi: mahsulot.kpi,
+      //   validity_period: mahsulot.validity_period
+      // };
+      this.editT = mahsulot;
     },
 
     code(mahsulot) {
@@ -607,7 +637,9 @@ export default {
   },
   mounted() {
     console.clear();
-    this.getData();
+    setTimeout(() => {
+      this.getData();
+    }, 500);
   },
   computed: {
     filteredCards: function () {

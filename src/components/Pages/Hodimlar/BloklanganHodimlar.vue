@@ -76,14 +76,6 @@
                       <i class="fa fa-user-slash"></i>
                     </button>
                   </div>
-                  <div class="col-md-6" style="width: 118px">
-                    <router-link
-                      to="/kPITarixi"
-                      class="btn btn-block btn-outline-primary"
-                    >
-                      <i class="fa fa-history"></i>
-                    </router-link>
-                  </div>
                 </div>
               </div>
             </div>
@@ -100,6 +92,7 @@ import axios from "axios";
 
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
+import swal from 'sweetalert';
 
 export default {
   components:{
@@ -110,7 +103,7 @@ export default {
       access_token: localStorage.getItem("access_token"),
       branch_id: localStorage.getItem("branch_id"),
       hodimlar: [],
-      isloading: false,
+      isloading: true,
       errorr: [],
     };
   },
@@ -131,6 +124,7 @@ export default {
         .then((res) => {
           this.hodimlar = res.data;
           console.log(res.data);
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
@@ -138,13 +132,15 @@ export default {
         });
     },
     block(id) {
+      this.isloading = true
       instance
         .put("this_user_unblock/" + id)
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            // window.location.reload()
-            this.getData();
+            swal({icon: "success"}).then(() => {
+              this.getData();
+            })
           }
         })
         .catch((err) => {

@@ -83,7 +83,7 @@
                       <tr v-for="(history, n) in payHistory" :key="history.id">
                         <td>{{ n + 1 }}</td>
                         <td>{{ history.price }} {{ history.currency_id }}</td>
-                        <td>{{ history.time.replace("T", " ") }}</td>
+                        <td>{{ history.time }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -125,7 +125,7 @@
                       >
                         <td>{{ n + 1 }}</td>
                         <td>{{ history.price }} {{ history.currency_id }}</td>
-                        <td>{{ history.time.replace("T", " ") }}</td>
+                        <td>{{ history.time }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -180,10 +180,10 @@ export default {
       payHistory: [],
       kpiHistory: [],
       thisTrade: [],
-      isloading: false,
+      isloading: true,
       dateFrom: "",
       dateTo: "",
-      errorr: [],
+      errorr: "",
     };
   },
   methods: {
@@ -191,7 +191,6 @@ export default {
       window.history.back();
     },
     getData() {
-      this.isloading = true;
       instance
         .get("this_user_expense/" + this.user_id)
         .then((response) => {
@@ -203,7 +202,6 @@ export default {
           this.errorr = err.message;
         });
 
-      this.isloading = true;
       instance
         .get("this_user/" + this.user_id)
         .then((response) => {
@@ -260,21 +258,13 @@ export default {
         this.isloading = true;
         let tarix = [];
         let tarix2 = [];
-        let from2 = Number(from[8] + from[9]);
-        let to2 = Number(to[8] + to[9]);
         this.payHistory.forEach((element) => {
-          if (
-            Number(element.time[8] + element.time[9]) >= from2 &&
-            Number(element.time[8] + element.time[9]) <= to2
-          ) {
+          if (element.time >= from && element.time <= to) {
             tarix.push(element);
           }
         });
         this.kpiHistory.forEach((element) => {
-          if (
-            Number(element.time[8] + element.time[9]) >= from2 &&
-            Number(element.time[8] + element.time[9]) <= to2
-          ) {
+          if (element.time >= from && element.time <= to) {
             tarix2.push(element);
           }
         });

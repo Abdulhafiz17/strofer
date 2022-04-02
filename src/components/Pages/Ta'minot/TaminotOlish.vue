@@ -172,7 +172,7 @@
                     />
                     <select
                       class="custom-select"
-                      v-model="postMahsulot.product.currency_id_for_sell"
+                      v-model="postMahsulot.product.currency_id_for_final"
                     >
                       <option value="dollar">dollar</option>
                       <option value="so'm">so'm</option>
@@ -295,7 +295,7 @@
                     type="number"
                     class="form-control"
                     v-model="postMahsulot.product.selling_price"
-                    min="0"
+                    :min="postMahsulot.product.final_price"
                     required
                   />
                   <select
@@ -315,12 +315,13 @@
                     type="number"
                     class="form-control"
                     v-model="postMahsulot.product.final_price"
+                    :max="postMahsulot.product.selling_price"
                     min="0"
                     required
                   />
                   <select
                     class="custom-select"
-                    v-model="postMahsulot.product.currency_id_for_sell"
+                    v-model="postMahsulot.product.currency_id_for_final"
                     required
                   >
                     <option value="so'm" selected>so'm</option>
@@ -520,6 +521,7 @@ export default {
           selling_price: null,
           final_price: null,
           currency_id_for_sell: "so'm",
+          currency_id_for_final: "so'm",
           quantity_note: null,
           measure: "dona",
           validity_period: "0",
@@ -584,6 +586,7 @@ export default {
               selling_price: res.data[0].selling_price,
               final_price: res.data[0].final_price,
               currency_id_for_sell: res.data[0].currency_id_for_sell,
+              currency_id_for_final: res.data[0].currency_id_for_final,
               quantity_note: res.data[0].quantity_note,
               measure: res.data[0].measure,
             };
@@ -599,6 +602,7 @@ export default {
               selling_price: null,
               final_price: null,
               currency_id_for_sell: "so'm",
+              currency_id_for_final: "so'm",
               quantity_note: null,
               measure: "dona",
               validity_period: "0",              
@@ -663,6 +667,7 @@ export default {
                 selling_price: null,
                 final_price: null,
                 currency_id_for_sell: "",
+                currency_id_for_final: "",
                 quantity_note: null,
                 measure: "",
               },
@@ -742,22 +747,14 @@ export default {
               }).then(() => {
                 window.location.reload();
               });
-            }
+            } this.isloading = false
           })
-          .finally((this.isloading = false));
       } else {
         swal({
           icon: "warning",
           title: "Ta'minot bo'sh"
         })
-<<<<<<< HEAD
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
-=======
       }
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
     },
   },
   mounted() {

@@ -19,18 +19,19 @@ export default {
         // alert("Tarmoq bilan aloqa mavjud emas")
         swal({
           icon: "warning",
-          title: "Tarmoq bilan aloqa mavjud emas",
+          title: "Tarmoq bilan aloqa mavjud emas !",
           closeOnClickOutside: false,
           closeOnEsc: false,
+          buttons: false,
         });
-      } else if (this.message == "Request failed with status code 401") {
+      } else if (this.message == "Request failed with status code 401" || this.message == "Request failed with status code 400") {
         this.$router.push("/");
         swal({
           icon: "error",
           title: "Login yoki parolda xatolik",
         });
       }
-    }, 100);
+    }, 500);
   },
 };
 </script>

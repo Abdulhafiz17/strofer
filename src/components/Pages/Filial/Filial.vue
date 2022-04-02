@@ -7,7 +7,12 @@
             <h3>Filiallar</h3>
           </div>
           <div class="col-md">
-            <input type="text" class="form-control" placeholder="Qidiruv" v-model="search" />
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Qidiruv"
+              v-model="search"
+            />
           </div>
           <div class="col-md">
             <button
@@ -23,7 +28,11 @@
       </div>
       <div class="card-body">
         <div class="row" id="branches">
-          <div class="col-md-4 mb-2" v-for="filial in filiallar || []" :key="filial">
+          <div
+            class="col-md-4 mb-2"
+            v-for="filial in filteredCards"
+            :key="filial"
+          >
             <div class="card shadow">
               <div class="card-header">
                 <div class="row">
@@ -31,10 +40,20 @@
                     <h4>{{ filial.name }}</h4>
                   </div>
                   <div class="col-md">
-                    <button class="btn btn-sm btn-outline-warning float-right" 
-                            @click="edit(filial.id, filial.name, filial.phone, filial.address, filial.lat, filial.long)"
-                            data-toggle="modal"
-                            data-target="#editFilial"
+                    <button
+                      class="btn btn-sm btn-outline-warning float-right"
+                      @click="
+                        edit(
+                          filial.id,
+                          filial.name,
+                          filial.phone,
+                          filial.address,
+                          filial.lat,
+                          filial.long
+                        )
+                      "
+                      data-toggle="modal"
+                      data-target="#editFilial"
                     >
                       <span class="fa fa-edit" />
                     </button>
@@ -53,15 +72,20 @@
                   </tr>
                   <tr>
                     <th><span class="fa fa-map" /></th>
-                    <td> <a> {{ filial.address }} </a></td>
-                     <!-- href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long, filial.id);" -->
+                    <td>
+                      <a> {{ filial.address }} </a>
+                    </td>
+                    <!-- href="#filialMap" data-toggle="modal" @click="map(filial.lat, filial.long, filial.id);" -->
                   </tr>
                 </table>
               </div>
               <div class="card-footer">
-                  <a class="btn btn-outline-success btn-block" :href="'/filialKirish/' + filial.id">
-                      Kirish
-                  </a>
+                <a
+                  class="btn btn-outline-success btn-block"
+                  :href="'/filialKirish/' + filial.id"
+                >
+                  Kirish
+                </a>
               </div>
             </div>
           </div>
@@ -156,13 +180,13 @@
       </div>
     </div>
   </div>
-  
+
   <div class="modal fade" id="editFilial">
     <div class="modal-dialog">
       <div class="modal-content">
         <form @submit.prevent="putData()">
           <div class="modal-header">
-            <h3> {{ editFilial.name }} ma'lumotlarini tahrirlash </h3>
+            <h3>{{ editFilial.name }} ma'lumotlarini tahrirlash</h3>
           </div>
           <div class="modal-body">
             <div class="row">
@@ -249,7 +273,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h3>Filial joylashuvi</h3>
-          <button type="button" class="btn" data-dismiss="modal" aria-label="Close"> <span class="fa fa-xmark"/> </button>
+          <button
+            type="button"
+            class="btn"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span class="fa fa-xmark" />
+          </button>
         </div>
         <div class="modal-body">
           <div id="map" style="width: 780px; height: 500px"></div>
@@ -263,13 +294,14 @@
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
+import swal from 'sweetalert';
 export default {
   components: { isloading },
   data() {
     return {
       role: localStorage.getItem("role"),
       search: "",
-      isLoading: false,
+      isLoading: true,
       filiallar: [],
       showMap: "",
       yangiFilial: {
@@ -285,77 +317,83 @@ export default {
         phone: null,
         long: "",
         lat: "",
-        address: ""
+        address: "",
       },
-      errorr: [],
+      errorr: "",
     };
   },
   methods: {
     getData() {
-      console.log(this.role)
-      this.isloading = true
-      this.filiallar = []
-        instance.get("all_branches")
+      console.log(this.role);
+      this.filiallar = [];
+      instance
+        .get("all_branches")
         .then((res) => {
-            this.filiallar = res.data
-            console.log(res.data)
-        }).finally(
-          this.isLoading = false
-        ).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+          this.filiallar = res.data;
+          console.log(res.data);
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isLoading = false));
     },
 
     postData() {
-      this.isLoading = true
-        // document.querySelector("#yangiFilial").modal("hide")
-        instance.post("branch_create", this.yangiFilial)
+      this.isLoading = true;
+      // document.querySelector("#yangiFilial").modal("hide")
+      instance
+        .post("branch_create", this.yangiFilial)
         .then((res) => {
-            console.log(res.data)
-            if (res.status == 200) {
-              // document.querySelector("#yangiFilial").modal("hide")
-              window.location.reload()
-            }
-        }).finally(
-          this.isloading = false
-        ).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+          console.log(res.data);
+          if (res.status == 200) {
+            swal({icon: "success"}).then(() => {
+              window.location.reload();
+            })
+          }
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false))
     },
 
     edit(id, name, phone, address, lat, long) {
-        this.editFilial = {
-            id: id,
-            name: name,
-            phone: phone,
-            address: address,
-            lat: lat,
-            long: long,
-        }
-        // console.log(this.editFilial)
+      this.editFilial = {
+        id: id,
+        name: name,
+        phone: phone,
+        address: address,
+        lat: lat,
+        long: long,
+      };
+      // console.log(this.editFilial)
     },
 
     putData() {
       console.log(this.editFilial);
       this.isLoading = true;
 
-        instance.put("this_branch_update/" + this.editFilial.id, this.editFilial)
+      instance
+        .put("this_branch_update/" + this.editFilial.id, this.editFilial)
         .then((res) => {
-            console.log(res.data)
-            window.location.reload()
+          console.log(res.data);
+          if (res.status == 200) {
+            swal({icon: "success"}).then(() => {
+              window.location.reload();
+            })
+          }
         })
-        .finally(
-            this.isLoading = false
-        ).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isLoading = false))
     },
 
     locatorButtonPressed() {
-      this.isloading = true
+      this.isloading = true;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -367,15 +405,15 @@ export default {
             console.log(error.message);
           }
         );
-        this.isLoading = false
+        this.isLoading = false;
       } else {
         alert("Siz_belgilagan_Geolakatsiya_notogri");
       }
     },
     map(lat, long, id) {
-      this.isloading = true
+      this.isloading = true;
       if (this.showMap != id) {
-        this.showMap = id
+        this.showMap = id;
         ymaps.ready(init);
         function init() {
           var myMap = new ymaps.Map("map", {
@@ -390,26 +428,29 @@ export default {
             });
           myMap.geoObjects.add(myGeoObject);
         }
-        this.isLoading = false
+        this.isLoading = false;
       } else if (this.showMap == id) {
-        document.$("#filialMap").modal("show")
+        document.$("#filialMap").modal("show");
       }
     },
   },
   computed: {
-    filter: function () {
+    filteredCards: function () {
+      return this.filiallar.filter((taminotchis) => {
+        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+      });
     },
   },
   mounted() {
-    this.getData()
-    if (localStorage.getItem('reloaded')) {
-        // The page was just reloaded. Clear the value from local storage
-        // so that it will reload the next time this page is visited.
-        localStorage.removeItem('reloaded');
+    this.getData();
+    if (localStorage.getItem("reloaded")) {
+      // The page was just reloaded. Clear the value from local storage
+      // so that it will reload the next time this page is visited.
+      localStorage.removeItem("reloaded");
     } else {
-        // Set a flag so that we know not to reload the page twice.
-        localStorage.setItem('reloaded', '1');
-        location.reload();
+      // Set a flag so that we know not to reload the page twice.
+      localStorage.setItem("reloaded", "1");
+      location.reload();
     }
   },
 };

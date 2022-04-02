@@ -275,6 +275,8 @@
 import { instance } from "../Api";
 import _ from "underscore";
 import isloading from "../../Anime/Anime.vue"
+import swal from 'sweetalert';
+
 export default {
   components: { isloading },
   data() {
@@ -297,9 +299,15 @@ export default {
     postData() {
       instance.post("customer_create", this.mijozpost).then((response) => {
         console.log(response.data);
-        this.getData();
-        window.location.reload();
-      });
+        if (response.status == 200) {
+          swal({icon: "success"}).then(() => {
+            this.getData();
+            // window.location.reload();
+          })
+        }
+      }).catch((err) => {
+        this.error = err.message
+      })
     },
 
     getData() {
@@ -318,27 +326,32 @@ export default {
         .put("this_customer_update/" + id, this.editT)
         .then((response) => {
           console.log(response.data);
-          this.getData();
-          window.location.reload();
+          if (response.status == 200) {
+            swal({icon: "success"}).then(() => {
+              this.getData();
+              // window.location.reload();
+
+            })
+          }
         });
     },
 
-    computed: {
-      searchHandler: function () {
-        return this.mijozget.filter((items) => {
-          for (let item in items) {
-            if (
-              String(items[item])
-                .toLowerCase()
-                .indexOf(this.search.toLowerCase()) !== -1
-            ) {
-              return true;
-            }
+  computed: {
+    searchHandler: function () {
+      return this.mijozget.filter((items) => {
+        for (let item in items) {
+          if (
+            String(items[item])
+              .toLowerCase()
+              .indexOf(this.search.toLowerCase()) !== -1
+          ) {
+            return true;
           }
-          return false;
-        });
-      },
+        }
+        return false;
+      });
     },
+  },
   },
   computed: {
     filteredCards: function () {

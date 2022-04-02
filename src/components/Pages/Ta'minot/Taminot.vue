@@ -12,7 +12,6 @@
               class="form-control"
               v-model="search"
               placeholder="Qidiruv"
-              
             />
           </div>
           <div class="col-md">
@@ -30,7 +29,7 @@
         <div class="row">
           <div
             class="col-md-4 mb-2"
-            v-for="taminotchi in taminotchilar || []"
+            v-for="taminotchi in filteredCards"
             :key="taminotchi"
           >
             <div class="card shadow">
@@ -135,7 +134,6 @@
         <div class="modal-header">
           <h3>Ta'minotchi qo'shish</h3>
         </div>
-        <form @submit.prevent="postData()" id="form1">
           <div class="modal-body">
             <div class="px-1 d-felx justify-content-around">
               <input
@@ -171,14 +169,13 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-primary">
+            <button @click="postData" data-dismiss="modal" class="btn btn-outline-primary">
               <span class="fas fa-check-circle"></span>Tasdiqlash
             </button>
             <button class="btn btn-outline-danger" data-dismiss="modal">
               <span class="fa fa-circle-xmark"></span> Bekor qilish
             </button>
           </div>
-        </form>
       </div>
     </div>
   </div>
@@ -241,7 +238,6 @@
         <div class="modal-header">
           <h3>{{ editTaminotchi.name }} ma'lumotlarini tahrirlash</h3>
         </div>
-        <form @submit.prevent="editData(editTaminotchi.id)">
           <div class="modal-body">
             <div class="px-1 d-felx justify-content-around">
               <input
@@ -277,14 +273,17 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-primary">
+            <button
+              @click="editData(editTaminotchi.id)"
+              data-dismiss="modal"
+              class="btn btn-outline-primary"
+            >
               <span class="fa fa-circle-check"></span> Tasdiqlash
             </button>
             <button class="btn btn-outline-danger" data-dismiss="modal">
               <span class="fa fa-circle-xmark"></span> Bekor qilish
             </button>
           </div>
-        </form>
       </div>
     </div>
   </div>
@@ -292,12 +291,8 @@
 </template>
 
 <script>
-<<<<<<< HEAD
+import swal from "sweetalert";
 import isloading from "../../Anime/Anime.vue";
-=======
-import swal from 'sweetalert';
-import isloading from "../../Anime/Anime.vue"
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
 import { instance } from "../Api";
 export default {
   components: { isloading },
@@ -323,12 +318,8 @@ export default {
       },
       kurslar: [],
       search: "",
-<<<<<<< HEAD
-      isloading: false,
-      errorr: [],
-=======
       isloading: true,
->>>>>>> 38dcf7bb0b38fb81dacbf93012b3ebdb450d6281
+      errorr: [],
     };
   },
   methods: {
@@ -336,55 +327,78 @@ export default {
       instance
         .get("all_markets")
         .then((res) => {
-          this.isloading = true;
-          this.taminotchilar = res.data;
-          this.taminotchilar.forEach((element) => {
-            instance.get("market_balances_all/" + element.id).then((res) => {
-              element.balances = res.data;
-              if (res.data.length > 0) {
-                res.data.forEach((balance) => {
-                  instance
-                    .get("this_currency/" + balance.currency_id)
-                    .then((res) => {
-                      balance.currency_id = res.data.currency;
-                      this.isloading = false;
-                    })
-                    .catch((err) => {
-                      this.isloading = false;
-                      this.errorr = err.message;
-                    });
-                });
-              } else {
-                this.isloading = false;
-              }
+          if (res.data.length > 0) {
+            this.taminotchilar = res.data;
+            this.taminotchilar.forEach((element) => {
+              instance.get("market_balances_all/" + element.id).then((res) => {
+                element.balances = res.data;
+                if (res.data.length > 0) {
+                  res.data.forEach((balance) => {
+                    instance
+                      .get("this_currency/" + balance.currency_id)
+                      .then((res) => {
+                        balance.currency_id = res.data.currency;
+                        this.isloading = false;
+                      })
+                      .catch((err) => {
+                        this.isloading = false;
+                        this.errorr = err.message;
+                      });
+                  });
+                } else {
+                  this.isloading = false;
+                }
+              });
             });
-          });
+          } else {
+            this.isloading = false;
+            swal({
+              icon: "warning",
+              title: "Ta'minotchilar mavjud emas !",
+            });
+          }
           // instance.get("all_currencies").then((res) => {
           //   this.kurslar = res.data;
           // });
         })
-        .finally()
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally()
     },
     postData() {
-      this.isloading = true;
-      instance
-        .post("market_create", this.yangiTaminotchi)
-        .then((res) => {
-          console.log(res.data);
-          if (res.status == 200) {
-            window.location.reload();
-            // this.getData();
-          }
-        })
-        .finally((this.isloading = false))
-        .catch((err) => {
-          this.isloading = false;
-          this.errorr = err.message;
-        });
+      if (this.yangiTaminotchi.name.length == 0 || this.yangiTaminotchi.address.length == 0) {
+        if (this.yangiTaminotchi.phone == 0 || this.yangiTaminotchi.phone == null) {
+          swal({
+            icon: "warning",
+            title: "Ma'lumot to'liq emas !"
+          })
+        }
+      } else {
+        this.isloading = true;
+        instance
+          .post("market_create", this.yangiTaminotchi)
+          .then((res) => {
+            console.log(res.data);
+            if (res.status == 200) {
+              swal({ icon: "success" }).then(() => {
+                this.getData();
+                // window.location.reload();
+                this.yangiTaminotchi = {
+                  name: "",
+                  phone: null,
+                  address: "",
+                }
+              });
+            }
+          })
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          })
+          .finally((this.isloading = false));
+      }
     },
     edit(id, name, phone, address) {
       this.editTaminotchi = {
@@ -395,19 +409,32 @@ export default {
       };
     },
     editData(id) {
-      this.isloading = true;
-      console.log(id);
-      instance
-        .put("this_market_update/" + id, this.editTaminotchi)
-        .then((res) => {
-          window.location.reload();
-          console.log(res.data);
+      this.editTaminotchi.phone = Number(this.editTaminotchi.phone)
+      if (this.editTaminotchi.name.length !== 0 && this.editTaminotchi.phone !== 0 && this.editTaminotchi.address.length !== 0) {
+        this.isloading = true;
+        console.log(id);
+        instance
+          .put("this_market_update/" + id, this.editTaminotchi)
+          .then((res) => {
+            if (res.status == 200) {
+              swal({ icon: "success" }).then(() => {
+                // window.location.reload();
+                this.getData()
+              });
+            }
+            console.log(res.data);
+          })
+          .catch((err) => {
+            this.isloading = false;
+            this.errorr = err.message;
+          })
+          .finally((this.isloading = false));
+      } else {
+        swal({
+          icon: "warning",
+          title: "Ma'lumot to'liq emas !"
         })
-        .finally((this.isloading = false))
-        .catch((err) => {
-          this.isloading = false;
-          this.errorr = err.message;
-        });
+      }
     },
     payToMarket() {
       this.isloading = true;
@@ -420,8 +447,8 @@ export default {
           } else if (res.status == 400) {
             swal({
               icon: "warning",
-              title: "Ushbu ta'minotchidan hali mahsulot olinmagan"
-            })
+              title: "Ushbu ta'minotchidan hali mahsulot olinmagan",
+            });
           }
         })
         .finally((this.isloading = false))
@@ -433,9 +460,8 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.taminotchilar.filter((taminotchi) => {
-        return taminotchi.name.toLowerCase().match(this.search.toLowerCase());
-        // taminotchis.tel.match(this.search)
+      return this.taminotchilar.filter((taminotchis) => {
+        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
       });
     },
   },

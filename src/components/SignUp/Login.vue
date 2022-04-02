@@ -95,13 +95,13 @@ export default {
             // alert("Login yoki parolda xatolik")
             swal({
               icon: "error",
-              title: "Login yoki parolda xatolik"
+              title: "Login yoki parolda xatolik !"
             })
           } else if (err.message == "Network Error") {
             // alert("Tarmoq bilan aloqa mavjud emas")
             swal({
               icon: "warning",
-              title: "Tarmoq bilan aloqa mavjud emas",
+              title: "Tarmoq bilan aloqa mavjud emas !",
               closeOnClickOutside:false,
               closeOnEsc: false,
             })
