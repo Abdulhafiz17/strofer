@@ -226,6 +226,7 @@
             <button class="btn btn-outline-danger" data-dismiss="modal">
               <span class="far fa-circle-xmark"></span> Bekor qilish
             </button>
+            <input type="hidden" id="modalFooter" data-dismiss="modal" />
           </div>
         </form>
       </div>
@@ -412,7 +413,6 @@ export default {
       this.editTaminotchi.phone = Number(this.editTaminotchi.phone)
       if (this.editTaminotchi.name.length !== 0 && this.editTaminotchi.phone !== 0 && this.editTaminotchi.address.length !== 0) {
         this.isloading = true;
-        console.log(id);
         instance
           .put("this_market_update/" + id, this.editTaminotchi)
           .then((res) => {
@@ -422,7 +422,6 @@ export default {
                 this.getData()
               });
             }
-            console.log(res.data);
           })
           .catch((err) => {
             this.isloading = false;
@@ -443,7 +442,19 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            window.location.reload();
+            document.querySelector("#modalFooter").click()
+            swal({
+              icon: "success",
+              timer: 1000
+            }).then(() => {
+              this.getData()
+              this.tolov = {
+                id: "",
+                price: null,
+                currency_id: "so'm",
+                comment: "",
+              }
+            })
           } else if (res.status == 400) {
             swal({
               icon: "warning",
@@ -451,11 +462,11 @@ export default {
             });
           }
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
   },
   computed: {

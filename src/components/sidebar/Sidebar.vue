@@ -61,7 +61,7 @@ export default {
           v-if="role == 'admin' || role == 'branch_admin'"
         >
           <span class="fas fa-chart-line"></span>
-          <p class="ripple">Statistika</p>
+          <p class="ripple">Hisobotlar</p>
         </SidebarLink>
 
         <SidebarLink to="/kassa" v-if="role === 'cashier'">
@@ -122,6 +122,7 @@ export default {
           href="#currency"
           data-toggle="modal"
           @click="getData()"
+          v-if="role == 'admin'"
         >
           <p class="ripple"><span class="fas fa-dollar" /> Kurs</p>
         </button>

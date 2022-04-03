@@ -241,26 +241,33 @@ export default {
         content: {
           element: "input",
           attributes: {
+            type: "number",
             placeholder: "Hajm: " + savdo.measure,
           },
         },
         closeOnClickOutside: false,
         closeOnEsc: false,
       }).then((value) => {
+        value = Number(value)
+        console.log(value)
         if (value < 0 || value > savdo.quantity) {
           swal({
             icon: "warning",
             title: "Noto'g'ri qiymat",
           });
         } else {
+          this.returnP.quantity = value
           instance
             .post("return_product/" + savdo.trade_id, this.returnP)
             .then((response) => {
+              console.log(response.data)
               if (response.status == 200) {
                 swal({
                   icon: "success",
                   title: "Mahsulot qaytarib olindi",
-                }).then(this.getData());
+                }).then(
+                  this.getData()
+                );
               }
             })
             .catch((err) => {

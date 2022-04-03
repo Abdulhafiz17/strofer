@@ -342,7 +342,8 @@
           <form @submit.prevent="payToUser(payUser)">
           <div class="modal-body">
             <div class="row mb-2">
-              <div class="input-group input-group-sm">
+              <div class="input-group input-group-sm mb-2">
+                <span id="tooltiptext"> {{ sum }} </span>
                 <input
                   id="moneyUser"
                   type="number"
@@ -352,21 +353,22 @@
                   min="0"
                   v-model="payUser.price"
                   required
+                  @keyup="currency(this)"
                 />
-                <div id="moneyUserText" class="input-group-append">
+                <div class="input-group-append">
                   <div class="input-group-text">
                     {{ payUser.currency_id }}
                   </div>
                 </div>
               </div>
+              <div class="input-group input-group-sm">
+                <textarea
+                  type="textarea"
+                  class="form-control"
+                  placeholder="Izoh"
+                />
+              </div>
               <div class="row">
-                <div class="input-group">
-                  <textarea
-                    type="textarea"
-                    class="form-control form-control-sm"
-                    placeholder="Izoh"
-                  />
-                </div>
               </div>
             </div>
             </div>
@@ -423,6 +425,7 @@ export default {
       },
       search: "",
       errorr: "",
+      sum: null,
     };
   },
   methods: {
@@ -557,6 +560,11 @@ export default {
         })
         .finally((this.isloading = false))
     },
+    currency() {
+      let input = document.querySelector("#moneyUser")
+      let number = Number(input.value)
+      this.sum = Intl.NumberFormat().format(number)
+    },
     payToUser(object) {
       instance
         .post("pay_for_user/" + object.user_id, object)
@@ -588,5 +596,32 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
+#tooltiptext {
+  /* visibility: hidden; */
+  display: none;
+  width: auto;
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #000;
+  text-align: center;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 5px 3px;
+  /* box-shadow: 0.1px 0.1px 4px 0.1px; */
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  margin-bottom: 5px;
+}
+
+input[id="moneyUser"]:active #tooltiptext {
+  /* visibility: visible; */
+  display: block !important;
+}
+
 </style>

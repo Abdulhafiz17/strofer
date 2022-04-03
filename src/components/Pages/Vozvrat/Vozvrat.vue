@@ -56,14 +56,13 @@ export default {
   data() {
     return {
       vozvratlar: [],
-      isloading: false,
-      errorr: ""
+      isloading: true,
+      errorr: String,
     };
   },
   methods: {
     getData() {
       this.vozvratlar = [];
-      this.isloading = true;
       instance.get("all_returned_products").then((products) => {
         if (products.data.length > 0) {
           products.data.forEach((element) => {
@@ -89,7 +88,7 @@ export default {
         } else {
           swal({
             icon: "warning",
-            title: "Qidiruv natijasi bo'sh !"
+            title: "Qaytarib olingan mahsulotlar yo'q !"
           })
           this.isloading = false
         }

@@ -1,15 +1,15 @@
 <template>
   <div class="container-fluid">
+    <div id="chevron"></div>
     <router-link class="btn btn-outline-success btn-sm mb-2" to="/taminot">
       <span class="fa fa-arrow-left"></span> Orqaga
     </router-link>
     <div class="card shadow">
       <div class="card-header">
         <div class="row">
-          <div class="col-md-6">
-            <h3>{{ taminotchi.name }} tarixi</h3>
+          <div class="col-md">
+            <h3>{{ taminotchi.name }} tarixi ㅤㅤㅤ Balans : <span v-for="balance in balances" :key="balance.id"> {{ Intl.NumberFormat().format(balance.balance) }} {{ balance.currency_id }} <span class="fa fa-coin"/> </span> </h3>
           </div>
-          <div class="col-md-6"></div>
         </div>
       </div>
       <div class="card-body">
@@ -154,7 +154,7 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading"/>
+  <isloading :isloading="isloading" :message="error"/>
 </template>
 
 <script>
@@ -167,6 +167,7 @@ export default {
       taminotchi: {},
       tolovTarix: [],
       taminotTarix: [],
+      balances: [],
       dateFrom: "",
       dateTo: "",
       tarix: {
@@ -180,22 +181,37 @@ export default {
         date_time: "",
       },
       search: "",
-      isloading: true
+      isloading: true,
+      error: "",
     };
   },
   methods: {
     getData() {
       this.tolovTarix = []
       instance.get("market_expenses/" + this.$route.params.id).then((res) => {
-        res.data.forEach((element) => {
-              this.tolovTarix.push({
-                currency: element.currency_id,
-                price: element.price,
-                comment: element.comment,
-                date_time: element.time.replace("T", " "),
-              });
-              this.isloading = false
-        });
+        if (res.data.length > 0) {
+          res.data.forEach((element) => {
+                this.tolovTarix.push({
+                  currency: element.currency_id,
+                  price: element.price,
+                  comment: element.comment,
+                  date_time: element.time.replace("T", " "),
+                });
+                this.isloading = false
+          });
+        } else {
+          this.isloading = false
+        }
+      }).catch((err) => {
+        this.error = err.message
+        this.isloading = false
+      })
+
+      this.isloading = true
+      instance.get("market_balances_all/" + this.$route.params.id).then((response) => {
+        console.log(response.data)
+        this.balances = response.data
+        this.isloading = false
       })
     },
     getData2() {
@@ -203,28 +219,29 @@ export default {
       instance
         .get("all_supplies/" + this.$route.params.id + "/true")
         .then((res) => {
-          res.data.forEach((element) => {
-            instance
-              .get("this_currency/" + element.currency_id)
-              .then((response) => {
-                instance.get("this_user/" + element.owner_id).then((res) => {
-                  instance
-                    .get("this_product/" + element.product_id + "/empty")
-                    .then((resp) => {
-                      this.taminotTarix.push({
-                        quantity: element.quantity,
-                        price: element.price,
-                        date_time: element.time.replace("T", " "),
-                        product: resp.data.name,
-                        hajm: resp.data.measure,
-                        user: res.data.name,
-                        currency: response.data.currency,
+          if (res.data.length > 0) {
+            res.data.forEach((element) => {
+              instance
+                  instance.get("this_user/" + element.owner_id).then((res) => {
+                    instance
+                      .get("this_product/" + element.product_id + "/empty")
+                      .then((resp) => {
+                        this.taminotTarix.push({
+                          quantity: element.quantity,
+                          price: element.price,
+                          date_time: element.time.replace("T", " "),
+                          product: resp.data.name,
+                          hajm: resp.data.measure,
+                          user: res.data.name,
+                          currency: element.currency_id,
+                        });
+                        this.isloading = false
                       });
-                      this.isloading = false
-                    });
-                });
-              });
-          });
+                  });
+            });
+          } else {
+            this.isloading = false
+          }
         }).catch((err) => {
             this.isloading = false;
              this.errorr = err.message
@@ -269,5 +286,25 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+    /* #chevron:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 51%;
+      background: var(--success);
+      transform: skew(0deg, 20deg);
+    }
+    #chevron:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 50%;
+      background: var(--success);
+      transform: skew(0deg, -20deg);
+    } */
 </style>

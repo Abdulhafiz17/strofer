@@ -8,12 +8,12 @@
             <div class="card shadow mb-4">
               <div class="card-header">
                 <h4 class="card-title">
-                  <span class="fas fa-coins"></span> To'lo'vlar tarixi
+                  <span class="fas fa-coins"></span> Nasiyalar
                 </h4>
               </div>
               <div class="card-body">
                 <div class="table-responsive text-center my-custom-scrollbar table-wrapper-scroll-y">
-                  <table class="table-sm table-hover table-borderless">
+                  <table class="table table-sm table-hover table-borderless">
                     <thead>
                       <tr>
                         <th>№</th>

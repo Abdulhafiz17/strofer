@@ -127,7 +127,7 @@
                     />
                     <div class="input-group-append">
                       <span class="input-group-text">
-                        {{ kurs_id.price_kurs.currency }}
+                        {{ postMahsulot.product.currency_id }}
                       </span>
                     </div>
                   </div>
@@ -204,6 +204,7 @@
                 <div class="input-group">
                   <input
                     type="number"
+                    step="any"
                     class="form-control"
                     v-model="postMahsulot.new_supply.quantity"
                     required
@@ -220,6 +221,7 @@
                 <div class="input-group">
                   <input
                     type="number"
+                    step="any"
                     class="form-control"
                     placeholder="Narxi"
                     v-model="postMahsulot.new_supply.price"
@@ -293,6 +295,7 @@
                 <div class="input-group">
                   <input
                     type="number"
+                    step="any"
                     class="form-control"
                     v-model="postMahsulot.product.selling_price"
                     :min="postMahsulot.product.final_price"
@@ -313,6 +316,7 @@
                 <div class="input-group">
                   <input
                     type="number"
+                    step="any"
                     class="form-control"
                     v-model="postMahsulot.product.final_price"
                     :max="postMahsulot.product.selling_price"
@@ -335,6 +339,7 @@
                   <input
                     type="number"
                     class="form-control"
+                    step="any"
                     v-model="postMahsulot.product.quantity_note"
                     min="0"
                     required
@@ -359,6 +364,7 @@
                 <div class="input-group">
                   <input
                     type="number"
+                    step="any"
                     class="form-control"
                     v-model="postMahsulot.new_supply.quantity"
                     required
@@ -375,6 +381,7 @@
                 <div class="input-group">
                   <input
                     type="number"
+                    step="any"
                     class="form-control"
                     v-model="postMahsulot.new_supply.price"
                     required
@@ -495,7 +502,7 @@
     </div>
   </div>
 
-  <isloading :isLoading="isLoading" :message="errorr" />
+  <isloading :isloading="isLoading" :message="errorr" />
 </template>
 
 <script type="text/javascript">
@@ -550,7 +557,7 @@ export default {
       },
       openRow: Boolean,
       collapse: false,
-      errorr: [],
+      errorr: "",
     };
   },
   methods: {
@@ -564,22 +571,23 @@ export default {
         .then((res) => {
           this.kategoriyalar = res.data;
         })
-        .finally((this.isLoading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .finally((this.isLoading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     postCode() {
       this.isloading = true;
       instance
         .get("this_product/empty/" + this.barcode)
         .then((res) => {
-          console.log(res.data);
           if (res.data.length !== 0) {
             this.openRow = true;
             this.postMahsulot.product = {
               category_id: res.data[0].category_id,
               name: res.data[0].name,
+              code: res.data[0].code,
               brand: res.data[0].brand,
               price: res.data[0].price,
               currency_id: res.data[0].currency_id,
@@ -605,16 +613,17 @@ export default {
               currency_id_for_final: "so'm",
               quantity_note: null,
               measure: "dona",
-              validity_period: "0",              
+              validity_period: "0",
             };
             this.openRow = false;
             this.alert = "null";
           }
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     getMahsulot(mahsulot) {
       this.isloading = true;
@@ -623,25 +632,28 @@ export default {
         .then((res) => {
           this.kurs_id.price_kurs = res.data;
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
       this.isloading = true;
       instance
         .get("this_currency/" + mahsulot.currency_id_for_sell)
         .then((res) => {
           this.kurs_id.sellling_price_kurs = res.data;
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     postTaminot() {
-      // console.log(this.postMahsulot)
+      console.log(this.postMahsulot);
       this.isloading = true;
       this.postMahsulot.product.code = String(this.barcode);
+      this.postMahsulot.product.validity_period = "0";
       instance
         .post("take_supply", this.postMahsulot)
         .then((res) => {
@@ -649,10 +661,11 @@ export default {
           if (res.data == "Bunday mahsulot olinganlar royhatida mavjud") {
             swal({
               icon: "warning",
-              title: "Bunday mahsulot ro'yxatga qo'shilgan",
+              title: "Bunday mahsulot ro'yxatga qo'shilgan !",
               closeOnClickOutside: false,
             });
           } else if (res.status == 200) {
+            swal({ icon: "success", timer: 1000});
             this.openRow = null;
             this.barcode = "";
             this.alert = "";
@@ -670,6 +683,7 @@ export default {
                 currency_id_for_final: "",
                 quantity_note: null,
                 measure: "",
+                validity_period: "0",
               },
               new_supply: {
                 quantity: null,
@@ -681,54 +695,68 @@ export default {
           }
           console.log(this.postMahsulot);
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .catch((err) => {
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false))
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+          this.getTaminot();
+        });
     },
     getTaminot() {
-      this.isloading = true;
+      this.isLoading = true;
       this.taminotlar = [];
       instance
         .get("all_supplies/" + this.$route.params.id + "/false")
         .then((res) => {
-          console.log(res.data);
           res.data.forEach((element) => {
             instance
               .get("this_product/" + element.product_id + "/empty")
               .then((res) => {
-                this.taminot = {
+                // this.taminot = 
+                this.taminotlar.push({
                   id: element.id,
                   mahsulot: res.data.name,
                   hajm: element.quantity,
                   olchov: res.data.measure,
                   narx: element.price,
                   kurs: element.currency_id,
-                };
-                this.taminotlar.push(this.taminot);
-                this.isloading = false;
-              }).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
+                });
+                this.isLoading = false;
+              })
+              .catch((err) => {
+                this.isLoading = false;
+                this.errorr = err.message;
+              });
           });
-          });
-          console.log(this.taminotlar);
-        });
+        }).catch((err) => {
+          this.errorr = err.message
+          this.isLoading = false
+        }).finally(
+          this.isLoading = false
+        )
     },
     deleteTaminot(id) {
       this.isLoading = true;
       instance
         .delete("remove_this_supply/" + id)
-        .then(() => {
-          this.getTaminot();
+        .then((response) => {
+          setTimeout(() => {
+            this.getTaminot()
+            this.isLoading = false
+            swal({
+              icon: "success",
+              title: "O'chirildi !",
+              timer: 1000,
+            })
+          }, 500)
         })
-        .finally((this.isloading = false)).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          }).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        .catch((err) => {
+          this.isLoading = false;
+          this.errorr = err.message;
+        })
     },
     confirmTaminot() {
       this.isloading = true;
@@ -747,17 +775,19 @@ export default {
               }).then(() => {
                 window.location.reload();
               });
-            } this.isloading = false
-          })
+            }
+            this.isloading = false;
+          });
       } else {
         swal({
           icon: "warning",
-          title: "Ta'minot bo'sh"
-        })
+          title: "Ta'minot bo'sh !",
+        });
       }
     },
   },
   mounted() {
+    console.clear();
     this.getData();
   },
 };

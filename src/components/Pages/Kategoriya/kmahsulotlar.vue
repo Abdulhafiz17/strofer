@@ -27,7 +27,7 @@
                     <th scope="col">№</th>
                     <th scope="col">Shtrix kodi</th>
                     <th scope="col">Mahsulot</th>
-                    <th scope="col">Brand</th>
+                    <th scope="col">Brend</th>
                     <th scope="col">Narx</th>
                     <th scope="col">Sotuv narx</th>
                     <th scope="col">Oxirgi narx</th>
@@ -109,6 +109,7 @@
                         data-toggle="modal"
                         data-target="#exampleModal"
                         @click="kpi.product_id = mahsulotlar.id"
+                        v-if="!mahsulotlar.kpi"
                       >
                         <i class="fa fa-coins"></i>
                       </button>
@@ -407,7 +408,7 @@
                   <td>{{ mahsulot.brand }}</td>
                 </tr>
                 <tr>
-                  <th>Narx :</th>
+                  <th>Sotuv narx :</th>
                   <td>
                     {{
                       Intl.NumberFormat({ style: "currency" }).format(

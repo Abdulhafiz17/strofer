@@ -52,8 +52,8 @@
                   </button>
                 </td>
                 <td>
+                    <!-- :href="'/kirim/' + gets.id" -->
                   <a
-                    :href="'/kirim/' + gets.id"
                     class="btn btn-outline-secondary float-right btn-sm mb-2"
                   >
                     <i class="fa fa-clock-rotate-left"></i>

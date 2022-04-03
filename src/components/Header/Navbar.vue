@@ -52,8 +52,10 @@ export default {
 
   methods: {
     logout() {
-      localStorage.clear()
       this.$router.push("/");
+      console.clear()
+      console.log(localStorage)
+      localStorage.clear()
     },
   },
 

@@ -444,10 +444,7 @@ export default {
             swal({
               icon: "success",
               title: "Buyurtma o'chirildi !",
-              timer: 1500,
-            }).then(() => {
-              location.reload()
-              this.getBuyurtma()
+              timer: 1000,
             })
           }
           this.buyurtmalar = res.data;

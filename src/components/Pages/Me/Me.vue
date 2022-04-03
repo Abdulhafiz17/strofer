@@ -73,17 +73,9 @@ export default {
   components: { isloading },
   data() {
     return {
-      hodim: {
-        id: "",
-        name: "",
-        username: "",
-        password: "",
-        role: "",
-        branch_id: "",
-        phone: null,
-        isloading: false,
-      },
-      errorr: [],
+      hodim: {},
+      errorr: "",
+      isloading: true,
     };
   },
   methods: {
@@ -92,6 +84,7 @@ export default {
       instance
         .get("users/me")
         .then((res) => {
+          console.log(res.data)
           this.hodim = {
             id: res.data.id,
             name: res.data.name,
@@ -101,12 +94,12 @@ export default {
             phone: res.data.phone,
             password: "none",
           };
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally((this.isloading = false))
     },
     putData() {
       this.isloading = true;
@@ -129,7 +122,9 @@ export default {
     },
   },
   mounted() {
-    this.getData();
+    setTimeout(() => {
+      this.getData();
+    }, 1000);
   },
 };
 </script>
