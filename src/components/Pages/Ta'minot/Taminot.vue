@@ -81,7 +81,7 @@
                               balance.balance
                             )
                           }}
-                          {{ balance.currency_id }} <span class="fa fa-coin" />
+                          {{ balance.currency }} <span class="fa fa-coin" />
                         </span>
                       </td>
                     </tr>
@@ -328,45 +328,14 @@ export default {
       instance
         .get("all_markets")
         .then((res) => {
-          if (res.data.length > 0) {
-            this.taminotchilar = res.data;
-            this.taminotchilar.forEach((element) => {
-              instance.get("market_balances_all/" + element.id).then((res) => {
-                element.balances = res.data;
-                if (res.data.length > 0) {
-                  res.data.forEach((balance) => {
-                    instance
-                      .get("this_currency/" + balance.currency_id)
-                      .then((res) => {
-                        balance.currency_id = res.data.currency;
-                        this.isloading = false;
-                      })
-                      .catch((err) => {
-                        this.isloading = false;
-                        this.errorr = err.message;
-                      });
-                  });
-                } else {
-                  this.isloading = false;
-                }
-              });
-            });
-          } else {
-            this.isloading = false;
-            swal({
-              icon: "warning",
-              title: "Ta'minotchilar mavjud emas !",
-            });
-          }
-          // instance.get("all_currencies").then((res) => {
-          //   this.kurslar = res.data;
-          // });
+          console.log(res.data)
+          this.taminotchilar = res.data
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally()
     },
     postData() {
       if (this.yangiTaminotchi.name.length == 0 || this.yangiTaminotchi.address.length == 0) {
@@ -383,7 +352,7 @@ export default {
           .then((res) => {
             console.log(res.data);
             if (res.status == 200) {
-              swal({ icon: "success" }).then(() => {
+              swal({ icon: "success", timer: 1000 }).then(() => {
                 this.getData();
                 // window.location.reload();
                 this.yangiTaminotchi = {
@@ -417,7 +386,7 @@ export default {
           .put("this_market_update/" + id, this.editTaminotchi)
           .then((res) => {
             if (res.status == 200) {
-              swal({ icon: "success" }).then(() => {
+              swal({ icon: "success", timer: 1000 }).then(() => {
                 // window.location.reload();
                 this.getData()
               });
@@ -479,15 +448,15 @@ export default {
   mounted() {
     console.clear();
     this.getData();
-    if (localStorage.getItem("reloaded")) {
-      // The page was just reloaded. Clear the value from local storage
-      // so that it will reload the next time this page is visited.
-      localStorage.removeItem("reloaded");
-    } else {
-      // Set a flag so that we know not to reload the page twice.
-      localStorage.setItem("reloaded", "1");
-      location.reload();
-    }
+    // if (localStorage.getItem("reloaded")) {
+    //   // The page was just reloaded. Clear the value from local storage
+    //   // so that it will reload the next time this page is visited.
+    //   localStorage.removeItem("reloaded");
+    // } else {
+    //   // Set a flag so that we know not to reload the page twice.
+    //   localStorage.setItem("reloaded", "1");
+    //   location.reload();
+    // }
   },
 };
 </script>

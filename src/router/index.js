@@ -111,6 +111,12 @@ const routes = [
     name: "kmahsulotlar",
     component: () => import("../components/Pages/Kategoriya/kmahsulotlar.vue"),
   },
+  {
+    path: "/mahsulotlar",
+    meta: { requiresAuth: true },
+    name: "mahsulotlar",
+    component: () => import("../components/Pages/Kategoriya/Mahsulotlar.vue"),
+  },
 
   {
     path: "/chiqim",

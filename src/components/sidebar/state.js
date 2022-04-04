@@ -24,6 +24,12 @@ function myFunction(x) {
   }
 }
 
+window.addEventListener("keypress", function(button) {
+  if (button.key == "=" || button.key == "+") {
+    collapsed.value = !collapsed.value
+  }
+})
+
 var x = window.matchMedia("(max-width: 800px)");
 myFunction(x); // Call listener function at run time
 x.addListener(myFunction); // Attach listener function on state changesА    

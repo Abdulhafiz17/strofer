@@ -113,19 +113,27 @@
                         <th>№</th>
                         <th>Narx</th>
                         <th>Sana</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr
                         v-for="(history, n) in kpiHistory"
                         :key="history.id"
-                        @click="getThisTrade(history)"
-                        data-toggle="modal"
-                        data-target="#thisTrade"
                       >
                         <td>{{ n + 1 }}</td>
-                        <td>{{ history.price }} {{ history.currency_id }}</td>
-                        <td>{{ history.time }}</td>
+                        <td>{{ Intl.NumberFormat().format(history.price) }} so'm</td>
+                        <td>{{ history.time.replace("T", " ") }}</td>
+                        <td>
+                          <button
+                            class="btn btn-sm btn-outline-info"
+                            @click="getThisTrade(history)"
+                            data-toggle="modal"
+                            data-target="#thisTrade"
+                          >
+                            <span class="fa fa-info"/>
+                          </button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -155,9 +163,9 @@
               <tr v-for="(trade, n) in thisTrade" :key="trade">
                 <td>{{ n + 1 }}</td>
                 <td>{{ trade.product }}</td>
-                <td>{{ trade.selling_price }} {{ trade.currency }}</td>
+                <td>{{ Intl.NumberFormat().format(trade.selling_price) }} {{ trade.currency_id }}</td>
                 <td>{{ trade.quantity }} {{ trade.measure }}</td>
-                <td>{{ trade.kpi }} {{ trade.currency }}</td>
+                <td>{{ Intl.NumberFormat().format(trade.kpi) }} {{ trade.currency_id }}</td>
               </tr>
             </tbody>
           </table>
@@ -194,6 +202,7 @@ export default {
       instance
         .get("this_user_expense/" + this.user_id)
         .then((response) => {
+          // console.log(response.data)
           this.payHistory = response.data;
           this.isloading = false;
         })
@@ -229,12 +238,12 @@ export default {
     getThisTrade(object) {
       this.thisTrade = [];
       instance.get("this_trade/" + object.trade_id).then((response) => {
+        console.log(response.data)
         instance
           .get("this_product/empty/" + response.data.product_code)
           .then((res) => {
-            console.log(res.data);
             res.data.forEach((element) => {
-              let trade = {
+              this.thisTrade.push({
                 product_code: response.data.product_code,
                 product: element.name,
                 quantity: response.data.quantity,
@@ -242,10 +251,8 @@ export default {
                 selling_price: response.data.selling_price,
                 currency: element.currency_id,
                 kpi: object.price,
-              };
-              this.thisTrade.push(trade);
+              });
             });
-            console.log(this.thisTrade);
           })
           .catch((err) => {
             this.isloading = false;
@@ -275,6 +282,7 @@ export default {
     },
   },
   mounted() {
+    console.clear()
     this.getData();
   },
 };

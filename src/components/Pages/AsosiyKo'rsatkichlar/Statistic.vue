@@ -8,7 +8,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-4 mb-2">
-            <input type="date" class="form-control" v-model="fromDate" />
+            <input type="date"  class="form-control" min="2022-02-20" max="2032-02-20" v-model="fromDate" />
           </div>
           <div class="col-md-4 mb-2">
             <input type="date" class="form-control" v-model="toDate" />

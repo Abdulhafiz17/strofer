@@ -21,8 +21,8 @@
             <tbody>
               <tr v-for="(chiqim, idx) in chiqimtarixi" :key="chiqim">
                 <th class="text-center">{{ idx + 1 }}</th>
-                <td class="text-center">{{ chiqim.narxi }}</td>
-                <td class="text-center">{{ chiqim.valyuta }}</td>
+                <td class="text-center">{{ Intl.NumberFormat().format(chiqim.price) }}</td>
+                <td class="text-center">{{ chiqim.currency_id }}</td>
                 <td class="text-center">{{ chiqim.comment }}</td>
               </tr>
             </tbody>
@@ -47,7 +47,7 @@ export default {
         narxi: null,
         valyuta: "",
         comment: "",
-        errorr: [],
+        errorr: "",
       },
       isloading: false,
     };
@@ -59,27 +59,14 @@ export default {
       instance
         .get("variable_expenses")
         .then((response) => {
-          response.data.forEach((element) => {
-            instance.get("this_currency/" + element.currency_id).then((res) => {
-              this.chiqimtarix = {
-                narxi: element.price,
-                valyuta: res.data.currency,
-                comment: element.comment,
-              };
-              this.chiqimtarixi.push(this.chiqimtarix);
-            });
-          });
-          // this.chiqimtarixi = response.data;
-          console.log(this.chiqimtarixi);
-          // window.location.reload(this.getData)
-          // this.chiqimtarixi = response.data;
-          console.log(response.data);
+          this.chiqimtarixi = response.data
+          console.log(response.data)
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
   },
   mounted() {

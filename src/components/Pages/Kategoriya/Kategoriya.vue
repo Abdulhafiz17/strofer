@@ -69,10 +69,10 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="row">
-                      <div class="col-md-4">
+                      <div class="col-md-2">
                         <h4 class="card-title">{{ idx + 1 }}</h4>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-8 text-center">
                         <h4>{{ kategoriya.name }}</h4>
                       </div>
                       <div class="col-md-2">
@@ -85,8 +85,9 @@
                           <i class="fa fa-edit"></i>
                         </button>
                       </div>
-                      <div class="col"></div>
-                      <div class="col-md-10">
+                    </div>
+                    <div class="row">
+                      <div class="col">
                         <a
                           :href="'/kmahsulotlar/' + kategoriya.id"
                           class="btn btn-outline-success btn-block mt-3"
@@ -94,7 +95,6 @@
                           Mahsulotlar
                         </a>
                       </div>
-                      <div class="col"></div>
                     </div>
                   </div>
                 </div>

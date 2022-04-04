@@ -44,25 +44,36 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive text-center my-custom-scrollbar table-wrapper-scroll-y">
-                  <table class="table table-sm table-borderless table-hover">
+                  <table class="table-sm table-borderless table-hover">
                     <thead>
                       <tr>
                         <th>№</th>
                         <th>Sana</th>
                         <th>Summa</th>
+                        <th>Nasiya summa</th>
+                        <th>Hodim</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(customers, idx) in customer" :key="customers">
-                        <td>{{ idx + 1 }}</td>
-                        <td
-                          data-toggle="modal"
-                          data-target="#exampleModal"
-                          @click="getData1(customers)"
-                        >
-                          {{ customers.time }}
+                      <tr v-for="(tarix) in customer" :key="tarix">
+                        <td>{{ tarix.number }}</td>
+                        <td>
+                          {{ tarix.time.replace("T", " ") }}
                         </td>
-                        <td> {{ Intl.NumberFormat().format(customers.balance) }} so'm</td>
+                        <td> {{ Intl.NumberFormat().format(tarix.price) }} so'm</td>
+                        <td> {{ Intl.NumberFormat().format(tarix.loan_price) }} so'm </td>
+                        <td> {{ tarix.user }} </td>
+                        <td>
+                          <button 
+                            class="btn btn-sm btn-outline-info"
+                            data-toggle="modal"
+                            data-target="#exampleModal"
+                            @click="getData1(tarix)"
+                          >
+                            <span class="fa fa-info"/>
+                          </button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -109,19 +120,13 @@
             </thead>
             <tbody>
               <tr v-for="tradis in tradies" :key="tradis">
-                <td class="text-center">{{ tradis.name }}</td>
-                <td class="text-center">{{ tradis.brand }}</td>
+                <td class="text-center">{{ tradis.product_name }}</td>
+                <td class="text-center">{{ tradis.product_brand }}</td>
                 <td class="text-center">{{ Intl.NumberFormat().format(tradis.selling_price) }} so'm</td>
                 <td class="text-center">{{ tradis.quantity }} {{ tradis.measure }}</td>
                 <td class="text-center"> {{ Intl.NumberFormat().format(tradis.selling_price * tradis.quantity) }} so'm </td>
               </tr>
             </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="3" class="text-center"> Jami : </th>
-                <th colspan="2"> {{ Intl.NumberFormat().format(tradeBalance) }} so'm </th>
-              </tr>
-            </tfoot>
           </table>
         </div>
         <!-- <div class="modal-footer">
@@ -159,18 +164,7 @@ export default {
       instance
         .get("this_customer_orders/" + this.$route.params.id)
         .then((response) => {
-          if (response.data.length > 0) {
-            this.isloading = false
-            response.data.forEach((element) => {
-              instance.get("this_order_balances/" + element.id).then((balance) => {
-                this.customer.push({
-                  id: element.id,
-                  time: element.time.replace("T", " "),
-                  balance: balance.data[0].selling_price,
-                })
-              })
-            })
-          }
+          this.customer = response.data
         })
         .catch((err) => {
           this.isloading = false;
@@ -180,6 +174,7 @@ export default {
       instance
         .get("this_customer_loans/" + this.$route.params.id)
         .then((response) => {
+          console.log(response.data)
           this.loans = response.data;
           this.isloading = false
         })
@@ -193,28 +188,8 @@ export default {
       this.tradeBalance = object.balance
       this.tradies = [];
       instance.get("this_order_trades/" + object.id).then((response) => {
-        if (response.data.length > 0) {
-          response.data.forEach((element) => {
-            instance
-              .get("this_product/empty/" + element.product_code)
-              .then((response) => {
-                this.tradies.push({
-                  name: response.data[0].name,
-                  brand: response.data[0].brand,
-                  quantity: element.quantity,
-                  selling_price: element.selling_price,
-                  measure: response.data[0].measure,
-                });
-                this.isloading = false
-              })
-              .catch((err) => {
-                this.isloading = false;
-                this.errorr = err.message;
-              });
-          });
-        } else {
-          this.isloading = false
-        }
+        this.tradies = response.data
+        this.isloading = false
       });
     },
   },

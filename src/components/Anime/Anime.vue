@@ -23,13 +23,17 @@ export default {
           closeOnClickOutside: false,
           closeOnEsc: false,
           buttons: false,
-        });
+        }).then(() => {
+          this.isloading = false
+        })
       } else if (this.message == "Request failed with status code 401" || this.message == "Request failed with status code 400") {
         this.$router.push("/");
         swal({
           icon: "error",
           title: "Login yoki parolda xatolik",
-        });
+        }).then(() => {
+          this.isloading = false
+        })
       }
     }, 500);
   },

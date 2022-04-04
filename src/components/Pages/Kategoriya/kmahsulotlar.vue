@@ -91,16 +91,13 @@
                       {{ mahsulotlar.quantity_note }} {{ mahsulotlar.measure }}
                     </td>
                     <td>
-                      <span v-if="mahsulotlar.kpi">
-                        <span v-if="mahsulotlar.kpi.percent == 0">
-                          {{
-                            Intl.NumberFormat({ style: "currency" }).format(
-                              mahsulotlar.kpi.price
-                            )
-                          }}
-                          {{ mahsulotlar.kpi.currency_id }} so'm
+                      <span v-if="mahsulotlar.kpi_array">
+                        <span v-if="mahsulotlar.kpi_array.percent == 0">
+                          {{Intl.NumberFormat().format(mahsulotlar.kpi_array.price)}}so'm
                         </span>
-                        <span v-else> {{ mahsulotlar.kpi.percent }} % </span>
+                        <span v-else>
+                          {{ mahsulotlar.kpi_array.percent }} %
+                        </span>
                       </span>
                     </td>
                     <td>
@@ -109,7 +106,7 @@
                         data-toggle="modal"
                         data-target="#exampleModal"
                         @click="kpi.product_id = mahsulotlar.id"
-                        v-if="!mahsulotlar.kpi"
+                        v-if="!mahsulotlar.kpi_array"
                       >
                         <i class="fa fa-coins"></i>
                       </button>
@@ -206,7 +203,10 @@
                   v-model="editT.selling_price"
                 />
                 <div class="input-group-append">
-                  <select class="form-control" v-model="editT.currency_id_for_sell">
+                  <select
+                    class="form-control"
+                    v-model="editT.currency_id_for_sell"
+                  >
                     <option value="so'm">so'm</option>
                     <option value="dollar">dollar</option>
                   </select>
@@ -223,7 +223,10 @@
                   v-model="editT.final_price"
                 />
                 <div class="input-group-append">
-                  <select class="form-control" v-model="editT.currency_id_for_final">
+                  <select
+                    class="form-control"
+                    v-model="editT.currency_id_for_final"
+                  >
                     <option value="so'm">so'm</option>
                     <option value="dollar">dollar</option>
                   </select>
@@ -231,14 +234,14 @@
               </div>
             </div>
           </div>
-          <div class="row" v-if="editT.kpi">
+          <div class="row" v-if="editT.kpi_array">
             <div class="col-sm">
               <label> Kpi </label>
-              <div class="input-group" v-if="editT.kpi.percent">
+              <div class="input-group" v-if="editT.kpi_array.percent !== 0">
                 <input
                   type="number"
                   class="form-control"
-                  v-model="editT.kpi.percent"
+                  v-model="editT.kpi_array.percent"
                   required
                 />
                 <div class="input-group-append">
@@ -249,12 +252,12 @@
                 <input
                   type="number"
                   class="form-control"
-                  v-model="editT.kpi.price"
+                  v-model="editT.kpi_array.price"
                   required
                 />
                 <div class="input-group-append">
                   <div class="input-group-text">
-                    {{ editT.kpi.currency_id }}
+                    so'm
                   </div>
                 </div>
               </div>
@@ -440,7 +443,7 @@
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import JsBarcode from "jsbarcode";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 
 export default {
   components: { isloading },
@@ -479,30 +482,20 @@ export default {
         .post("kpi_create", this.kpi)
         .then((response) => {
           console.log(response.data);
-          this.getData();
-          this.getkpi();
           if (response.status == 200) {
+            swal({
+              icon: "success",
+              timer: 1000
+            }).then(() => {
+              this.getData()
+            })
           }
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally((this.isloading = false))
-    },
-
-    getkpi() {
-      this.isloading = true;
-      instance
-        .get("this_product_kpi/" + this.$route.params.id)
-        .then((response) => {
-          this.kpiget = response.data;
-        })
-        .catch((err) => {
-          this.isloading = false;
-          this.errorr = err.message;
-        })
-        .finally((this.isloading = false))
+        .finally((this.isloading = false));
     },
 
     getData() {
@@ -510,44 +503,15 @@ export default {
       instance
         .get("all_products/" + this.$route.params.id)
         .then((response) => {
-          if (response.data.length > 0) {
-            response.data.forEach((element) => {
-              instance.get("this_product_kpi/" + element.id).then((res) => {
-                let mahsulot = {
-                  id: element.id,
-                  name: element.name,
-                  code: element.code,
-                  brand: element.brand,
-                  price: element.price,
-                  category_id: element.category_id,
-                  selling_price: element.selling_price,
-                  final_price: element.final_price,
-                  currency_id: element.currency_id,
-                  currency_id_for_sell: element.currency_id_for_sell,
-                  currency_id_for_final: element.currency_id_for_final,
-                  quantity: element.quantity,
-                  quantity_note: element.quantity_note,
-                  measure: element.measure,
-                  kpi: res.data,
-                };
-                this.mahsulotlars.push(mahsulot);
-                this.isloading = false;
-              });
-            });
-          } else {
-            this.isloading = false;
-            swal({
-              icon: "warning",
-              title: "Ushbu kategoriya bo'sh !"
-            })
-          }
+          this.mahsulotlars = response.data;
           console.log(this.mahsulotlars);
+          this.isloading = false;
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally()
+        .finally();
     },
 
     putData(id) {
@@ -556,16 +520,23 @@ export default {
       instance
         .put("this_product_update/" + id, this.editT)
         .then((response) => {
-          this.getData();
           console.log(response.data);
+          if(response.status == 200) {
+            swal({
+              icon: "success",
+              timer: 1000
+            }).then(() => {
+              this.getData()
+            })
+          }
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally((this.isloading = false))
+        .finally((this.isloading = false));
 
-      console.log(this.editT.kpi);
+      console.log(this.editT.kpi_array);
       // if (this.editT.kpi.currency_id == "percent") {
       //   (this.editT.kpi.percent = Number(this.editT.kpi.price)),
       //     (this.editT.kpi.price = 0),
@@ -575,14 +546,14 @@ export default {
       // }
       if (this.editT.kpi) {
         instance
-          .put("this_kpi_update/" + this.editT.kpi.id, this.editT.kpi)
+          .put("this_kpi_update/" + this.editT.kpi_array.id, this.editT.kpi_array)
           .then((res) => {
             console.log(res.data);
           })
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
-          })
+          });
       }
     },
 

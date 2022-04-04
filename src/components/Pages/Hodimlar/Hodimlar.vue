@@ -96,7 +96,7 @@
                       <td v-if="hodim.balance">
                         {{
                           Intl.NumberFormat({ style: "currency" }).format(
-                            hodim.balance.balance
+                            hodim.balance
                           )
                         }}
                         so'm
@@ -481,30 +481,8 @@ export default {
       instance
         .get("branch_users/" + this.branch_id + "/false")
         .then((response) => {
-          if (response.data.length > 0) {
-            response.data.forEach((element) => {
-              instance.get("this_user_balances/" + element.id).then((res) => {
-                let hodim = {
-                  id: element.id,
-                  name: element.name,
-                  username: element.username,
-                  password: element.password_hash,
-                  phone: element.phone,
-                  role: element.role,
-                  status: element.status,
-                  token: element.token,
-                  balance: res.data[0],
-                };
-                this.hodimlar.push(hodim);
-              });
-            });
-          } else {
-            this.isloading = false
-            swal({
-              icon: "warning",
-              title: "Hodimlar mavjud emas !"
-            })
-          }
+          // console.log(response.data)
+          this.hodimlar = response.data
         })
         .catch((err) => {
           this.isloading = false;

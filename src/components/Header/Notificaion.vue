@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown">
+  <div class="dropdown" v-if="role == 'branch_admin'">
     <button
       class="btn btn-sm float-right"
       style="box-shadow: none"
@@ -37,6 +37,7 @@ import { instance } from "../Pages/Api";
 export default {
   data() {
     return {
+      role: localStorage.getItem("role"),
       mahsulotlar: [],
       notice: 0,
       getter: true,
@@ -68,15 +69,17 @@ export default {
       this.getData();
     }, 5000);
 
-    function myFunction(x) {
-      if (x.matches) {
-        let dropdown = document.querySelector(".dropdown-menu").setAttribute("class", "dropdown-menu dropdown-menu-right")
+    if (this.role == "branch_admin") {
+      function myFunction(x) {
+        if (x.matches) {
+          let dropdown = document.querySelector(".dropdown-menu").setAttribute("class", "dropdown-menu dropdown-menu-right")
+        }
       }
+  
+      var x = window.matchMedia("(min-width: 768px)");
+      myFunction(x); // Call listener function at run time
+      x.addListener(myFunction); // Attach listener function on state changesА
     }
-
-    var x = window.matchMedia("(min-width: 768px)");
-    myFunction(x); // Call listener function at run time
-    x.addListener(myFunction); // Attach listener function on state changesА
   },
 };
 </script>

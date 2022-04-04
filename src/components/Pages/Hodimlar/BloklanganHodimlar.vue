@@ -70,7 +70,7 @@
                 <div class="row d-flex justify-content-around">
                   <div class="col-md-6" style="width: 118px">
                     <button
-                      class="btn btn-block btn-outline-danger"
+                      class="btn btn-block btn-outline-success"
                       @click="block(hodim.id)"
                     >
                       <i class="fa fa-user-slash"></i>

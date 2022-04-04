@@ -91,6 +91,11 @@ export default {
           <span class="fas fa-box-open"></span>
           <p class="ripple">Kategoriya</p>
         </SidebarLink>
+        
+        <SidebarLink to="/mahsulotlar" v-if="role === 'cashier'">
+          <span class="fas fa-box-open"></span>
+          <p class="ripple">Mahsulotlar</p>
+        </SidebarLink>
 
         <SidebarLink to="/chiqim" v-if="role === 'branch_admin'">
           <span class="fas fa-wallet"></span>

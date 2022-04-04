@@ -152,6 +152,7 @@
             >
               Bekor qilish
             </button>
+            <input type="hidden" id="close_modal" data-dismiss="modal"/>
           </div>
         </div>
       </div>
@@ -214,6 +215,7 @@
               type="button"
               class="btn btn-outline-success"
               @click="birmartachiqimpost"
+              data-dismiss="modal"
             >
               Tasdiqlash
             </button>
@@ -272,6 +274,7 @@
             >
               Qaytish
             </button>
+            <input type="hidden" id="close_modal" data-dismiss="modal"/>
           </div>
         </div>
       </div>
@@ -321,8 +324,13 @@ export default {
           if (response.status == 200) {
             swal({
               icon: "success",
+              timer: 1000,
             }).then(() => {
-              window.location.reload();
+              this.birmartachiqim = {
+                price: null,
+                currency_id: "",
+                comment: "",
+              }
             });
           }
           this.isloading = false;
@@ -352,7 +360,8 @@ export default {
           .then((response) => {
             console.log(response.data);
             if (response.data == "success") {
-              swal({ icon: "success" }).then(() => {
+              swal({ icon: "success",timer: 1000 }).then(() => {
+                this.doimiychiqim.name = ""
                 this.getData();
               });
             }
@@ -392,12 +401,14 @@ export default {
           .then((response) => {
             swal({
               icon: "success",
+              timer: 1000,
             });
             document.getElementById("price" + id).value = null;
             document.getElementById("comment" + id).value = "";
           })
           .catch((err) => {
             this.errorr = err.message;
+            this.isloading = false
           })
           .finally((this.isloading = false));
       } else {
@@ -432,13 +443,14 @@ export default {
         .put("update_this_fixed_expense/" + id, this.editT)
         .then((response) => {
           if (response.status == 200) {
-            swal({ icon: "success" }).then(() => {
+            swal({ icon: "success", timer: 1000 }).then(() => {
               this.getData();
             });
           }
         })
         .catch((err) => {
           this.errorr = err.message
+          this.isloading = false
         })
         .finally((this.isloading = false));
     },

@@ -8,7 +8,7 @@
       <div class="card-header">
         <div class="row">
           <div class="col-md">
-            <h3>{{ taminotchi.name }} tarixi ㅤㅤㅤ Balans : <span v-for="balance in balances" :key="balance.id"> {{ Intl.NumberFormat().format(balance.balance) }} {{ balance.currency_id }} <span class="fa fa-coin"/> </span> </h3>
+            <h3>{{ taminotchi.name }} tarixi ㅤㅤ Balans : <span v-for="balance in taminotchi.balances" :key="balance.id">  {{ Intl.NumberFormat().format(balance.balance) }} {{ balance.currency }} <span v-if="balance.balance &gt 0"> qarzdorlik </span> <span v-else> haqdorlik </span> <span class="fa fa-coin"/> </span> </h3>
           </div>
         </div>
       </div>
@@ -51,25 +51,25 @@
                       <tbody>
                         <tr v-for="(tarix, n) in filterRow || []" :key="tarix.id">
                           <td>{{ n + 1 }}</td>
-                          <td>{{ tarix.product }}</td>
+                          <td>{{ tarix.product }} {{ tarix.brand }}</td>
                           <td>
                             {{
-                              Intl.NumberFormat({ style: "currency" }).format(
+                              Intl.NumberFormat().format(
                                 tarix.price
                               )
                             }}
-                            {{ tarix.currency }}
+                            {{ tarix.currency_id }}
                           </td>
-                          <td>{{ tarix.quantity }} {{ tarix.hajm }}</td>
+                          <td>{{ tarix.quantity }} {{ tarix.measure }}</td>
                           <td>
                             {{
-                              Intl.NumberFormat({ style: "currency" }).format(
+                              Intl.NumberFormat().format(
                                 tarix.price * tarix.quantity
                               )
                             }}
-                            {{ tarix.currency }}
+                            {{ tarix.currency_id }}
                           </td>
-                          <td>{{ tarix.date_time }}</td>
+                          <td>{{ tarix.time.replace("T", " ") }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -206,42 +206,14 @@ export default {
         this.error = err.message
         this.isloading = false
       })
-
-      this.isloading = true
-      instance.get("market_balances_all/" + this.$route.params.id).then((response) => {
-        console.log(response.data)
-        this.balances = response.data
-        this.isloading = false
-      })
     },
     getData2() {
       this.taminotTarix = []
       instance
         .get("all_supplies/" + this.$route.params.id + "/true")
         .then((res) => {
-          if (res.data.length > 0) {
-            res.data.forEach((element) => {
-              instance
-                  instance.get("this_user/" + element.owner_id).then((res) => {
-                    instance
-                      .get("this_product/" + element.product_id + "/empty")
-                      .then((resp) => {
-                        this.taminotTarix.push({
-                          quantity: element.quantity,
-                          price: element.price,
-                          date_time: element.time.replace("T", " "),
-                          product: resp.data.name,
-                          hajm: resp.data.measure,
-                          user: res.data.name,
-                          currency: element.currency_id,
-                        });
-                        this.isloading = false
-                      });
-                  });
-            });
-          } else {
-            this.isloading = false
-          }
+          this.taminotTarix = res.data
+          this.isloading = false
         }).catch((err) => {
             this.isloading = false;
              this.errorr = err.message
@@ -266,8 +238,9 @@ export default {
     setTimeout(() => {
       this.getData();
       this.getData2();
-    }, 300);
+    }, 1000);
     instance.get("this_market/" + this.$route.params.id).then((res) => {
+      console.log(res.data)
       this.taminotchi = res.data;
     })
   },

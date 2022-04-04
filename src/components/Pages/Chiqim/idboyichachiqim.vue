@@ -16,10 +16,10 @@
           <tbody>
             <tr v-for="(chiqim, idx) in idboyicha" :key="chiqim">
               <th scope="row" class="text-center">{{ idx + 1 }}</th>
-              <td class="text-center">{{ chiqim.narxi }}</td>
-              <td class="text-center">{{ chiqim.valyuta }}</td>
+              <td class="text-center">{{ Intl.NumberFormat().format(chiqim.price) }}</td>
+              <td class="text-center">{{ chiqim.currency_id }}</td>
               <td class="text-center">{{ chiqim.comment }}</td>
-              <td class="text-center">{{ chiqim.sana }}</td>
+              <td class="text-center">{{ chiqim.time.replace("T", " ") }}</td>
             </tr>
           </tbody>
         </table>
@@ -37,41 +37,24 @@ export default {
   data() {
     return {
       idboyicha: [],
-      chiqim: {
-        narxi: null,
-        valyuta: "",
-        comment: "",
-        sana: "",
-      },
-      isloading: false,
-      errorr: [],
+      chiqim: {},
+      isloading: true,
+      errorr: "",
     };
   },
   methods: {
     getData() {
-      this.isloading = true;
       instance
         .get("this_fixed_expense/" + this.$route.params.id)
         .then((response) => {
-          response.data.forEach((element) => {
-            instance.get("this_currency/" + element.currency_id).then((res) => {
-              this.chiqim = {
-                narxi: element.price,
-                valyuta: res.data.currency,
-                comment: element.comment,
-                sana: element.time.replace("T", " "),
-              };
-              this.idboyicha.push(this.chiqim);
-            });
-          });
-          // this.idboyicha = response.data;
-          console.log(this.idboyicha);
+          console.log(response.data)
+          this.idboyicha = response.data;
         })
-        .finally((this.isloading = false))
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        });
+        })
+        .finally((this.isloading = false))
     },
   },
   mounted() {
