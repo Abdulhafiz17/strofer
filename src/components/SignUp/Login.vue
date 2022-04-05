@@ -80,13 +80,13 @@ export default {
         .post(url, params, config)
         .then((response) => {
           if (response.status == 200) {
-            console.log("logged in");
 
             console.log(response.data);
             localStorage.setItem("access_token", response.data.access_token);
             localStorage.setItem("branch_id", response.data.branch_id);
             localStorage.setItem("role", response.data.role);
             this.$router.push("/home");
+            console.log(localStorage)
           }
         })
         .catch((err) => {

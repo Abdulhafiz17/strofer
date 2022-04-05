@@ -64,10 +64,12 @@ export default {
     },
   },
   mounted() {
-    this.getData();
-    setInterval(() => {
+    if (localStorage.getItem("access_token")) {
       this.getData();
-    }, 5000);
+      setInterval(() => {
+        this.getData();
+      }, 5000);
+    }
 
     if (this.role == "branch_admin") {
       function myFunction(x) {

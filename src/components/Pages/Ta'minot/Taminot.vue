@@ -29,7 +29,7 @@
         <div class="row">
           <div
             class="col-md-4 mb-2"
-            v-for="taminotchi in filteredCards"
+            v-for="taminotchi in filteredCards || []"
             :key="taminotchi"
           >
             <div class="card shadow">

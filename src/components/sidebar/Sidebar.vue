@@ -34,7 +34,9 @@ export default {
     },
   },
   mounted() {
-    this.getData();
+    if (localStorage.getItem("access_token")) {
+      this.getData();
+    }
 
     function myFunction(x) {
       if (x.matches) {
