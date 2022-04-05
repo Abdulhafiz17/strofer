@@ -493,7 +493,7 @@
                   <td>{{ taminot.product }} {{ taminot.brand }}</td>
                   <td>{{ taminot.quatity }} {{ taminot.measure }}</td>
                   <td>{{ Intl.NumberFormat().format(taminot.price) }} {{ taminot.currency_id }}</td>
-                  <td>{{ taminot.quantity * taminot.price }} {{ taminot.currency_id }}</td>
+                  <td>{{ Intl.NumberFormat().format(taminot.quantity * taminot.price) }} {{ taminot.currency_id }}</td>
                   <td>
                     <button
                       class="btn btn-sm btn-outline-danger"
@@ -668,8 +668,8 @@ export default {
         });
     },
     postTaminot() {
-      console.log(this.postMahsulot);
       this.isloading = true;
+      // console.log(this.postMahsulot);
       this.postMahsulot.product.code = String(this.barcode);
       this.postMahsulot.product.validity_period = "0";
       instance
@@ -681,47 +681,45 @@ export default {
               icon: "warning",
               title: "Bunday mahsulot ro'yxatga qo'shilgan !",
               closeOnClickOutside: false,
-            });
+            })
+            this.isLoading = false
           } else if (res.status == 200) {
-            swal({ icon: "success", timer: 1000});
-            this.openRow = null;
-            this.barcode = "";
-            this.alert = "";
-            this.postMahsulot = {
-              product: {
-                category_id: "",
-                code: "",
-                name: "",
-                brand: "",
-                price: null,
-                currency_id: "",
-                selling_price: null,
-                final_price: null,
-                currency_id_for_sell: "",
-                currency_id_for_final: "",
-                quantity_note: null,
-                measure: "",
-                validity_period: "0",
-              },
-              new_supply: {
-                quantity: null,
-                price: null,
-                currency_id: "",
-                market_id: this.$route.params.id,
-              },
-            };
+            swal({ icon: "success", timer: 1000}).then(() => {
+              this.openRow = null;
+              this.barcode = "";
+              this.alert = "";
+              this.postMahsulot = {
+                product: {
+                  category_id: "",
+                  code: "",
+                  name: "",
+                  brand: "",
+                  price: null,
+                  currency_id: "",
+                  selling_price: null,
+                  final_price: null,
+                  currency_id_for_sell: "",
+                  currency_id_for_final: "",
+                  quantity_note: null,
+                  measure: "",
+                  validity_period: "0",
+                },
+                new_supply: {
+                  quantity: null,
+                  price: null,
+                  currency_id: "",
+                  market_id: this.$route.params.id,
+                },
+              };
+              this.isLoading = false
+            })
           }
           console.log(this.postMahsulot);
         })
         .catch((err) => {
-          this.errorr = err.message;
-        })
-        .finally((this.isloading = false))
-        .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-          this.getTaminot();
-        });
+        })
     },
     getTaminot() {
       this.isLoading = true;
@@ -744,12 +742,13 @@ export default {
         .delete("remove_this_supply/" + id)
         .then((response) => {
           setTimeout(() => {
-            this.getTaminot()
-            this.isLoading = false
             swal({
               icon: "success",
               title: "O'chirildi !",
               timer: 1000,
+            }).then(() => {
+              this.getTaminot()
+              this.isLoading = false
             })
           }, 500)
         })

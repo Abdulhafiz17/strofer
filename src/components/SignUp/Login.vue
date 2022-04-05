@@ -81,12 +81,10 @@ export default {
         .then((response) => {
           if (response.status == 200) {
 
-            console.log(response.data);
             localStorage.setItem("access_token", response.data.access_token);
             localStorage.setItem("branch_id", response.data.branch_id);
             localStorage.setItem("role", response.data.role);
             this.$router.push("/home");
-            console.log(localStorage)
           }
         })
         .catch((err) => {
@@ -107,12 +105,6 @@ export default {
             })
           }
         });
-      // if (this.username === 'admin' && this.password === "admin") {
-      //   this.$router.push("/home");
-      //   localStorage.setItem('username', this.username)
-      // } else {
-      //   alert("Please enter username & password");
-      // }
     },
   },
 };

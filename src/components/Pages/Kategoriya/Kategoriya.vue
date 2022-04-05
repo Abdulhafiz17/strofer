@@ -250,7 +250,7 @@ export default {
               this.getData();
             })
           } else if (response.data == "success") {
-            swal({icon: "success"}).then(() => {
+            swal({icon: "success", timer: 1000}).then(() => {
               this.getData();
             })
           }
@@ -292,7 +292,7 @@ export default {
         .then((response) => {
           this.getData();
           if (response.data == "success") {
-            swal({icon: "success"}).then(() => {
+            swal({icon: "success", timer: 1000}).then(() => {
               this.getData();
             })
           } else if (response.data == "So'rovda xatolik") {

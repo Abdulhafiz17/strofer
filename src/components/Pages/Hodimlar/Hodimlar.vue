@@ -447,6 +447,7 @@ export default {
             if (res.data == "success") {
               swal({
                 icon: "success",
+                timer: 1000
               }).then(() => {
                 window.location.reload();
               });
@@ -509,7 +510,7 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            swal({icon: "success"}).then(() => {
+            swal({icon: "success", timer: 1000}).then(() => {
               window.location.reload();
             })
           }
@@ -527,7 +528,7 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            swal({icon: "success"}).then(() => {
+            swal({icon: "success", timer: 800}).then(() => {
               this.getData();
             })
           }
@@ -544,12 +545,18 @@ export default {
       this.sum = Intl.NumberFormat().format(number)
     },
     payToUser(object) {
+      this.isloading = true
       instance
         .post("pay_for_user/" + object.user_id, object)
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            window.location.reload();
+            swal({
+              icon: "success",
+              timer: 1000,
+            }).then(() => {
+              window.location.reload();
+            })
           }
         })
         .catch((err) => {

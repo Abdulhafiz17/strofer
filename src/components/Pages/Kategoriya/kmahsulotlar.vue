@@ -237,18 +237,7 @@
           <div class="row" v-if="editT.kpi_array">
             <div class="col-sm">
               <label> Kpi </label>
-              <div class="input-group" v-if="editT.kpi_array.percent !== 0">
-                <input
-                  type="number"
-                  class="form-control"
-                  v-model="editT.kpi_array.percent"
-                  required
-                />
-                <div class="input-group-append">
-                  <div class="input-group-text">%</div>
-                </div>
-              </div>
-              <div class="input-group" v-else>
+              <div class="input-group" v-if="editT.kpi_array.percent == 0">
                 <input
                   type="number"
                   class="form-control"
@@ -256,8 +245,22 @@
                   required
                 />
                 <div class="input-group-append">
-                  <select class="custom-select">
-                    <option value="so'm">so'm</option>
+                  <select class="custom-select" v-model="editT.kpi_array.type">
+                    <option value="price">so'm</option>
+                    <option value="percent">%</option>
+                  </select>
+                </div>
+              </div>
+              <div class="input-group" v-else>
+                <input
+                  type="number"
+                  class="form-control"
+                  v-model="editT.kpi_array.percent"
+                  required
+                />
+                <div class="input-group-append">
+                  <select class="custom-select" v-model="editT.kpi_array.type">
+                    <option value="price">so'm</option>
                     <option value="percent">%</option>
                   </select>
                 </div>
@@ -464,7 +467,7 @@ export default {
       backgroun: null,
       search: "",
       mahsulot: {},
-      errorr: [],
+      errorr: "",
     };
   },
 
@@ -505,23 +508,19 @@ export default {
         .get("all_products/" + this.$route.params.id)
         .then((response) => {
           this.mahsulotlars = response.data;
-          console.log(this.mahsulotlars);
           this.isloading = false;
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally();
     },
 
     putData(id) {
       this.isloading = true;
-      console.log(this.editT);
       instance
         .put("this_product_update/" + id, this.editT)
         .then((response) => {
-          console.log(response.data);
           if(response.status == 200) {
             swal({
               icon: "success",
@@ -537,15 +536,17 @@ export default {
         })
         .finally((this.isloading = false));
 
-      console.log(this.editT.kpi_array);
-      // if (this.editT.kpi.currency_id == "percent") {
-      //   (this.editT.kpi.percent = Number(this.editT.kpi.price)),
-      //     (this.editT.kpi.price = 0),
-      //     (this.editT.kpi.currency_id = "string");
-      // } else {
-      //   this.editT.kpi.percent = 0;
-      // }
-      if (this.editT.kpi) {
+
+      if (this.editT.kpi_array) {
+        if (this.editT.kpi_array.currency_id == "percent") {
+          (this.editT.kpi_array.percent = Number(this.editT.kpi_array.price)),
+            (this.editT.kpi_array.price = 0),
+            (this.editT.kpi_array.currency_id = "string");
+        } else {
+          this.editT.kpi_array.percent = 0;
+        }
+        this.editT.kpi_array.product_id = this.editT.id
+        
         instance
           .put("this_kpi_update/" + this.editT.kpi_array.id, this.editT.kpi_array)
           .then((res) => {
@@ -559,7 +560,6 @@ export default {
     },
 
     editk(mahsulot) {
-      console.log(mahsulot);
       // this.editT = {
       //   id: mahsulot.id,
       //   name: mahsulot.name,

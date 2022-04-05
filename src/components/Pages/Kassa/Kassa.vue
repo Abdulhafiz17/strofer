@@ -175,6 +175,7 @@
                         class="btn btn-outline-success m-2 float-right"
                         data-toggle="modal"
                         data-target="#cash"
+                        @click="balance = tab.order_price"
                       >
                         <span class="far fa-circle-check" /> Tasdiqlash
                       </button>
@@ -235,7 +236,7 @@
                   Umumiy summa :
                   {{
                     Intl.NumberFormat({ style: "currency" }).format(
-                      balance.selling_price
+                      balance
                     )
                   }}
                   so'm
@@ -259,7 +260,7 @@
                           v-model="naxtSavdo.price"
                           @keyup="count1()"
                           min="0"
-                          :max="balance.selling_price"
+                          :max="balance"
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">so'm</div>
@@ -274,7 +275,7 @@
                           class="form-control"
                           v-model="plastikSavdo.price"
                           min="0"
-                          :max="balance.selling_price"
+                          :max="balance"
                           @keyup="count2()"
                         />
                         <div class="input-group-append">
@@ -307,7 +308,7 @@
                     </option>
                   </datalist> -->
                   <div class="input-group">
-                    <select class="custom-select custom-select-sm">
+                    <select class="custom-select custom-select-sm" v-model="client_id">
                       <option>
                         <input
                           type="text"
@@ -343,7 +344,7 @@
                           class="form-control"
                           v-model="naxtSavdo.price"
                           min="0"
-                          :max="balance.selling_price"
+                          :max="balance"
                           @keyup="nasiya1()"
                         />
                         <div class="input-group-append">
@@ -359,7 +360,7 @@
                           class="form-control"
                           v-model="plastikSavdo.price"
                           min="0"
-                          :max="balance.selling_price"
+                          :max="balance"
                           @keyup="nasiya2()"
                         />
                         <div class="input-group-append">
@@ -723,21 +724,21 @@ export default {
     },
     count1() {
       this.plastikSavdo.price =
-        this.balance.selling_price - this.naxtSavdo.price;
+        this.balance - this.naxtSavdo.price;
     },
     count2() {
       this.naxtSavdo.price =
-        this.balance.selling_price - this.plastikSavdo.price;
+        this.balance - this.plastikSavdo.price;
     },
     nasiya1() {
       this.nasiyaSumma =
-        this.balance.selling_price -
+        this.balance -
         this.plastikSavdo.price -
         this.naxtSavdo.price;
     },
     nasiya2() {
       this.nasiyaSumma =
-        this.balance.selling_price -
+        this.balance -
         this.naxtSavdo.price -
         this.plastikSavdo.price;
     },

@@ -84,7 +84,6 @@ export default {
       instance
         .get("users/me")
         .then((res) => {
-          console.log(res.data)
           this.hodim = {
             id: res.data.id,
             name: res.data.name,
@@ -103,14 +102,13 @@ export default {
     },
     putData() {
       this.isloading = true;
-      console.log(this.hodim);
       instance
         .put("this_user_update/" + this.hodim.id, this.hodim)
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            swal({icon: "success"}).then(() => {
-              this.getData
+            swal({icon: "success", timer: 1000}).then(() => {
+              this.getData()
             })
           }
         })

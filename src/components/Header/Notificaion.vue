@@ -47,24 +47,20 @@ export default {
     getData() {
       (this.mahsulotlar = []),
         (this.notice = 0),
-        instance.get("all_categories").then((response) => {
+        instance.get("all_products_for_trade_to_search").then((response) => {
           if (response.data.length > 0 && response.data !== 'Sizga ruhsat berilmagan') {
             response.data.forEach((element) => {
-              instance.get("all_products/" + element.id).then((res) => {
-                res.data.forEach((element) => {
                   if (element.quantity_note >= element.quantity) {
                     this.mahsulotlar.push(element);
                     this.notice++;
                   }
-                });
-              });
             });
           }
         });
     },
   },
   mounted() {
-    if (localStorage.getItem("access_token")) {
+    if (localStorage.getItem("access_token") && this.role == "branch_admin") {
       this.getData();
       setInterval(() => {
         this.getData();
