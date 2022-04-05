@@ -53,7 +53,15 @@
               <div class="card shadow mt-2">
                 <div class="card-header text-center">
                   <div class="row">
-                    <div class="col-sm"></div>
+                    <div class="col-sm">
+                      <button 
+                        class="btn btn-sm btn-outline-success float-left"
+                        data-toggle="modal"
+                        href="#addProduct"
+                      >
+                        <span class="fa fa-barcode"/>
+                      </button>
+                    </div>
                     <div class="col-sm">
                       <h4>{{ tab.number }} - buyurtma</h4>
                     </div>
@@ -482,6 +490,66 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="addProduct">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Mahsulot qo'shish</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <div class="input-group">
+                <input class="form-control" type="number" id="barcode" placeholder="Code" @change="addProduct()"/>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fa fa-barcode"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row my-3" v-if="product">
+            <table class="table table-lg table-borderless table-hover text-center">
+              <tbody>
+                <tr>
+                  <th>Mahsulot: </th>
+                  <td> {{ product.name }} </td>
+                </tr>
+                <tr>
+                  <th>Brend: </th>
+                  <td> {{ product.brand }} </td>
+                </tr>
+                <tr>
+                  <th>Sotuv narx: </th>
+                  <td> {{ Intl.NumberFormat().format(product.selling_price) }} so'm </td>
+                </tr>
+                <tr>
+                  <th>Qoldiq: </th>
+                  <td> {{ product.quantity }} {{ product.measure }} </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <div class="input-group">
+                    <input type="number" step="any" class="form-control" id="quantity" placeholder="Hajm" required @change="toTrade(product)"/>
+                    <div class="input-group-append">
+                      <div class="input-group-text">
+                        {{ product.measure }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" data-dismiss="modal" id="close_modal"/>
+        </div>
+      </div>
+    </div>
+  </div>
   <isloading :isloading="isloading" :message="errorr" />
 </template>
 
@@ -489,6 +557,7 @@
 import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 import swal from "sweetalert";
+
 export default {
   components: { isloading },
   data() {
@@ -523,6 +592,7 @@ export default {
         comment: "string",
       },
       alert: String,
+      product: null,
     };
   },
   methods: {
@@ -762,10 +832,39 @@ export default {
         this.isloading = false
       })
     },
+    addProduct() {
+      let code = document.querySelector("#barcode").value
+      instance.get("this_product/empty/" + code).then((response) => {
+        console.log(response.data)
+        if (response.data) {
+          this.product = response.data[0]
+        }
+      })
+    },
+    toTrade(product) {
+      this.isloading = true
+      let quantity = document.querySelector("#quantity").value
+      let data = {
+        product_code: product.product_code,
+        quantity: quantity
+      }
+      instance.post("to_trade/" + this.orderId, data).then((response) => {
+        if (response.status == 200) {
+          console.log(response.data)
+          swal("", "", "success",{timer: 1000}).then(() => {
+            this.getBuyurtma()
+            document.querySelector("#close_modal").click()
+            document.querySelector("#barcode").value = null,
+            this.product = null,
+            this.isloading = false
+          })
+        }
+      })
+    },
   },
   computed: {
     even: function (arr) {
-      // Set slice() to avoid to generate an infinite loop!
+      // Set slice() to avoid to generate an infinite loop! 
       return arr.slice().sort(function (a, b) {
         return a.position - b.position;
       });
@@ -779,5 +878,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>  
 </style>

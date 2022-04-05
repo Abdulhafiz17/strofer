@@ -74,6 +74,7 @@
                         <span
                           v-for="balance in taminotchi.balances"
                           :key="balance"
+                          :class="balance.balance > 0 ? 'text-danger' : 'text-success'"
                         >
                           <!-- :class="balance != 0? 'text-success': 'text-danger'" -->
                           {{
@@ -102,7 +103,7 @@
                       <span class="fa fa-box"></span>
                     </router-link>
                   </div>
-                  <div class="col-md" style="width: 80px">
+                  <div class="col-md" style="width: 80px" v-if="taminotchi.balance_sum !== 0">
                     <button
                       class="btn btn-block btn-outline-primary mt-2"
                       data-toggle="modal"
@@ -440,9 +441,11 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.taminotchilar.filter((taminotchis) => {
-        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
-      });
+      if (this.taminotchilar.length > 0) {
+        return this.taminotchilar.filter((taminotchis) => {
+          return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+        });
+      }
     },
   },
   mounted() {

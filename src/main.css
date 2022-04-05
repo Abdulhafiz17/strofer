@@ -223,10 +223,6 @@ li {
     border-radius: 50% !important;
 }
 
-.text-danger:hover {
-    border: 1px solid red;
-}
-
 label {
     margin: 5px 0px;
 }

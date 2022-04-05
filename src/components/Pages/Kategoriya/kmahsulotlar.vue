@@ -256,9 +256,10 @@
                   required
                 />
                 <div class="input-group-append">
-                  <div class="input-group-text">
-                    so'm
-                  </div>
+                  <select class="custom-select">
+                    <option value="so'm">so'm</option>
+                    <option value="percent">%</option>
+                  </select>
                 </div>
               </div>
             </div>

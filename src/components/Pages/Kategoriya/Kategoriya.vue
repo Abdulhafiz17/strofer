@@ -319,9 +319,11 @@ export default {
       return this.kategoriyas ? _.sortBy(this.kategoriyas, "name") : [];
     },
     searchHandler() {
-      return this.kategoriyas.filter((u) => {
-        return u.name.toLowerCase().includes(this.search.toLowerCase());
-      });
+      if (this.kategoriyas) {
+        return this.kategoriyas.filter((u) => {
+          return u.name.toLowerCase().includes(this.search.toLowerCase());
+        });
+      }
     },
   },
 };

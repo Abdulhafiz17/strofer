@@ -329,11 +329,11 @@ export default {
       instance
         .get("all_branches")
         .then((res) => {
+          console.log(res.data)
           this.filiallar = res.data;
-          console.log(res.data);
         })
         .catch((err) => {
-          this.isloading = false;
+          this.isLoading = false;
           this.errorr = err.message;
         })
         .finally((this.isLoading = false));
@@ -347,7 +347,7 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            swal({icon: "success"}).then(() => {
+            swal({icon: "success", timer: 1000}).then(() => {
               window.location.reload();
             })
           }
@@ -380,7 +380,7 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.status == 200) {
-            swal({icon: "success"}).then(() => {
+            swal({icon: "success", timer: 1000}).then(() => {
               window.location.reload();
             })
           }
@@ -436,22 +436,24 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.filiallar.filter((taminotchis) => {
-        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
-      });
+      if (this.filiallar) {
+        return this.filiallar.filter((taminotchis) => {
+          return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+        });
+      }
     },
   },
   mounted() {
     this.getData();
-    if (localStorage.getItem("reloaded")) {
-      // The page was just reloaded. Clear the value from local storage
-      // so that it will reload the next time this page is visited.
-      localStorage.removeItem("reloaded");
-    } else {
-      // Set a flag so that we know not to reload the page twice.
-      localStorage.setItem("reloaded", "1");
-      location.reload();
-    }
+    // if (localStorage.getItem("reloaded")) {
+    //   // The page was just reloaded. Clear the value from local storage
+    //   // so that it will reload the next time this page is visited.
+    //   localStorage.removeItem("reloaded");
+    // } else {
+    //   // Set a flag so that we know not to reload the page twice.
+    //   localStorage.setItem("reloaded", "1");
+    //   location.reload();
+    // }
   },
 };
 </script>

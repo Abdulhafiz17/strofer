@@ -88,7 +88,8 @@ export default {
         } else {
           swal({
             icon: "warning",
-            title: "Qaytarib olingan mahsulotlar yo'q !"
+            title: "Qaytarib olingan mahsulotlar yo'q !",
+            timer: 1000
           })
           this.isloading = false
         }
