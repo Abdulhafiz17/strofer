@@ -60,7 +60,11 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(kategoriya, n) in kategoriyalar" :key="kategoriya">
+                    <tr 
+                      v-for="(kategoriya, n) in kategoriyalar" 
+                      :key="kategoriya"
+                      @click="getProduct(kategoriya.id)"
+                    >
                       <td> {{ n + 1 }} </td>
                       <td> {{ kategoriya.name }} </td>
                       <td>
@@ -144,6 +148,12 @@ export default {
           this.isloading = false;
           this.errorr = err.message;
         })
+    },
+
+    getProduct(id) {
+      instance.get("all_products/" + id).then((response) => {
+        console.log(response.data)
+      })
     },
 
     },

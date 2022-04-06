@@ -63,7 +63,7 @@
                     </h3>
                     <!-- input input-group -->
                     <div>
-                      <span :id="'tooltipText' + card.id"></span>
+                      <span :class="'tooltipText ' + card.id"></span>
                       <div class="input-group">
                         <input
                           type="number"
@@ -187,10 +187,12 @@
             </button>
           </div>
           <div class="modal-body">
+            <span class="tooltipText" id="sum"></span>
             <div class="input-group">
               <input
                 type="number"
                 min="0"
+                id="birmartalik"
                 class="form-control"
                 aria-label="Text input with dropdown button"
                 placeholder="summa"
@@ -464,11 +466,12 @@ export default {
       let input_group = document.querySelector("#input-group" + id);
       let input = document.querySelector("#price" + id);
       let sum = Intl.NumberFormat().format(input.value);
-      let tooltip = document.querySelector("#tooltipText" + id);
+      let tooltip = document.querySelector("span[class='tooltipText " + id + "']");
       tooltip.style = `
         border: 1px solid gray;
         border-radius: 10px;
-        background: white;
+        background: var(--dark);
+        color: white;
         padding: 5px 10px 5px 10px;
         bottom: 40px;
         
@@ -486,6 +489,25 @@ export default {
   mounted() {
     console.clear();
     this.getData();
+    let input = document.querySelector("#birmartalik")
+    let span = document.querySelector("#sum")
+    input.addEventListener("keyup", function() {
+      span.style = `
+        border: 1px solid gray;
+        border-radius: 10px;
+        background: var(--dark);
+        color: white;
+        padding: 5px 10px 5px 10px;
+        bottom: 90%;
+        
+        position: absolute;
+        z-index: 1;
+        `
+        span.innerHTML = Intl.NumberFormat().format(Number(input.value))
+        if (input.value == 0) {
+          span.style = "display: none"
+        }
+    })
   },
 };
 </script>

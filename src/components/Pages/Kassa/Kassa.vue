@@ -122,13 +122,15 @@
                             </div>
                           </td>
                           <td>
+                            <span :class="'tooltiptext ' + tab.id"></span>
                             <div class="input-group input-group-sm">
                               <input
                                 v-model="mahsulot.selling_price"
                                 class="form-control text-center"
-                                @keyup="countPrice(mahsulot)"
+                                @keyup="countPrice(mahsulot), tooltip(tab.id)"
                                 min="0"
                                 type="number"
+                                :id="'currency' + tab.id"
                                 required
                               />
                               <div class="input-group-append">
@@ -267,6 +269,7 @@
                           @keyup="count1()"
                           min="0"
                           :max="balance"
+                          id="currency"
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">so'm</div>
@@ -283,6 +286,7 @@
                           min="0"
                           :max="balance"
                           @keyup="count2()"
+                            id="currency"
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">so'm</div>
@@ -355,6 +359,7 @@
                           min="0"
                           :max="balance - plastikSavdo.price"
                           @keyup="nasiya1()"
+                          id="currency"
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">so'm</div>
@@ -371,6 +376,7 @@
                           min="0"
                           :max="balance - naxtSavdo.price"
                           @keyup="nasiya2()"
+                          id="currency"
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">so'm</div>
@@ -588,6 +594,7 @@
 import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 import swal from "sweetalert";
+import { stringifyQuery } from 'vue-router';
 
 export default {
   components: { isloading },
@@ -629,6 +636,7 @@ export default {
   methods: {
     getBuyurtma() {
       this.isloading = true
+      this.alert = String
       this.buyurtmalar = [];
       this.buyurtmaMahsulotlar = [];
       instance
@@ -887,6 +895,28 @@ export default {
       } else {
         this.alert = String
       }
+    },
+    tooltip(id) {
+  //     let input = document.querySelector("#currency" + id);
+  //     let sum = Intl.NumberFormat().format(input.value);
+  //     let tooltip = document.querySelector("span[class='tooltipText " + id + "']");
+  //     tooltip.style = `
+  //       border: 1px solid gray;
+  //       border-radius: 10px;
+  //       background: var(--dark);
+  //       color: white;
+  //       padding: 5px 10px 5px 10px;
+  //       bottom: 40px;
+        
+  //       position: absolute;
+  //       z-index: 1;
+  // `;
+  //     tooltip.innerHTML = `
+  //       ${sum}
+  //     `;
+  //     if (sum == 0) {
+  //       tooltip.style = "display: none"
+  //     }
     },
   },
   computed: {

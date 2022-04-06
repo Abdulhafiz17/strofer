@@ -227,14 +227,19 @@ label {
     margin: 5px 0px;
 }
 
-#tooltiptext {
+.tooltiptext {
   border: 1px solid gray;
   border-radius: 10px;
-  background: white;
+  background: var(--dark);
+  color: white;
   padding: 5px 10px 5px 10px;
   bottom: 40px;
   
   visibility: hidden;
   position: absolute;
   z-index: 1;
+}
+
+.dark span .tooltiptext {
+    background: var(--dark) !important;
 }
