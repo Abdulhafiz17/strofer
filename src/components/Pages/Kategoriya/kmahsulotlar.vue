@@ -189,6 +189,8 @@
                 type="number"
                 class="form-control"
                 v-model="editT.quantity_note"
+                min="0"
+                step="any"
               />
             </div>
           </div>
@@ -201,6 +203,8 @@
                   type="number"
                   class="form-control"
                   v-model="editT.selling_price"
+                  min="0"
+                  step="any"
                 />
                 <div class="input-group-append">
                   <select
@@ -221,6 +225,8 @@
                   type="number"
                   class="form-control"
                   v-model="editT.final_price"
+                  min="0"
+                  step="any"
                 />
                 <div class="input-group-append">
                   <select
@@ -237,11 +243,13 @@
           <div class="row" v-if="editT.kpi_array">
             <div class="col-sm">
               <label> Kpi </label>
-              <div class="input-group" v-if="editT.kpi_array.percent == 0">
+              <div class="input-group" v-if="editT.kpi_array.type == 'price'">
                 <input
                   type="number"
                   class="form-control"
                   v-model="editT.kpi_array.price"
+                  min="0"
+                  step="any"
                   required
                 />
                 <div class="input-group-append">
@@ -251,11 +259,13 @@
                   </select>
                 </div>
               </div>
-              <div class="input-group" v-else>
+              <div class="input-group" v-else-if="editT.kpi_array.type == 'percent'">
                 <input
                   type="number"
                   class="form-control"
                   v-model="editT.kpi_array.percent"
+                  min="0"
+                  step="any"
                   required
                 />
                 <div class="input-group-append">
@@ -325,7 +335,7 @@
         </div>
         <div class="modal-body">
           <div class="input-group">
-            <input type="text" class="form-control" v-model="kpi.price" />
+            <input type="text" class="form-control" step="any" min="0" v-model="kpi.price" />
             <div class="input-group-append">
               <select
                 id="currency"
@@ -507,6 +517,7 @@ export default {
       instance
         .get("all_products/" + this.$route.params.id)
         .then((response) => {
+          console.log(response.data)
           this.mahsulotlars = response.data;
           this.isloading = false;
         })
@@ -538,15 +549,15 @@ export default {
 
 
       if (this.editT.kpi_array) {
-        if (this.editT.kpi_array.currency_id == "percent") {
-          (this.editT.kpi_array.percent = Number(this.editT.kpi_array.price)),
+        if (this.editT.kpi_array.type == "percent") {
+          (this.editT.kpi_array.percent = Number(this.editT.kpi_array.percent)),
             (this.editT.kpi_array.price = 0),
             (this.editT.kpi_array.currency_id = "string");
         } else {
           this.editT.kpi_array.percent = 0;
         }
         this.editT.kpi_array.product_id = this.editT.id
-        
+        console.log(this.editT.kpi_array)
         instance
           .put("this_kpi_update/" + this.editT.kpi_array.id, this.editT.kpi_array)
           .then((res) => {

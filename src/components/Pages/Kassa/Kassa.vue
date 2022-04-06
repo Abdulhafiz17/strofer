@@ -1,14 +1,26 @@
 <template>
   <div class="container-fluid">
     <div class="card shadow">
+      <div class="alert alert-warning fade show" role="alert" v-if="alert == 'price'">
+        <strong>Mahsulot sotuv narxi oxirgi narxdan past belgilandi !</strong>
+      </div>
       <div class="card-header">
-        <h3>Kassa</h3>
+        <div class="row">
+          <div class="col">
+            <h3>Kassa</h3>
+          </div>
+          <div class="col">
+            <button class="btn btn-primary float-right" @click="getBuyurtma()">
+              <span class="fa fa-sync" />
+            </button>
+          </div>
+        </div>
       </div>
       <div class="card-body">
         <nav>
           <div class="nav nav-pills" id="nav-tab" role="tablist">
             <button
-              v-for="(tab) in buyurtmalar"
+              v-for="tab in buyurtmalar"
               :key="tab.id"
               :id="tab.id"
               class="nav-link"
@@ -18,7 +30,7 @@
               role="tab"
               :aria-controls="'nav' + tab.id"
               aria-selected="true"
-              @click="(orderId = tab.id)"
+              @click="orderId = tab.id"
             >
               <button
                 class="btn btn-sm text-danger"
@@ -31,18 +43,15 @@
                 {{ tab.time.substr(11, 8) }}
               </center>
             </button>
-            <button 
-              class="btn btn-sm"
-              @click="createOrder()"
-            >
-              <span class="fa fa-circle-plus"/>
+            <button class="btn btn-sm" @click="createOrder()">
+              <span class="fa fa-circle-plus" />
             </button>
           </div>
         </nav>
         <hr />
         <span class="tab-content" id="nav-tabContent">
           <span
-            v-for="(tab) in buyurtmalar"
+            v-for="tab in buyurtmalar"
             :key="tab.id"
             class="tab-pane fade"
             :id="'nav' + tab.id"
@@ -54,12 +63,12 @@
                 <div class="card-header text-center">
                   <div class="row">
                     <div class="col-sm">
-                      <button 
+                      <button
                         class="btn btn-sm btn-outline-success float-left"
                         data-toggle="modal"
                         href="#addProduct"
                       >
-                        <span class="fa fa-barcode"/>
+                        <span class="fa fa-barcode" />
                       </button>
                     </div>
                     <div class="col-sm">
@@ -72,114 +81,115 @@
                 </div>
                 <div class="card-body">
                   <!-- <input class="form-control mb-1" id="searchInput" v-model="search" type="search" placeholder="Qidiruv"/> -->
-                    <div class="table-responsive text-center" v-if="tab.order_price">
-                      <table class="table table-sm table-hover table-borderless">
-                        <thead>
-                          <tr>
-                            <th>№</th>
-                            <th>Mahsulot</th>
-                            <th>Brend</th>
-                            <th>Hajm</th>
-                            <th>Narx</th>
-                            <th>Summa</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="(mahsulot, n) in tab.data"
-                            :key="mahsulot.id"
-                          >
-                            <td>{{ n + 1 }}</td>
-                            <td>{{ mahsulot.name }}</td>
-                            <td>{{ mahsulot.brand }}</td>
-                            <td>
-                              <div class="input-group input-group-sm">
-                                <input
-                                  type="number"
-                                  class="form-control text-center"
-                                  v-model="mahsulot.quantity"
-                                  @keyup="postOrder(mahsulot, tab)"
-                                  :max="mahsulot.qoldiq"
-                                  min="0"
-                                  required
-                                />
-                                <div class="input-group-append">
-                                  <div class="input-group-text">
-                                    {{ mahsulot.measure }}
-                                  </div>
+                  <div
+                    class="table-responsive text-center"
+                    v-if="tab.order_price"
+                  >
+                    <table class="table table-sm table-hover table-borderless">
+                      <thead>
+                        <tr>
+                          <th>№</th>
+                          <th>Mahsulot</th>
+                          <th>Brend</th>
+                          <th>Hajm</th>
+                          <th>Narx</th>
+                          <th>Summa</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(mahsulot, n) in tab.data"
+                          :key="mahsulot.id"
+                        >
+                          <td>{{ n + 1 }}</td>
+                          <td>{{ mahsulot.name }}</td>
+                          <td>{{ mahsulot.brand }}</td>
+                          <td>
+                            <div class="input-group input-group-sm">
+                              <input
+                                type="number"
+                                class="form-control text-center"
+                                v-model="mahsulot.quantity"
+                                min="0"
+                                required
+                              />
+                              <div class="input-group-append">
+                                <div class="input-group-text">
+                                  {{ mahsulot.measure }}
                                 </div>
                               </div>
-                            </td>
-                            <td>
-                              <div class="input-group input-group-sm">
-                                <input
-                                  v-model="mahsulot.selling_price"
-                                  class="form-control text-center"
-                                  type="number"
-                                  :min="mahsulot.final_price"
-                                  @keyup="postOrder(mahsulot, tab)"
-                                  required
-                                />
-                                <div class="input-group-append">
-                                  <div class="input-group-text">so'm</div>
-                                </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group input-group-sm">
+                              <input
+                                v-model="mahsulot.selling_price"
+                                class="form-control text-center"
+                                @keyup="countPrice(mahsulot)"
+                                min="0"
+                                type="number"
+                                required
+                              />
+                              <div class="input-group-append">
+                                <div class="input-group-text">so'm</div>
                               </div>
-                            </td>
-                            <td>
-                              {{
-                                Intl.NumberFormat({ style: "currency" }).format(
-                                  mahsulot.selling_price * mahsulot.quantity
-                                )
-                              }}
+                            </div>
+                          </td>
+                          <td>
+                            {{
+                              Intl.NumberFormat({ style: "currency" }).format(
+                                mahsulot.selling_price * mahsulot.quantity
+                              )
+                            }}
+                            so'm
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-sm btn-outline-success"
+                              @click="postOrder(mahsulot, tab)"
+                            >
+                              <span class="far fa-circle-check" />
+                            </button>
+                            <button
+                              class="btn btn-sm btn-outline-danger"
+                              type="button"
+                              @click="deleteTrade(mahsulot.code)"
+                            >
+                              <span class="far fa-circle-xmark" />
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot v-if="tab.order_price">
+                        <tr
+                          style="
+                            border-top: 1px solid var(--success);
+                            border-radius: 5px;
+                          "
+                        >
+                          <th colspan="5">
+                            <span class="float-right"> Jami summa: </span>
+                          </th>
+                          <td>
+                            <span class="float-right">
+                              {{ Intl.NumberFormat().format(tab.order_price) }}
                               so'm
-                            </td>
-                            <td>
-                              <button
-                                class="btn btn-sm btn-outline-danger"
-                                type="button"
-                                @click="
-                                  deleteTrade(mahsulot.code)
-                                "
-                              >
-                                <span class="far fa-circle-xmark" />
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                        <tfoot v-if="tab.order_price">
-                          <tr
-                            style="
-                              border-top: 1px solid var(--success);
-                              border-radius: 5px;
-                            "
-                          >
-                            <th colspan="5">
-                              <span class="float-right"> Jami summa: </span>
-                            </th>
-                            <td>
-                              <span class="float-right">
-                                {{
-                                  Intl.NumberFormat().format(
-                                    tab.order_price
-                                  )
-                                }}
-                                so'm
-                                <span class="fa fa-coin" />
-                              </span>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                      <button
-                        class="btn btn-outline-success m-2 float-right"
-                        data-toggle="modal"
-                        data-target="#cash"
-                        @click="balance = tab.order_price"
-                      >
-                        <span class="far fa-circle-check" /> Tasdiqlash
-                      </button>
-                    </div>
+                              <span class="fa fa-coin" />
+                            </span>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                    <button
+                      class="btn btn-outline-success m-2 float-right"
+                      data-toggle="modal"
+                      data-target="#cash"
+                      @click="balance = tab.order_price"
+                    >
+                      <span class="far fa-circle-check" /> Tasdiqlash
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -234,11 +244,7 @@
               <strong class="my-2">
                 <center>
                   Umumiy summa :
-                  {{
-                    Intl.NumberFormat({ style: "currency" }).format(
-                      balance
-                    )
-                  }}
+                  {{ Intl.NumberFormat({ style: "currency" }).format(balance) }}
                   so'm
                 </center>
               </strong>
@@ -308,7 +314,10 @@
                     </option>
                   </datalist> -->
                   <div class="input-group">
-                    <select class="custom-select custom-select-sm" v-model="client_id">
+                    <select
+                      class="custom-select custom-select-sm"
+                      v-model="client_id"
+                    >
                       <option>
                         <input
                           type="text"
@@ -344,7 +353,7 @@
                           class="form-control"
                           v-model="naxtSavdo.price"
                           min="0"
-                          :max="balance"
+                          :max="balance - plastikSavdo.price"
                           @keyup="nasiya1()"
                         />
                         <div class="input-group-append">
@@ -360,7 +369,7 @@
                           class="form-control"
                           v-model="plastikSavdo.price"
                           min="0"
-                          :max="balance"
+                          :max="balance - naxtSavdo.price"
                           @keyup="nasiya2()"
                         />
                         <div class="input-group-append">
@@ -375,6 +384,7 @@
                       <div class="input-group input-group-sm p-2">
                         <input
                           type="number"
+                          min="0"
                           class="form-control"
                           v-model="nasiyaSumma"
                           readonly
@@ -501,33 +511,44 @@
           <div class="row">
             <div class="col">
               <div class="input-group">
-                <input class="form-control" type="number" id="barcode" placeholder="Code" @change="addProduct()"/>
+                <input
+                  class="form-control"
+                  type="number"
+                  min="0"
+                  id="barcode"
+                  placeholder="Code"
+                  @change="addProduct()"
+                />
                 <div class="input-group-append">
                   <div class="input-group-text">
-                    <span class="fa fa-barcode"/>
+                    <span class="fa fa-barcode" />
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="row my-3" v-if="product">
-            <table class="table table-lg table-borderless table-hover text-center">
+            <table
+              class="table table-lg table-borderless table-hover text-center"
+            >
               <tbody>
                 <tr>
-                  <th>Mahsulot: </th>
-                  <td> {{ product.name }} </td>
+                  <th>Mahsulot:</th>
+                  <td>{{ product.name }}</td>
                 </tr>
                 <tr>
-                  <th>Brend: </th>
-                  <td> {{ product.brand }} </td>
+                  <th>Brend:</th>
+                  <td>{{ product.brand }}</td>
                 </tr>
                 <tr>
-                  <th>Sotuv narx: </th>
-                  <td> {{ Intl.NumberFormat().format(product.selling_price) }} so'm </td>
+                  <th>Sotuv narx:</th>
+                  <td>
+                    {{ Intl.NumberFormat().format(product.selling_price) }} so'm
+                  </td>
                 </tr>
                 <tr>
-                  <th>Qoldiq: </th>
-                  <td> {{ product.quantity }} {{ product.measure }} </td>
+                  <th>Qoldiq:</th>
+                  <td>{{ product.quantity }} {{ product.measure }}</td>
                 </tr>
               </tbody>
             </table>
@@ -535,7 +556,16 @@
               <div class="row">
                 <div class="col">
                   <div class="input-group">
-                    <input type="number" step="any" class="form-control" id="quantity" placeholder="Hajm" required @change="toTrade(product)"/>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      class="form-control"
+                      id="quantity"
+                      placeholder="Hajm"
+                      required
+                      @change="toTrade(product)"
+                    />
                     <div class="input-group-append">
                       <div class="input-group-text">
                         {{ product.measure }}
@@ -546,7 +576,7 @@
               </div>
             </div>
           </div>
-          <input type="hidden" data-dismiss="modal" id="close_modal"/>
+          <input type="hidden" data-dismiss="modal" id="close_modal" />
         </div>
       </div>
     </div>
@@ -598,27 +628,28 @@ export default {
   },
   methods: {
     getBuyurtma() {
+      this.isloading = true
       this.buyurtmalar = [];
-      this.buyurtmaMahsulotlar = []
+      this.buyurtmaMahsulotlar = [];
       instance
         .get("all_orders/false")
         .then((res) => {
-          console.log(res.data)
-          this.buyurtmalar = res.data
+          console.log(res.data);
+          this.buyurtmalar = res.data;
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally((this.isloading = false));
     },
     createOrder() {
-      this.isloading = true
+      this.isloading = true;
       instance.post("create_order").then((response) => {
-        console.log(response.data)
-        this.buyurtmalar = response.data
-        this.isloading = false
-      })
+        console.log(response.data);
+        this.buyurtmalar = response.data;
+        this.isloading = false;
+      });
     },
     getMijozlar() {
       instance
@@ -655,64 +686,33 @@ export default {
     },
     postOrder(mahsulot, order) {
       this.isloading = true;
-      if (mahsulot.quantity > mahsulot.qoldiq) {
-        swal({
-          icon: "warning",
-          title: "Ushbu mahsulotta yetarli qoldiq mavjud emas !",
-          text: "Qoldiq : " + mahsulot.qoldiq + " " + mahsulot.measure,
-        });
-        mahsulot.quantity = mahsulot.qoldiq;
-        if (mahsulot.selling_price < mahsulot.finally) {
-          this.alert = "price"
-        }
-        let product = {
-          product_code: mahsulot.code,
-          quantity: mahsulot.quantity,
-          selling_price: mahsulot.selling_price,
-          order_id: order.id,
-        };
-        instance
-          .put("update_this_trade", product)
-          .then((res) => {
-            console.log(res.data)
-          })  
-          .catch((err) => {
-            this.isloading = false;
-            this.errorr = err.message;
-          })
-          .finally((this.isloading = false));
-      } else {
-        let product = {
-          product_code: mahsulot.code,
-          quantity: mahsulot.quantity,
-          selling_price: mahsulot.selling_price,
-          order_id: order.id,
-        };
-        instance
-          .put("update_this_trade", product)
-          .then((res) => {
-            console.log(res.data)
-          })  
-          .catch((err) => {
-            this.isloading = false;
-            this.errorr = err.message;
-          })
-          .finally((this.isloading = false));
-      }
-    },
-    deleteTrade(code) {
-      this.isloading = true;
-      console.log(code, this.orderId);
+      let product = {
+        product_code: mahsulot.code,
+        quantity: mahsulot.quantity,
+        selling_price: mahsulot.selling_price,
+        order_id: order.id,
+      };
       instance
-        .delete("remove_this_trade/" + code + "/" + this.orderId)
+        .put("update_this_trade", product)
         .then((res) => {
-          console.log(res.data);
-          if(res.status == 200) {
+          console.log(res.data)
+          if (res.data[0] == "So'rovda xatolik") {
             swal({
-              icon: "success",
+              icon: "warning",
+              title: "Mahsulot qoldig'ida xatolik",
               timer: 1000,
             }).then(() => {
-              this.getBuyurtma()
+              mahsulot.quantity = res.data[1]
+              let product = {
+                product_code: mahsulot.code,
+                quantity: mahsulot.quantity,
+                selling_price: mahsulot.selling_price,
+                order_id: order.id,
+              };
+              instance
+                .put("update_this_trade", product).then((res) => {
+                  console.log(res.data)
+                })
             })
           }
         })
@@ -722,25 +722,41 @@ export default {
         })
         .finally((this.isloading = false));
     },
+    deleteTrade(code) {
+      this.isloading = true;
+      console.log(code, this.orderId);
+      instance
+        .delete("remove_this_trade/" + code + "/" + this.orderId)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status == 200) {
+            swal({
+              icon: "success",
+              timer: 1000,
+            }).then(() => {
+              this.getBuyurtma();
+            });
+          }
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
+        .finally((this.isloading = false));
+    },
     count1() {
-      this.plastikSavdo.price =
-        this.balance - this.naxtSavdo.price;
+      this.plastikSavdo.price = this.balance - this.naxtSavdo.price;
     },
     count2() {
-      this.naxtSavdo.price =
-        this.balance - this.plastikSavdo.price;
+      this.naxtSavdo.price = this.balance - this.plastikSavdo.price;
     },
     nasiya1() {
       this.nasiyaSumma =
-        this.balance -
-        this.plastikSavdo.price -
-        this.naxtSavdo.price;
+        this.balance - this.plastikSavdo.price - this.naxtSavdo.price;
     },
     nasiya2() {
       this.nasiyaSumma =
-        this.balance -
-        this.naxtSavdo.price -
-        this.plastikSavdo.price;
+        this.balance - this.naxtSavdo.price - this.plastikSavdo.price;
     },
     payToCass(naxt, plastik) {
       this.isloading = true;
@@ -777,7 +793,7 @@ export default {
               swal({
                 icon: "success",
                 title: "Savdo tugatildi",
-                timer: 1500,
+                timer: 1000,
               }).then(window.location.reload());
             }
           })
@@ -821,63 +837,85 @@ export default {
       }
     },
     mijozQoshish() {
-      instance.post("customer_create", this.yangiMijoz).then((response) => {
-        swal({
-          icon: "success",
-          timer: 1000,
-        }).then(() => {
-          this.getMijozlar()
+      instance
+        .post("customer_create", this.yangiMijoz)
+        .then((response) => {
+          swal({
+            icon: "success",
+            timer: 1000,
+          }).then(() => {
+            this.getMijozlar();
+          });
         })
-      }).catch((err) => {
-        this.errorr = err.message
-        this.isloading = false
-      })
+        .catch((err) => {
+          this.errorr = err.message;
+          this.isloading = false;
+        });
     },
     addProduct() {
-      let code = document.querySelector("#barcode").value
+      let code = document.querySelector("#barcode").value;
       instance.get("this_product/empty/" + code).then((response) => {
-        console.log(response.data)
+        console.log(response.data);
         if (response.data) {
-          this.product = response.data[0]
+          this.product = response.data[0];
         }
-      })
+      });
     },
     toTrade(product) {
-      this.isloading = true
-      let quantity = document.querySelector("#quantity").value
+      this.isloading = true;
+      let quantity = document.querySelector("#quantity").value;
       let data = {
         product_code: product.product_code,
-        quantity: quantity
-      }
+        quantity: quantity,
+      };
       instance.post("to_trade/" + this.orderId, data).then((response) => {
         if (response.status == 200) {
-          console.log(response.data)
-          swal("", "", "success",{timer: 1000}).then(() => {
-            this.getBuyurtma()
-            document.querySelector("#close_modal").click()
-            document.querySelector("#barcode").value = null,
-            this.product = null,
-            this.isloading = false
-          })
+          console.log(response.data);
+          swal("", "", "success", { timer: 1000 }).then(() => {
+            this.getBuyurtma();
+            document.querySelector("#close_modal").click();
+            (document.querySelector("#barcode").value = null),
+              (this.product = null),
+              (this.isloading = false);
+          });
         }
-      })
+      });
+    },
+    countPrice(mahsulot) {
+      if (mahsulot.selling_price < mahsulot.final_price) {
+        this.alert = "price"
+      } else {
+        this.alert = String
+      }
     },
   },
   computed: {
     even: function (arr) {
-      // Set slice() to avoid to generate an infinite loop! 
+      // Set slice() to avoid to generate an infinite loop!
       return arr.slice().sort(function (a, b) {
         return a.position - b.position;
       });
     },
   },
   mounted() {
-    console.clear()
+    console.clear();
     this.getBuyurtma();
-    this.getMijozlar()
+    this.getMijozlar();
   },
 };
 </script>
 
-<style scoped>  
+<style scoped>
+.alert-warning {
+  position: absolute;
+  width: 95%;
+  margin: auto;
+  z-index: 1;
+  bottom: 85%;
+  left: 10px;
+  right: 10px;
+
+  border: 1px solid gold;
+  color: black;
+  }
 </style>

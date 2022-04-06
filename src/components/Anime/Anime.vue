@@ -28,6 +28,8 @@ export default {
         })
       } else if (this.message == "Request failed with status code 401" || this.message == "Request failed with status code 400") {
         this.$router.push("/");
+        console.clear()
+        localStorage.clear()
         swal({
           icon: "error",
           title: "Login yoki parolda xatolik",

@@ -28,6 +28,7 @@
               <div class="input-group">
                 <input
                   type="number"
+                  min="0"
                   placeholder="summa"
                   class="form-control"
                   aria-label="Text input with segmented dropdown button"

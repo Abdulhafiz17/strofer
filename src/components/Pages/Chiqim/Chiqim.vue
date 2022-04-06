@@ -62,14 +62,17 @@
                       </a>
                     </h3>
                     <!-- input input-group -->
-                    <div class="input-group">
+                    <div>
+                      <span :id="'tooltipText' + card.id"></span>
                       <div class="input-group">
                         <input
                           type="number"
                           :id="'price' + card.id"
+                          min="0"
                           placeholder="summa"
                           class="form-control"
                           aria-label="Text input with segmented dropdown button"
+                          @keyup="tooltip(card.id)"
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">so'm</div>
@@ -152,7 +155,7 @@
             >
               Bekor qilish
             </button>
-            <input type="hidden" id="close_modal" data-dismiss="modal"/>
+            <input type="hidden" id="close_modal" data-dismiss="modal" />
           </div>
         </div>
       </div>
@@ -187,6 +190,7 @@
             <div class="input-group">
               <input
                 type="number"
+                min="0"
                 class="form-control"
                 aria-label="Text input with dropdown button"
                 placeholder="summa"
@@ -274,7 +278,7 @@
             >
               Qaytish
             </button>
-            <input type="hidden" id="close_modal" data-dismiss="modal"/>
+            <input type="hidden" id="close_modal" data-dismiss="modal" />
           </div>
         </div>
       </div>
@@ -287,6 +291,7 @@
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import swal from "sweetalert";
+import { defineCustomElement } from "@vue/runtime-dom";
 export default {
   components: { isloading },
   data() {
@@ -310,7 +315,8 @@ export default {
       editT: [],
       chiqimData: [],
       errorr: "",
-      isloading: false,
+      isloading: true,
+      sum: null,
     };
   },
   methods: {
@@ -330,7 +336,7 @@ export default {
                 price: null,
                 currency_id: "",
                 comment: "",
-              }
+              };
             });
           }
           this.isloading = false;
@@ -360,8 +366,8 @@ export default {
           .then((response) => {
             console.log(response.data);
             if (response.data == "success") {
-              swal({ icon: "success",timer: 1000 }).then(() => {
-                this.doimiychiqim.name = ""
+              swal({ icon: "success", timer: 1000 }).then(() => {
+                this.doimiychiqim.name = "";
                 this.getData();
               });
             }
@@ -408,7 +414,7 @@ export default {
           })
           .catch((err) => {
             this.errorr = err.message;
-            this.isloading = false
+            this.isloading = false;
           })
           .finally((this.isloading = false));
       } else {
@@ -419,15 +425,15 @@ export default {
       }
     },
     getData() {
-      this.isloading = true;
       instance
         .get("all_fixed_expenses")
         .then((response) => {
           this.cards = response.data;
           console.log(response.data);
+          this.isloading = false;
         })
-        .finally((this.isloading = false))
         .catch((err) => {
+          this.isloading = false;
           this.errorr = err.message;
         });
     },
@@ -449,10 +455,32 @@ export default {
           }
         })
         .catch((err) => {
-          this.errorr = err.message
-          this.isloading = false
+          this.errorr = err.message;
+          this.isloading = false;
         })
         .finally((this.isloading = false));
+    },
+    tooltip(id) {
+      let input_group = document.querySelector("#input-group" + id);
+      let input = document.querySelector("#price" + id);
+      let sum = Intl.NumberFormat().format(input.value);
+      let tooltip = document.querySelector("#tooltipText" + id);
+      tooltip.style = `
+        border: 1px solid gray;
+        border-radius: 10px;
+        background: white;
+        padding: 5px 10px 5px 10px;
+        bottom: 40px;
+        
+        position: absolute;
+        z-index: 1;
+  `;
+      tooltip.innerHTML = `
+        ${sum}
+      `;
+      if (sum == 0) {
+        tooltip.style = "display: none"
+      }
     },
   },
   mounted() {

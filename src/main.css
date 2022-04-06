@@ -226,3 +226,15 @@ li {
 label {
     margin: 5px 0px;
 }
+
+#tooltiptext {
+  border: 1px solid gray;
+  border-radius: 10px;
+  background: white;
+  padding: 5px 10px 5px 10px;
+  bottom: 40px;
+  
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+}

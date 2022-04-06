@@ -262,12 +262,23 @@ export default {
             .then((response) => {
               console.log(response.data)
               if (response.status == 200) {
-                swal({
-                  icon: "success",
-                  title: "Mahsulot qaytarib olindi",
-                }).then(
-                  this.getData()
-                );
+                if (response.data == "success") {
+                  swal({
+                    icon: "success",
+                    title: "Mahsulot qaytarib olindi",
+                    timer: 1000
+                  }).then(
+                    this.getData()
+                  )
+                } else {
+                  swal({
+                    icon: "success",
+                    title: "Mahsulot qaytarib olindi",
+                    timer: 1000
+                  }).then(
+                    location.href = "/nasiyaMijoz/" + response.data
+                  )
+                }
               }
             })
             .catch((err) => {

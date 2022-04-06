@@ -60,6 +60,7 @@
             <div class="col-sm-3 my-2 mx-auto">
               <input
                 type="number"
+                min="0"
                 class="form-control"
                 placeholder="code"
                 v-model="barcode"
@@ -224,6 +225,7 @@
                     step="any"
                     class="form-control"
                     v-model="postMahsulot.new_supply.quantity"
+                    min="0"
                     required
                   />
                   <div class="input-group-append">
@@ -239,6 +241,7 @@
                   <input
                     type="number"
                     step="any"
+                    min="0"
                     class="form-control"
                     placeholder="Narxi"
                     v-model="postMahsulot.new_supply.price"
@@ -315,7 +318,7 @@
                     step="any"
                     class="form-control"
                     v-model="postMahsulot.product.selling_price"
-                    :min="postMahsulot.product.final_price"
+                    min="0"
                     required
                   />
                   <select
@@ -336,7 +339,6 @@
                     step="any"
                     class="form-control"
                     v-model="postMahsulot.product.final_price"
-                    :max="postMahsulot.product.selling_price"
                     min="0"
                     required
                   />
@@ -382,6 +384,7 @@
                   <input
                     type="number"
                     step="any"
+                    min="0"
                     class="form-control"
                     v-model="postMahsulot.new_supply.quantity"
                     required
@@ -399,6 +402,7 @@
                   <input
                     type="number"
                     step="any"
+                    min="0"
                     class="form-control"
                     v-model="postMahsulot.new_supply.price"
                     required
@@ -491,7 +495,7 @@
                 <tr v-for="(taminot, n) in taminotlar" :key="taminot.id">
                   <td>{{ n + 1 }}</td>
                   <td>{{ taminot.product }} {{ taminot.brand }}</td>
-                  <td>{{ taminot.quatity }} {{ taminot.measure }}</td>
+                  <td>{{ taminot.quantity }} {{ taminot.measure }}</td>
                   <td>{{ Intl.NumberFormat().format(taminot.price) }} {{ taminot.currency_id }}</td>
                   <td>{{ Intl.NumberFormat().format(taminot.quantity * taminot.price) }} {{ taminot.currency_id }}</td>
                   <td>
@@ -683,6 +687,12 @@ export default {
               closeOnClickOutside: false,
             })
             this.isLoading = false
+          } else if (res.data == "So'rovda xatolik") {
+            swal({
+              icon: "warning",
+              title: res.data,
+              timer: 1000
+            })
           } else if (res.status == 200) {
             swal({ icon: "success", timer: 1000}).then(() => {
               this.openRow = null;

@@ -109,7 +109,7 @@ export default {
           <p class="ripple">Mijozlar</p>
         </SidebarLink>
 
-        <SidebarLink to="/nasiya" v-if="role === 'branch_admin'">
+        <SidebarLink to="/nasiya" v-if="role === 'cashier'">
           <span class="fas fa-coins"></span>
           <p class="ripple">Nasiyalar</p>
         </SidebarLink>
@@ -149,6 +149,7 @@ export default {
             </div>
             <input
               type="number"
+              min="0"
               class="form-control text-center"
               placeholder="Dollar kursi"
               v-model="kurs.price"

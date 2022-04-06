@@ -15,7 +15,8 @@
           </div>
           <div class="col-md-3 mb-1">
             <div class="card shadow border-0">
-              <a data-toggle="modal">
+              <a data-toggle="modal"
+              >
                 <!-- href="#filialMap"  -->
                 <div class="card-body">
                   <span class="fa fa-location-arrow" /> {{ filial.address }}
@@ -47,6 +48,28 @@
               <div class="card-header text-center">
                 <h4>Mahsulotlar</h4>
               </div>
+              <div class="card-body">
+                <table class="table table-hover table-borderless text-center">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Nomi</th>
+                      <th>
+                        <span class="fa fa-arrow-up"/>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(kategoriya, n) in kategoriyalar" :key="kategoriya">
+                      <td> {{ n + 1 }} </td>
+                      <td> {{ kategoriya.name }} </td>
+                      <td>
+                        <span v-if="!kategoriya.category_id" class="fa fa-folder" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -69,10 +92,9 @@
   <isloading :isloading="isloading" :message="errorr" />
 </template>
 
-<script>
+<script type="text/javascript">
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
-let filial;
 export default {
   components: { isloading },
   data() {
@@ -80,9 +102,10 @@ export default {
       role: localStorage.getItem("role"),
       branch_id: this.$route.params.id,
       filial: {},
+      kategoriyalar: [],
       hodimlar: "",
       isloading: true,
-      errorr: [],
+      errorr: "",
     };
   },
   methods: {
@@ -90,32 +113,42 @@ export default {
       instance
         .get("this_branch/" + this.branch_id)
         .then((res) => {
-          // console.log(res.data);
           this.filial = res.data;
+          res.data.lat = Number(res.data.lat)
+          res.data.long = Number(res.data.long)
           this.map(res.data.lat, res.data.long);
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally((this.isloading = false))
 
       instance
         .get("branch_users/" + this.branch_id + "/false")
         .then((res) => {
           this.hodimlar = res.data.length;
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally((this.isloading = false))
+
+      instance.get("all_categories_branch/" + this.$route.params.id).then((response) => {
+        console.log(response.data)
+        this.kategoriyalar = response.data
+        this.isloading = false
+      })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        })
     },
 
     },
 
     map(lat, long) {
-      this.isloading = true
       ymaps.ready(init);
       function init() {
         var myMap = new ymaps.Map("map", {
@@ -130,7 +163,6 @@ export default {
           });
         myMap.geoObjects.add(myGeoObject);
       }
-      this.isloading = false;
     },
   mounted() {
     this.getData();

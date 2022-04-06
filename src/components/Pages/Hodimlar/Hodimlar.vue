@@ -347,13 +347,12 @@
                 <input
                   id="moneyUser"
                   type="number"
-                  step="any"
                   class="form-control"
                   placeholder="Summa"
                   min="0"
                   v-model="payUser.price"
+                  @keyup="showTooltip()"
                   required
-                  @keyup="currency(this)"
                 />
                 <div class="input-group-append">
                   <div class="input-group-text">
@@ -539,11 +538,6 @@ export default {
         })
         .finally((this.isloading = false))
     },
-    currency() {
-      let input = document.querySelector("#moneyUser")
-      let number = Number(input.value)
-      this.sum = Intl.NumberFormat().format(number)
-    },
     payToUser(object) {
       this.isloading = true
       instance
@@ -564,6 +558,14 @@ export default {
           this.errorr = err.message;
         });
     },
+    showTooltip() {
+      let tooltip = document.querySelector("#tooltiptext")
+      tooltip.style.visibility = "visible"
+      this.sum = Intl.NumberFormat().format(document.querySelector("#moneyUser").value)
+      if (this.sum == 0) {
+      tooltip.style.visibility = "hidden"
+      }
+    },
   },
   computed: {
     filteredCards: function () {
@@ -573,6 +575,7 @@ export default {
     },
   },
   mounted() {
+    console.clear()
     this.getData();
     if (this.role == "admin") {
       this.yangiHodim.role = "branch_admin"
@@ -584,29 +587,15 @@ export default {
 <style scoped>
 
 #tooltiptext {
-  /* visibility: hidden; */
-  display: none;
-  width: auto;
-  background-color: rgba(255, 255, 255, 0.7);
-  color: #000;
-  text-align: center;
   border: 1px solid gray;
-  border-radius: 5px;
-  padding: 5px 3px;
-  /* box-shadow: 0.1px 0.1px 4px 0.1px; */
+  border-radius: 10px;
+  background: white;
+  padding: 5px 10px 5px 10px;
+  bottom: 40px;
   
-  /* Position the tooltip */
+  visibility: hidden;
   position: absolute;
   z-index: 1;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -60px;
-  margin-bottom: 5px;
-}
-
-input[id="moneyUser"]:active #tooltiptext {
-  /* visibility: visible; */
-  display: block !important;
 }
 
 </style>

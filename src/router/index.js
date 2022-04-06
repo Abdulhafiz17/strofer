@@ -175,6 +175,13 @@ const routes = [
   },
 
   {
+    path: "/nasiyaMijoz/:id",
+    meta: { requiresAuth: true },
+    name: "NasiyaMijoz",
+    component: () => import("../components/Pages/Nasiyalar/NasiyaMijoz.vue"),
+  },
+
+  {
     path: "/vozvrat",
     meta: { requiresAuth: true },
     name: "Vozvrat",

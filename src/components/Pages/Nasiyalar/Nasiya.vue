@@ -52,10 +52,8 @@
                   </button>
                 </td>
                 <td>
-                    <!-- :href="'/kirim/' + gets.id" -->
-                  <a
-                    class="btn btn-outline-secondary float-right btn-sm mb-2"
-                  >
+                  <!-- :href="'/kirim/' + gets.id" -->
+                  <a class="btn btn-outline-secondary float-right btn-sm mb-2">
                     <i class="fa fa-clock-rotate-left"></i>
                   </a>
                 </td>
@@ -97,6 +95,7 @@
                 class="form-control"
                 placeholder="Summani kiriting"
                 v-model="post.price"
+                min="0"
               />
               <div class="input-group-append">
                 <div class="input-group-text">so'm</div>
@@ -125,12 +124,13 @@
     </div>
   </div>
   <!-- Modal post end -->
-  <isloading :isloading="isloading" :message="errorr"/>
+  <isloading :isloading="isloading" :message="errorr" />
 </template>
 
 <script>
 import { instance } from "../Api";
-import isloading from "../../Anime/Anime.vue"
+import isloading from "../../Anime/Anime.vue";
+import swal from "sweetalert";
 
 export default {
   components: { isloading },
@@ -149,32 +149,45 @@ export default {
   methods: {
     getData() {
       this.get = [];
-      instance.get("all_loans").then((response) => {
-        response.data.forEach((element) => {
-          instance.get("this_customer/" + element.customer_id).then((res) => {
-            let loan = {
-              id: element.id,
-              customer: res.data.name,
-              price: element.price,
-              return_date: element.return_date,
-              time: element.time.replace("T", " "),
-            };
-            this.get.push(loan);
+      instance
+        .get("all_loans")
+        .then((response) => {
+          response.data.forEach((element) => {
+            instance.get("this_customer/" + element.customer_id).then((res) => {
+              let loan = {
+                id: element.id,
+                customer: res.data.name,
+                price: element.price,
+                return_date: element.return_date,
+                time: element.time.replace("T", " "),
+              };
+              this.get.push(loan);
+            });
           });
+          console.log(this.get);
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
         });
-        console.log(this.get);
-      }).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
     },
     payToLoan(id) {
-      instance.post("pay_to_loan/" + id, this.post).then(() => {
-        window.location.reload();
-      }).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+      instance
+        .post("pay_to_loan/" + id, this.post)
+        .then((response) => {
+          if (response.status == 200) {
+            swal({
+              icon: "success",
+              timer: 1000,
+            }).then(() => {
+              location.reload();
+            });
+          }
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
   },
   computed: {

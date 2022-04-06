@@ -20,14 +20,25 @@
                         <th>Summa</th>
                         <th>Yozilgan sana</th>
                         <th>Qaytarish sanasi</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="(loan, idx) in loans" :key="loan">
                         <td>{{ idx + 1 }}</td>
                         <td>{{ Intl.NumberFormat().format(loan.price) }} so'm</td>
-                        <td>{{ loan.time.replace("T", " ") }}</td>
+                        <td>{{ loan.time.substr("T", 10) }}</td>
                         <td>{{ loan.return_date }}</td>
+                        <td>
+                          <button 
+                            class="btn btn-sm btn-info"
+                            data-toggle="modal"
+                            href="#loanInfo"
+                            @click="getLoanInfo(loan.id)"
+                          >
+                            <span class="fa fa-info"/>
+                          </button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -44,7 +55,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive text-center my-custom-scrollbar table-wrapper-scroll-y">
-                  <table class="table-sm table-borderless table-hover">
+                  <table class="table table-sm table-borderless table-hover">
                     <thead>
                       <tr>
                         <th>№</th>
@@ -139,6 +150,33 @@
     </div>
   </div>
   <!-- Modal buyrutma tarixi end -->
+  <div class="modal fade" id="loanInfo">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4> Nasiya to'lovlari </h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-sm table-hover table-borderless text-center">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Sana</th>
+                <th>Summa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(kirim, n) in kirimlar" :key="kirim">
+                <td> {{ n + 1 }} </td>
+                <td> {{ kirim.time.replace("T", " ") }} </td>
+                <td> {{ Intl.NumberFormat().format(kirim.price) }} so'm </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
   <isloading :isloading="isloading" :message="errorr" />
 </template>
 
@@ -154,6 +192,7 @@ export default {
       customer: [],
       loans: [],
       tradies: [],
+      kirimlar: [],
       tradeBalance: Number,
       errorr: "",
     };
@@ -174,7 +213,6 @@ export default {
       instance
         .get("this_customer_loans/" + this.$route.params.id)
         .then((response) => {
-          console.log(response.data)
           this.loans = response.data;
           this.isloading = false
         })
@@ -191,6 +229,13 @@ export default {
         this.tradies = response.data
         this.isloading = false
       });
+    },
+    getLoanInfo(id) {
+      this.isloading = true
+      instance.get("this_loan_incomes/" + id).then((response) => {
+        this.kirimlar = response.data
+        this.isloading = false
+      })
     },
   },
   mounted() {

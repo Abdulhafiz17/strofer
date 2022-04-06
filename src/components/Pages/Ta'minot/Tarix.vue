@@ -225,7 +225,6 @@ export default {
       this.tolovTarix.forEach(element => {
         element.date_time.substring(0, 10)
         if (element.date_time >= from && element.date_time <= to) {
-          console.log(element)
           tarix.push(element)
         }
       });
@@ -240,7 +239,6 @@ export default {
       this.getData2();
     }, 1000);
     instance.get("this_market/" + this.$route.params.id).then((res) => {
-      console.log(res.data)
       this.taminotchi = res.data;
     })
   },
