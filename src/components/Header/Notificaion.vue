@@ -1,73 +1,25 @@
-<template v-if="role == 'branch_admin'">
+<template>
   <button
     class="btn btn-sm float-right"
     style="box-shadow: none"
     @click="notification = !notification"
+    v-if="role == 'branch_admin'"
   >
     <span class="fa fa-bell" style="color: white; font-size: 15px" />
     <sup> {{ notice }} </sup>
   </button>
-  <!-- <div class="dropdown" v-if="role == 'branch_admin'">
-    <ul class="dropdown-menu">
-      <div class="row">
-        <div class="col">
-          <span>
-            <h5><center>Mahsulotlar</center></h5>
-            <li>
-              <a class="dropdown-item list-group-item">
-                <strong class="d-flex justify-content-between">
-                  <span> Mahsulot </span> <span> Qoldiq </span>
-                </strong>
-              </a>
-            </li>
-            <li v-for="mahsulot in mahsulotlar" :key="mahsulot.id">
-              <a
-                class="dropdown-item list-group-item d-flex justify-content-between"
-                :href="'/kmahsulotlar/' + mahsulot.category_id"
-              >
-                <span> {{ mahsulot.name }} </span>
-                <span> {{ mahsulot.quantity }} {{ mahsulot.measure }} </span>
-              </a>
-            </li>
-          </span>
-        </div>
-        <div class="col">
-          <span>
-            <h5><center>Nasiyalar</center></h5>
-            <li>
-              <a class="dropdown-item list-group-item">
-                <strong class="d-flex justify-content-between">
-                  <span> Mahsulot </span> <span> Qoldiq </span>
-                </strong>
-              </a>
-            </li>
-            <li v-for="nasiya in nasiyalar" :key="nasiya">
-              <a
-                class="dropdown-item list-group-item d-flex justify-content-between"
-                :href="'/kmahsulotlar/' + mahsulot.category_id"
-              >
-                <span> {{ nasiya.customer_id }} </span>
-                <span> {{ nasiya.date }} </span>
-              </a>
-            </li>
-          </span>
-
-        </div>
-      </div>
-    </ul>
-  </div> -->
   <div class="drop text-center" id="drop" v-if="notification">
-    <ul :class="window ? 'list-group list-group-horizontal' : 'list-group'" id="basicList">
+    <ul class="list-group" id="basicList">
       <li class="list-group-item" style="width: 250px">
         <h4> Mahsulotlar </h4>
         <ul class="list-group list-group-sm">
-          <li class="list-group-item d-flex justify-content-between" v-for="mahsulot in mahsulotlar" :key="mahsulot"><span>{{ mahsulot.name }}</span><span>{{ mahsulot.quantity }} {{ mahsulot.measure }}</span></li>
+          <a class="list-group-item d-flex justify-content-between" v-for="mahsulot in mahsulotlar" :key="mahsulot" :href="'/kmahsulotlar/' + mahsulot.category_id"><span>{{ mahsulot.name }}</span><span>{{ mahsulot.quantity }} {{ mahsulot.measure }}</span></a>
         </ul>
       </li>
       <li class="list-group-item" style="width: 250px">
         <h4> Nasiyalar </h4>
         <ul class="list-group list-group-sm">
-          <li class="list-group-item d-flex justify-content-between" v-for="nasiya in nasiyalar" :key="nasiya"><span>{{ Intl.NumberFormat().format(nasiya.price) }} so'm</span><span>{{ nasiya.time.substr("T", 10) }}</span></li>
+          <a class="list-group-item d-flex justify-content-between" v-for="nasiya in nasiyalar" :key="nasiya" href="/nasiya"><span>{{ Intl.NumberFormat().format(nasiya.price) }} so'm</span><span>{{ nasiya.return_date }}</span></a>
         </ul>
       </li>
       <li class="list-group-item" style="width: 250px">
@@ -115,6 +67,7 @@ export default {
         })
 
         instance.get("notifications").then((respon) => {
+          this.notice += respon.data.length
           this.narxlar = respon.data
         })
     },
@@ -127,11 +80,6 @@ export default {
         this.getData();
       }, 5000);
       function myFunction(x) {
-        if (x.matches) {
-          localStorage.setItem("window", true)
-        } else {
-          localStorage.setItem("window", false)
-        }
       }
       var x = window.matchMedia("(min-width: 768px)");
       myFunction(x);
@@ -161,7 +109,7 @@ export default {
 }
 
 .drop {
-  width: 70%;
+  width: 290px;
   max-height: 50vh;
   overflow: auto;
   border: 1px solid var(--success);
@@ -178,11 +126,11 @@ export default {
 }
 
 .drop span  {
-  font-size: 13px;
+  font-size: 14px;
 }
 @media (max-width: 425px) {
   .drop {
-    width: 90%;
+    width: 80%;
   }
 }
 

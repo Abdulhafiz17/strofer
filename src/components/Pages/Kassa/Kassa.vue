@@ -598,7 +598,6 @@
 import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 import swal from "sweetalert";
-import { stringifyQuery } from "vue-router";
 
 export default {
   components: { isloading },
@@ -661,7 +660,10 @@ export default {
         console.log(response.data);
         this.buyurtmalar = response.data;
         this.isloading = false;
-      });
+      }).catch((err) => {
+        this.isloading = false
+        this.errorr = err.message
+      })
     },
     getMijozlar() {
       instance

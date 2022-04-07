@@ -24,7 +24,7 @@ export default {
           closeOnEsc: false,
           buttons: false,
         }).then(() => {
-          this.isloading = false
+          this.isloading = true
         })
       } else if (this.message == "Request failed with status code 401" || this.message == "Request failed with status code 400") {
         this.$router.push("/");
@@ -52,13 +52,13 @@ export default {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px);
   z-index: 999;
 }
 
 #loader {
   position: absolute;
-  left: 50%;
+  left: 53%;
   top: 50%;
   z-index: 1;
   width: 120px;
