@@ -528,10 +528,12 @@ export default {
     },
 
     putData(id) {
+      console.log(this.editT)
       this.isloading = true;
       instance
         .put("this_product_update/" + id, this.editT)
         .then((response) => {
+          console.log(response.data)
           if(response.status == 200) {
             swal({
               icon: "success",
@@ -627,9 +629,11 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.mahsulotlars.filter((mahsulot) => {
-        return mahsulot.name.toLowerCase().match(this.search.toLowerCase());
-      });
+      if (this.mahsulotlars) {
+        return this.mahsulotlars.filter((mahsulot) => {
+          return mahsulot.name.toLowerCase().match(this.search.toLowerCase());
+        });
+      }
     },
   },
 };

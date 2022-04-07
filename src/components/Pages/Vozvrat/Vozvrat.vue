@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="table-reponsive text-center table-bordered">
+        <div class="my-custom-scrollbar table-wrapper-scroll-y">
           <table class="table table-sm table-hover">
             <thead>
               <tr>

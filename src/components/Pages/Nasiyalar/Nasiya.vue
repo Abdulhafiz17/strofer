@@ -17,49 +17,51 @@
           </div>
         </div>
         <div class="card-body">
-          <table class="table table-bordered table-hover">
-            <thead>
-              <tr>
-                <th scope="col">№</th>
-                <th scope="col">Mijoz</th>
-                <th scope="col">Miqdori</th>
-                <th scope="col">Sana</th>
-                <th scope="col">Qaytarish vaqti</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(gets, idx) in filterRow" :key="gets">
-                <th scope="row">{{ idx + 1 }}</th>
-                <td class="text-center col-md-3">{{ gets.customer }}</td>
-                <td class="text-center col-md-3">
-                  {{
-                    Intl.NumberFormat({ style: "currency" }).format(gets.price)
-                  }}
-                  so'm
-                </td>
-                <td class="text-center col-md-3">{{ gets.time }}</td>
-                <td class="text-center col-md-3">{{ gets.return_date }}</td>
-                <td>
-                  <button
-                    class="btn btn-outline-success float-right btn-sm mr-2"
-                    data-toggle="modal"
-                    data-target="#exampleModal"
-                    @click="loan_id = gets.id"
-                  >
-                    <i class="fa fa-coins"></i>
-                  </button>
-                </td>
-                <td>
-                  <!-- :href="'/kirim/' + gets.id" -->
-                  <a class="btn btn-outline-secondary float-right btn-sm mb-2">
-                    <i class="fa fa-clock-rotate-left"></i>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <span class="my-custom-scrollbar table-wrapper-scroll-y">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">Mijoz</th>
+                  <th scope="col">Miqdori</th>
+                  <th scope="col">Sana</th>
+                  <th scope="col">Qaytarish vaqti</th>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(gets, idx) in filterRow" :key="gets">
+                  <th scope="row">{{ idx + 1 }}</th>
+                  <td class="text-center col-md-3">{{ gets.customer }}</td>
+                  <td class="text-center col-md-3">
+                    {{
+                      Intl.NumberFormat({ style: "currency" }).format(gets.price)
+                    }}
+                    so'm
+                  </td>
+                  <td class="text-center col-md-3">{{ gets.time }}</td>
+                  <td class="text-center col-md-3">{{ gets.return_date }}</td>
+                  <td>
+                    <button
+                      class="btn btn-outline-success float-right btn-sm mr-2"
+                      data-toggle="modal"
+                      data-target="#exampleModal"
+                      @click="loan_id = gets.id"
+                    >
+                      <i class="fa fa-coins"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <!-- :href="'/kirim/' + gets.id" -->
+                    <a class="btn btn-outline-secondary float-right btn-sm mb-2">
+                      <i class="fa fa-clock-rotate-left"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
         </div>
       </div>
     </div>

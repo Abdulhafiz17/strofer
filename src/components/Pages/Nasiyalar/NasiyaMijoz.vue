@@ -11,6 +11,7 @@
                   <th>Sana</th>
                   <th>Summa</th>
                   <th>Qaytarish sanasi</th>
+                  <th></th>
               </tr>
           </thead>
           <tbody>
@@ -19,9 +20,57 @@
                   <td> {{ nasiya.time.replace("T", " ") }} </td>
                   <td> {{ Intl.NumberFormat().format(nasiya.price) }} so'm </td>
                   <td> {{ nasiya.return_date }} </td>
+                  <td>
+                    <button 
+                      class="btn btn-sm btn-success"
+                      data-toggle="modal"
+                      href="#payLoan"
+                      @click="tolov.id = nasiya.id"
+                    >
+                      <span class="fa fa-coins"/>
+                    </button>
+                  </td>
               </tr>
           </tbody>
       </table>
+    </div>
+  </div>
+  <div class="modal fade" id="payLoan">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4> Nasiya to'lash </h4>
+        </div>
+        <form @submit.prevent="payToLoan(tolov.id)">
+          <div class="modal-body">
+            <div class="input-group">
+              <div class="input-group">
+                <input class="form-control" type="number" min="0" placeholder="Summa" v-model="tolov.price"/>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    so'm
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mt-1">
+                <textarea class="form-control" cols="30" rows="2" placeholder="Izoh" v-model="tolov.comment"/>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-outline-primary">
+              <span class="far fa-circle-check"/> To'lash
+            </button>
+            <button 
+              class="btn btn-sm btn-outline-danger"
+              data-dismiss="modal"
+            >
+              <span class="far fa-circle-xmark"/> Bekor qilish
+            </button>
+            <input type="hidden" id="close_modal" data-dismiss="modal">
+          </div>
+        </form>
+      </div>
     </div>
   </div>
   <AnimeVue :isloading="isloading" :message="error" />
@@ -39,6 +88,11 @@ export default {
       nasiyalar: [],
       isloading: true,
       error: "",
+      tolov: {
+        id: "",
+        price: null,
+        comment: "",
+      },
     };
   },
   methods: {
@@ -46,7 +100,6 @@ export default {
       instance
         .get("this_customer_loans/" + this.$route.params.id)
         .then((response) => {
-          console.log(response.data);
           this.nasiyalar = response.data
           this.isloading = false;
         })
@@ -56,17 +109,34 @@ export default {
         });
 
       instance
-        .get("this_customer/" + "1ae8d3a5-13b3-4393-ab48-c5e72cd9a592")
+        .get("this_customer/" + this.$route.params.id)
         .then((response) => {
-          console.log(response.data);
           this.mijoz = response.data
         }).catch((err) => {
             this.isloading = false
             this.error = err.message
         })
     },
+
+    payToLoan(id) {
+      this.isloading = true
+      instance.post("pay_to_loan/" + id, this.tolov).then((respon) => {
+        if(respon.status == 200) {
+          swal({
+            icon: "success",
+            timer: 1000,
+          }).then(() => {
+            document.querySelector("#close_modal").click()
+            this.tolov = {},
+            this.getData()
+            this.isloading = false
+          })
+        }
+      })
+    },
   },
   mounted() {
+    console.clear()
     this.getData();
   },
 };

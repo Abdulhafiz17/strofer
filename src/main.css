@@ -51,20 +51,20 @@
 ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-    transition: 3s;
+    transition: 1s;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(211, 211, 211);
-    border-radius: 10px;
-    transition: 3s;
+    background: rgba(211, 211, 211, 0.8);
+    border-radius: 15px;
+    transition: 0.5s;
 }
 
 ::-webkit-scrollbar-thumb {
     background: gray;
-    border-radius: 8px;
-    border: 1px solid var(--dark);
-    transition: 3s;
+    border-radius: 5px;
+    /* border: 1px solid var(--dark); */
+    transition: 0.5s;
 }
 
 table:hover {
@@ -238,8 +238,4 @@ label {
   visibility: hidden;
   position: absolute;
   z-index: 1;
-}
-
-.dark span .tooltiptext {
-    background: var(--dark) !important;
 }

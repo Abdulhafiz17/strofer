@@ -268,7 +268,7 @@ export default {
                     title: "Mahsulot qaytarib olindi",
                     timer: 1000
                   }).then(
-                    this.getData()
+                    location.reload()
                   )
                 } else {
                   swal({

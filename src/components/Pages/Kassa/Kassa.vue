@@ -1,7 +1,11 @@
 <template>
   <div class="container-fluid">
     <div class="card shadow">
-      <div class="alert alert-warning fade show" role="alert" v-if="alert == 'price'">
+      <div
+        class="alert alert-warning fade show"
+        role="alert"
+        v-if="alert == 'price'"
+      >
         <strong>Mahsulot sotuv narxi oxirgi narxdan past belgilandi !</strong>
       </div>
       <div class="card-header">
@@ -122,8 +126,8 @@
                             </div>
                           </td>
                           <td>
-                            <span :class="'tooltiptext ' + tab.id"></span>
                             <div class="input-group input-group-sm">
+                              <span :class="'tooltiptext ' + tab.id"></span>
                               <input
                                 v-model="mahsulot.selling_price"
                                 class="form-control text-center"
@@ -286,7 +290,7 @@
                           min="0"
                           :max="balance"
                           @keyup="count2()"
-                            id="currency"
+                          id="currency"
                         />
                         <div class="input-group-append">
                           <div class="input-group-text">so'm</div>
@@ -594,7 +598,7 @@
 import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 import swal from "sweetalert";
-import { stringifyQuery } from 'vue-router';
+import { stringifyQuery } from "vue-router";
 
 export default {
   components: { isloading },
@@ -635,8 +639,8 @@ export default {
   },
   methods: {
     getBuyurtma() {
-      this.isloading = true
-      this.alert = String
+      this.isloading = true;
+      this.alert = String;
       this.buyurtmalar = [];
       this.buyurtmaMahsulotlar = [];
       instance
@@ -644,12 +648,12 @@ export default {
         .then((res) => {
           console.log(res.data);
           this.buyurtmalar = res.data;
-          this.isloading = false
+          this.isloading = false;
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        })
+        });
     },
     createOrder() {
       this.isloading = true;
@@ -703,25 +707,24 @@ export default {
       instance
         .put("update_this_trade", product)
         .then((res) => {
-          console.log(res.data)
+          console.log(res.data);
           if (res.data[0] == "So'rovda xatolik") {
             swal({
               icon: "warning",
               title: "Mahsulot qoldig'ida xatolik",
               timer: 1000,
             }).then(() => {
-              mahsulot.quantity = res.data[1]
+              mahsulot.quantity = res.data[1];
               let product = {
                 product_code: mahsulot.code,
                 quantity: mahsulot.quantity,
                 selling_price: mahsulot.selling_price,
                 order_id: order.id,
               };
-              instance
-                .put("update_this_trade", product).then((res) => {
-                  console.log(res.data)
-                })
-            })
+              instance.put("update_this_trade", product).then((res) => {
+                console.log(res.data);
+              });
+            });
           }
         })
         .catch((err) => {
@@ -891,32 +894,33 @@ export default {
     },
     countPrice(mahsulot) {
       if (mahsulot.selling_price < mahsulot.final_price) {
-        this.alert = "price"
+        this.alert = "price";
       } else {
-        this.alert = String
+        this.alert = String;
       }
     },
     tooltip(id) {
-  //     let input = document.querySelector("#currency" + id);
-  //     let sum = Intl.NumberFormat().format(input.value);
-  //     let tooltip = document.querySelector("span[class='tooltipText " + id + "']");
-  //     tooltip.style = `
-  //       border: 1px solid gray;
-  //       border-radius: 10px;
-  //       background: var(--dark);
-  //       color: white;
-  //       padding: 5px 10px 5px 10px;
-  //       bottom: 40px;
+      let input = document.querySelector("#currency" + id);
+      let sum = Intl.NumberFormat().format(Number(input.value));
+      let tooltip = document.querySelector(
+        "span[class='tooltiptext " + id + "']"
+      );
+      tooltip.style = `
+        border: 1px solid gray;
+        border-radius: 10px;
+        background: var(--dark);
+        color: white;
+        padding: 5px 10px 5px 10px;
+        top: 100px;
         
-  //       position: absolute;
-  //       z-index: 1;
-  // `;
-  //     tooltip.innerHTML = `
-  //       ${sum}
-  //     `;
-  //     if (sum == 0) {
-  //       tooltip.style = "display: none"
-  //     }
+        position: absolute;
+        z-index: 1;
+  `;
+      tooltip.innerHTML = `${sum}`;
+      // if (sum == 0) {
+      //   tooltip.style = "display: none";
+      // }
+      console.log(tooltip)
     },
   },
   computed: {
@@ -947,5 +951,5 @@ export default {
 
   border: 1px solid gold;
   color: black;
-  }
+}
 </style>

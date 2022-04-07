@@ -13,11 +13,11 @@
               </a>
             </div>
           </div>
-          <div class="col-md-3 mb-1">
+          <div class="col-md-4 mb-1">
             <div class="card shadow border-0">
               <a data-toggle="modal"
+                href="#filialMap" 
               >
-                <!-- href="#filialMap"  -->
                 <div class="card-body">
                   <span class="fa fa-location-arrow" /> {{ filial.address }}
                 </div>
@@ -49,30 +49,82 @@
                 <h4>Mahsulotlar</h4>
               </div>
               <div class="card-body">
-                <table class="table table-hover table-borderless text-center">
-                  <thead>
-                    <tr>
-                      <th>№</th>
-                      <th>Nomi</th>
-                      <th>
-                        <span class="fa fa-arrow-up"/>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr 
-                      v-for="(kategoriya, n) in kategoriyalar" 
-                      :key="kategoriya"
-                      @click="getProduct(kategoriya.id)"
-                    >
-                      <td> {{ n + 1 }} </td>
-                      <td> {{ kategoriya.name }} </td>
-                      <td>
-                        <span v-if="!kategoriya.category_id" class="fa fa-folder" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <span v-if="!secondTable">
+                  <input class="form-control form-control-sm my-1 w-50 mx-auto" type="search" placeholder="Kategoriya boyicha qidiruv " v-model="search"/>
+                  <span class="my-custom-scrollbar table-wrapper-scroll-y">
+                    <table class="table table-sm table-hover table-borderless text-center">
+                      <thead>
+                        <tr>
+                          <th>№</th>
+                          <th>Nomi</th>
+                          <th>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr 
+                          v-for="(kategoriya, n) in filterK" 
+                          :key="kategoriya"
+                          @click="getProduct(kategoriya.id), secondTable = true"
+                          style="cursor: pointer"
+                        >
+                          <td> {{ n + 1 }} </td>
+                          <td> {{ kategoriya.name }} </td>
+                          <td >
+                            <span v-if="!kategoriya.category_id" class="fa fa-folder" />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </span>
+                </span>
+                <span v-if="secondTable">
+                  <input class="form-control form-control-sm my-1 w-50 mx-auto" type="search" placeholder="Mahsulot boyicha qidiruv " v-model="search"/>
+                  <span class="my-custom-scrollbar table-wrapper-scroll-y">
+                    <table class="table table-sm table-hover table-borderless text-center">
+                      <thead>
+                        <tr>
+                          <th>№</th>
+                          <th>Mahsulot</th>
+                          <th>Hajm</th>
+                          <th>Minimal qoldiq</th>
+                          <th>Kirim narx</th>
+                          <th>Sotuv narx</th>
+                          <th>Oxirgi narx</th>
+                          <th @click="secondTable = false"  style="cursor: pointer">
+                            <span class="fa fa-arrow-up"/>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr 
+                          v-for="(mahsulot, n) in filterM" 
+                          :key="mahsulot"
+                          style="cursor: pointer"
+                        >
+                          <td> {{ n + 1 }} </td>
+                          <td> {{ mahsulot.name }} {{ mahsulot.brand }} </td>
+                          <td v-if="mahsulot.quantity_note &gt; mahsulot.quantity" class="bg-danger">
+                            {{ mahsulot.quantity }} {{ mahsulot.measure }}
+                          </td>
+                          <td v-else-if="mahsulot.quantity_note == mahsulot.quantity" class="bg-warning">
+                            {{ mahsulot.quantity }} {{ mahsulot.measure }}
+                          </td>
+                          <td v-else>
+                            {{ mahsulot.quantity }} {{ mahsulot.measure }}
+                          </td>
+                          <td> {{ mahsulot.quantity_note }} {{ mahsulot.measure }} </td>
+                          <td> {{ mahsulot.price }} {{ mahsulot.currency_id }} </td>
+                          <td> {{ mahsulot.selling_price }} {{ mahsulot.currency_id_for_sell }} </td>
+                          <td> {{ mahsulot.final_price }} {{ mahsulot.currency_id_for_final }} </td>
+                          <td>
+                            <span v-if="!mahsulot.category_id" class="fa fa-folder" />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </span>
+                </span>
               </div>
             </div>
           </div>
@@ -96,7 +148,7 @@
   <isloading :isloading="isloading" :message="errorr" />
 </template>
 
-<script type="text/javascript">
+<script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 export default {
@@ -107,9 +159,12 @@ export default {
       branch_id: this.$route.params.id,
       filial: {},
       kategoriyalar: [],
+      mahsulotlar: [],
       hodimlar: "",
       isloading: true,
+      secondTable: false,
       errorr: "",
+      search: "",
     };
   },
   methods: {
@@ -118,8 +173,6 @@ export default {
         .get("this_branch/" + this.branch_id)
         .then((res) => {
           this.filial = res.data;
-          res.data.lat = Number(res.data.lat)
-          res.data.long = Number(res.data.long)
           this.map(res.data.lat, res.data.long);
           this.isloading = false
         })
@@ -140,7 +193,6 @@ export default {
         })
 
       instance.get("all_categories_branch/" + this.$route.params.id).then((response) => {
-        console.log(response.data)
         this.kategoriyalar = response.data
         this.isloading = false
       })
@@ -152,10 +204,8 @@ export default {
 
     getProduct(id) {
       instance.get("all_products/" + id).then((response) => {
-        console.log(response.data)
+        this.mahsulotlar = response.data
       })
-    },
-
     },
 
     map(lat, long) {
@@ -174,7 +224,27 @@ export default {
         myMap.geoObjects.add(myGeoObject);
       }
     },
+    },
+
+
+  computed: {
+    filterK: function () {
+      if (this.kategoriyalar) {
+        return this.kategoriyalar.filter((kategoriya) => {
+          return kategoriya.name.toLowerCase().match(this.search.toLowerCase());
+        });
+      }
+    },
+    filterM: function () {
+      if (this.mahsulotlar) {
+        return this.mahsulotlar.filter((kategoriya) => {
+          return kategoriya.name.toLowerCase().match(this.search.toLowerCase());
+        });
+      }
+    }
+  },
   mounted() {
+    console.clear()
     this.getData();
     if (this.role == "admin") {
       localStorage.setItem("branch_id", this.$route.params.id);

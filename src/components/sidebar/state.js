@@ -14,6 +14,12 @@ export const SIDEBAR_WIDTH_COLLAPSED = 0
 export let sidebarWidth = computed(() => `${collapsed.value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH}px`)
 export let sidebarPadding = sidebarWidth
 
+window.addEventListener("keypress", function(button) {
+  if (button.key == "=" || button.key == "+") {
+    collapsed.value = !collapsed.value
+  }
+})
+
 function myFunction(x) {
   if (x.matches) {
     collapsed.value = true;
@@ -24,12 +30,6 @@ function myFunction(x) {
   }
 }
 
-window.addEventListener("keypress", function(button) {
-  if (button.key == "=" || button.key == "+") {
-    collapsed.value = !collapsed.value
-  }
-})
-
 var x = window.matchMedia("(max-width: 800px)");
 myFunction(x); // Call listener function at run time
-x.addListener(myFunction); // Attach listener function on state changesА    
+x.addListener(myFunction); // Attach listener function on state changesА

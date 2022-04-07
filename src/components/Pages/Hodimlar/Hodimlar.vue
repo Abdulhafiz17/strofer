@@ -569,9 +569,11 @@ export default {
   },
   computed: {
     filteredCards: function () {
-      return this.hodimlar.filter((taminotchis) => {
-        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
-      });
+      if (this.hodimlar) {
+        return this.hodimlar.filter((taminotchis) => {
+          return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+        });
+      }
     },
   },
   mounted() {
@@ -589,7 +591,8 @@ export default {
 #tooltiptext {
   border: 1px solid gray;
   border-radius: 10px;
-  background: white;
+  background: var(--dark);
+  color: white;
   padding: 5px 10px 5px 10px;
   bottom: 40px;
   

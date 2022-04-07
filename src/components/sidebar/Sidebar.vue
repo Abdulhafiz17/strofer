@@ -44,6 +44,8 @@ export default {
         link.onclick = function() {
           this.toggleSidebar = (collapsed.value = !collapsed.value)
         }
+      } else {
+        collapsed.value = false
       }
     }
 
