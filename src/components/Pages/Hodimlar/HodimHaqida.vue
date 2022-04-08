@@ -227,7 +227,6 @@ export default {
         .get("this_user_kpi_history/" + this.user_id)
         .then((response) => {
           this.kpiHistory = response.data;
-          console.log(response.data);
           this.isloading = false;
         })
         .catch((err) => {
@@ -238,7 +237,6 @@ export default {
     getThisTrade(object) {
       this.thisTrade = [];
       instance.get("this_trade/" + object.trade_id).then((response) => {
-        console.log(response.data)
         instance
           .get("this_product/empty/" + response.data.product_code)
           .then((res) => {

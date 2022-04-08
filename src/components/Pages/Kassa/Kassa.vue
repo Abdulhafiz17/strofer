@@ -94,7 +94,6 @@
                         <tr>
                           <th>№</th>
                           <th>Mahsulot</th>
-                          <th>Brend</th>
                           <th>Hajm</th>
                           <th>Narx</th>
                           <th>Summa</th>
@@ -103,12 +102,11 @@
                       </thead>
                       <tbody>
                         <tr
-                          v-for="(mahsulot, n) in tab.data"
+                          v-for="(mahsulot, n, sum) in tab.data"
                           :key="mahsulot.id"
                         >
                           <td>{{ n + 1 }}</td>
-                          <td>{{ mahsulot.name }}</td>
-                          <td>{{ mahsulot.brand }}</td>
+                          <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
                           <td>
                             <div class="input-group input-group-sm">
                               <input
@@ -149,6 +147,7 @@
                               )
                             }}
                             so'm
+                            <!-- <span > {{ sum += (mahsulot.selling_price * mahsulot.quantity)}} </span> -->
                           </td>
                           <td>
                             <button
@@ -634,6 +633,7 @@ export default {
       },
       alert: String,
       product: null,
+      order_price: 0,
     };
   },
   methods: {
@@ -710,6 +710,7 @@ export default {
         .put("update_this_trade", product)
         .then((res) => {
           console.log(res.data);
+          // order.order_price = res.data.order_price
           if (res.data[0] == "So'rovda xatolik") {
             swal({
               icon: "warning",
@@ -922,7 +923,6 @@ export default {
       // if (sum == 0) {
       //   tooltip.style = "display: none";
       // }
-      console.log(tooltip)
     },
   },
   computed: {

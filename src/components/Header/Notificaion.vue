@@ -10,21 +10,22 @@
   </button>
   <div class="drop text-center" id="drop" v-if="notification">
     <ul class="list-group" id="basicList">
-      <li class="list-group-item" style="width: 250px">
+      <li class="list-group-item" style="width: 100%">
         <h4> Mahsulotlar </h4>
         <ul class="list-group list-group-sm">
           <a class="list-group-item d-flex justify-content-between" v-for="mahsulot in mahsulotlar" :key="mahsulot" :href="'/kmahsulotlar/' + mahsulot.category_id"><span>{{ mahsulot.name }}</span><span>{{ mahsulot.quantity }} {{ mahsulot.measure }}</span></a>
         </ul>
       </li>
-      <li class="list-group-item" style="width: 250px">
+      <li class="list-group-item" style="width: 100%">
         <h4> Nasiyalar </h4>
         <ul class="list-group list-group-sm">
           <a class="list-group-item d-flex justify-content-between" v-for="nasiya in nasiyalar" :key="nasiya" href="/nasiya"><span>{{ Intl.NumberFormat().format(nasiya.price) }} so'm</span><span>{{ nasiya.return_date }}</span></a>
         </ul>
       </li>
-      <li class="list-group-item" style="width: 250px">
+      <li class="list-group-item" style="width: 100%">
         <h4> Noto'g'ri sotuv narxlar </h4>
         <ul class="list-group list-group-sm">
+          <li class="list-group-item d-flex justify-content-between"><strong> Mahsulot narx </strong><strong> Savdo narx </strong></li>
           <li class="list-group-item d-flex justify-content-between" v-for="narx in narxlar" :key="narx"><span> {{ Intl.NumberFormat().format(narx.product_price) }} so'm </span><span> {{ Intl.NumberFormat().format(narx.trade_price) }} so'm </span></li>
         </ul>
       </li>
@@ -67,6 +68,7 @@ export default {
         })
 
         instance.get("notifications").then((respon) => {
+          // console.log(respon.data);
           this.notice += respon.data.length
           this.narxlar = respon.data
         })
@@ -79,11 +81,6 @@ export default {
       setInterval(() => {
         this.getData();
       }, 5000);
-      function myFunction(x) {
-      }
-      var x = window.matchMedia("(min-width: 768px)");
-      myFunction(x);
-      x.addListener(myFunction);
     }
   },
 };
@@ -109,15 +106,15 @@ export default {
 }
 
 .drop {
-  width: 290px;
+  width: 400px;
   max-height: 50vh;
   overflow: auto;
   border: 1px solid var(--success);
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.6);
-  padding: 15px;
-  top: 70px;
-  right: 5%;
+  padding: 5px;
+  top: 90px;
+  right: 2.5%;
   backdrop-filter: blur(2px);
   transition: 0.5s;
 
@@ -126,11 +123,11 @@ export default {
 }
 
 .drop span  {
-  font-size: 14px;
+  font-size: 13px;
 }
 @media (max-width: 425px) {
   .drop {
-    width: 80%;
+    width: 95%;
   }
 }
 

@@ -36,7 +36,9 @@
                   <td class="text-center col-md-3">{{ gets.customer }}</td>
                   <td class="text-center col-md-3">
                     {{
-                      Intl.NumberFormat({ style: "currency" }).format(gets.price)
+                      Intl.NumberFormat({ style: "currency" }).format(
+                        gets.price
+                      )
                     }}
                     so'm
                   </td>
@@ -53,8 +55,12 @@
                     </button>
                   </td>
                   <td>
-                    <!-- :href="'/kirim/' + gets.id" -->
-                    <a class="btn btn-outline-secondary float-right btn-sm mb-2">
+                    <a
+                      class="btn btn-outline-secondary float-right btn-sm mb-2"
+                      href="#loan"
+                      data-toggle="modal"
+                      @click="getLoan(gets.id)"
+                    >
                       <i class="fa fa-clock-rotate-left"></i>
                     </a>
                   </td>
@@ -126,6 +132,25 @@
     </div>
   </div>
   <!-- Modal post end -->
+  <div class="modal fade" id="loan">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Ushbu nasiya to'lovlari</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-hover table-borderless text-center">
+            <tbody>
+              <tr v-for="nasiya in nasiyalar" :key="nasiya">
+                <td> {{ Intl.NumberFormat().format(nasiya.price) }} so'm </td>
+                <td> {{ nasiya.time.replace("T", " ") }} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
   <isloading :isloading="isloading" :message="errorr" />
 </template>
 
@@ -143,9 +168,11 @@ export default {
         price: null,
         comment: "",
       },
+      nasiyalar: [],
       loan_id: "",
       search: "",
       errorr: "",
+      isloading: true
     };
   },
   methods: {
@@ -164,6 +191,7 @@ export default {
                 time: element.time.replace("T", " "),
               };
               this.get.push(loan);
+              this.isloading = false
             });
           });
           console.log(this.get);
@@ -190,6 +218,14 @@ export default {
           this.isloading = false;
           this.errorr = err.message;
         });
+    },
+    getLoan(id) {
+      this.isloading = true
+      instance.get("this_loan_incomes/" + id).then((respon) => {
+        console.log(respon.data);
+        this.nasiyalar = respon.data
+        this.isloading = false
+      })
     },
   },
   computed: {
