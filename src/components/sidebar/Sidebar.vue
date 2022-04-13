@@ -68,7 +68,7 @@ export default {
           <p class="ripple">Hisobotlar</p>
         </SidebarLink>
 
-        <SidebarLink to="/kassa" v-if="role === 'cashier'">
+        <SidebarLink to="/kassa" v-if="role === 'cashier' || role == 'branch_admin'">
           <span class="fas fa-cash-register"></span>
           <p class="ripple">Kassa</p>
         </SidebarLink>
@@ -96,7 +96,7 @@ export default {
           <p class="ripple">Kategoriya</p>
         </SidebarLink>
         
-        <SidebarLink to="/mahsulotlar" v-if="role === 'cashier'">
+        <SidebarLink to="/mahsulotlar" v-if="role === 'cashier' || role == 'branch_admin'">
           <span class="fas fa-box-open"></span>
           <p class="ripple">Mahsulotlar</p>
         </SidebarLink>
@@ -111,12 +111,12 @@ export default {
           <p class="ripple">Mijozlar</p>
         </SidebarLink>
 
-        <SidebarLink to="/nasiya" v-if="role === 'cashier'">
+        <SidebarLink to="/nasiya" v-if="role === 'cashier' || role == 'branch_admin'">
           <span class="fas fa-coins"></span>
           <p class="ripple">Nasiyalar</p>
         </SidebarLink>
 
-        <SidebarLink to="/vozvrat" v-if="role === 'cashier'">
+        <SidebarLink to="/vozvrat" v-if="role === 'cashier' || role == 'branch_admin'">
           <span class="fas fa-undo"></span>
           <p class="ripple">Vozvrat</p>
         </SidebarLink>

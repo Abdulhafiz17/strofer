@@ -47,6 +47,7 @@
                         <th>Miqdori</th>
                         <th>Umumiy narxi</th>
                         <th>Sanasi</th>
+                        <th></th>
                       </thead>
                       <tbody>
                         <tr v-for="(tarix, n) in filterRow || []" :key="tarix.id">
@@ -69,7 +70,12 @@
                             }}
                             {{ tarix.currency_id }}
                           </td>
-                          <td>{{ tarix.time.replace("T", " ") }}</td>
+                          <td>{{ tarix.time.substr("T", 10) }}</td>
+                          <td>
+                            <button class="btn btn-sm btn-light">
+                              <span class="fa fa-undo"/>
+                            </button>
+                          </td>
                         </tr>
                       </tbody>
                     </table>

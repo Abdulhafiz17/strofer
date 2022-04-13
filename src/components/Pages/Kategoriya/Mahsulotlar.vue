@@ -106,40 +106,15 @@
   </div>
 
   <div class="modal fade" id="code">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-sm">
       <div class="modal-content">
-        <div class="modal-body d-flex justify-content-center">
-          <div id="price">
-            <table
-              class="table table-hover table-borderless"
-              style="font-size: 25px"
-            >
-              <tbody>
-                <tr>
-                  <th>Mahsulot :</th>
-                  <td>{{ mahsulot.name }}</td>
-                </tr>
-                <tr>
-                  <th>Brend :</th>
-                  <td>{{ mahsulot.brand }}</td>
-                </tr>
-                <tr>
-                  <th>Sotuv narx :</th>
-                  <td>
-                    {{
-                      Intl.NumberFormat({ style: "currency" }).format(
-                        mahsulot.selling_price
-                      )
-                    }}
-                    {{ mahsulot.currency_id }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="modal-body">
+          <center id="price" style="color: black !important; font-size: 14px">
+            <strong>{{ mahsulot.name }} {{ mahsulot.brand }} {{Intl.NumberFormat({ style: "currency" }).format(mahsulot.selling_price)}} so'm</strong>
             <div class="row">
-              <img id="barcode" class="col-md-10 mx-auto" />
+              <img id="barcode" class="" />
             </div>
-          </div>
+          </center>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary" @click="print()">
@@ -199,31 +174,23 @@ export default {
     code(mahsulot) {
       this.mahsulot = mahsulot;
       JsBarcode("#barcode", mahsulot.product_code, {
-        height: 50,
+        height: 30,
         width: 3,
         displayValue: true,
       });
     },
+
     print() {
       let barcode = document.querySelector("#price").outerHTML;
       let windowPrint = window.open(
         "_blank",
         "Barcode",
-        "width=400; height=600"
+        "width=auto",
       );
-      windowPrint.document.write(
-        `
-            <head>
-              <title> Barcode </title>
-              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-            </head>
-        ` + barcode
-      );
+      windowPrint.document.write(barcode);
       windowPrint.print();
-      document.addEventListener("#price", (e) => {
-        ctrkay;
-      });
+      windowPrint.window.close()
+      this.isloading = false
     },
   },
   mounted() {
@@ -243,21 +210,4 @@ export default {
 </script>
 
 <style scoped>
-#price {
-  width: 350px;
-  height: 550px;
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid var(--success);
-  background: white;
-}
-
-#price * {
-  color: black !important;
-}
-
-#barcode {
-  width: 310px;
-  height: 100px;
-}
 </style>

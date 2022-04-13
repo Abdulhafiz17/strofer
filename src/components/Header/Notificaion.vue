@@ -2,7 +2,7 @@
   <button
     class="btn btn-sm float-right"
     style="box-shadow: none"
-    @click="notification = !notification"
+    @click="notification = !notification, getData()"
     v-if="role == 'branch_admin'"
   >
     <span class="fa fa-bell" style="color: white; font-size: 15px" />
@@ -26,7 +26,15 @@
         <h4> Noto'g'ri sotuv narxlar </h4>
         <ul class="list-group list-group-sm">
           <li class="list-group-item d-flex justify-content-between"><strong> Mahsulot narx </strong><strong> Savdo narx </strong></li>
-          <li class="list-group-item d-flex justify-content-between" v-for="narx in narxlar" :key="narx"><span> {{ Intl.NumberFormat().format(narx.product_price) }} so'm </span><span> {{ Intl.NumberFormat().format(narx.trade_price) }} so'm </span></li>
+          <a
+            class="list-group-item d-flex justify-content-between" 
+            v-for="narx in narxlar" 
+            :key="narx"
+            :href="'/thisTrade/' + narx.order_id"
+          >
+            <span> {{ Intl.NumberFormat().format(narx.product_price) }} so'm </span>
+            <span> {{ Intl.NumberFormat().format(narx.trade_price) }} so'm </span>
+          </a>
         </ul>
       </li>
     </ul>
@@ -68,7 +76,6 @@ export default {
         })
 
         instance.get("notifications").then((respon) => {
-          // console.log(respon.data);
           this.notice += respon.data.length
           this.narxlar = respon.data
         })
@@ -76,12 +83,12 @@ export default {
   },
   mounted() {
     console.clear()
-    if (localStorage.getItem("access_token") && this.role == "branch_admin") {
-      this.getData();
-      setInterval(() => {
-        this.getData();
-      }, 5000);
-    }
+    // if (localStorage.getItem("access_token") && this.role == "branch_admin") {
+    //   this.getData();
+    //   setInterval(() => {
+    //     this.getData();
+    //   }, 5000);
+    // }
   },
 };
 </script>
@@ -103,6 +110,29 @@ export default {
 
 .dark .list-group-item:hover {
   background: rgb(100, 100, 100, 0.5);
+}
+
+#trade {
+  width: 400px;
+  max-height: 50vh;
+  border: 1px solid var(--success);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 5px;
+  top: 30vh;
+  left: 40%;
+  backdrop-filter: blur(2px);
+  transition: 1s;
+
+  display: none;
+  position: absolute;
+  z-index: 1;
+  animation: slide ease 0.5s;
+}
+
+@keyframes slide {
+  from {height: 0px;}
+  to {height: 100px;}
 }
 
 .drop {

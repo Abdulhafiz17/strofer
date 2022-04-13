@@ -102,7 +102,7 @@
                       </thead>
                       <tbody>
                         <tr
-                          v-for="(mahsulot, n, sum) in tab.data"
+                          v-for="(mahsulot, n) in tab.data"
                           :key="mahsulot.id"
                         >
                           <td>{{ n + 1 }}</td>
@@ -522,12 +522,16 @@
               <div class="input-group">
                 <input
                   class="form-control"
-                  type="number"
-                  min="0"
                   id="barcode"
+                  list="products"
                   placeholder="Code"
-                  @change="addProduct()"
+                  @change="addProduct(barcode)"
+                  v-model="barcode"
+                  autocomplete="false"
                 />
+                <datalist id="products">
+                  <option v-for="mahsulot in mahsulotlar" :key="mahsulot" :value="mahsulot.product_code"> {{ mahsulot.name }} {{ mahsulot.brand }} </option>
+                </datalist>
                 <div class="input-group-append">
                   <div class="input-group-text">
                     <span class="fa fa-barcode" />
@@ -607,6 +611,7 @@ export default {
       mahsulotlar: [],
       buyurtmaMahsulotlar: [],
       balance: {},
+      barcode: "",
       mijozlar: [],
       tradesLength: 0,
       orderId: "",
@@ -653,6 +658,16 @@ export default {
           this.isloading = false;
           this.errorr = err.message;
         });
+    },
+    getMahsulot() {
+      this.isloading = false,
+      instance.get("all_products_for_trade_to_search").then((products) => {
+        this.mahsulotlar = products.data
+        this.isloading = false
+      }).catch((err) => {
+        this.errorr = err.message
+        this.isloading = false
+      })
     },
     createOrder() {
       this.isloading = true;
@@ -866,9 +881,8 @@ export default {
           this.isloading = false;
         });
     },
-    addProduct() {
-      let code = document.querySelector("#barcode").value;
-      instance.get("this_product/empty/" + code).then((response) => {
+    addProduct(barcode) {
+      instance.get("this_product/empty/" + barcode).then((response) => {
         console.log(response.data);
         if (response.data) {
           this.product = response.data[0];
@@ -937,6 +951,7 @@ export default {
     console.clear();
     this.getBuyurtma();
     this.getMijozlar();
+    this.getMahsulot()
   },
 };
 </script>

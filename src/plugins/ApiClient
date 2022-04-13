@@ -4,7 +4,7 @@ import store from "@/store";
 import router from "@/router";
 
 let config = {
-    baseURL: "https://oqsaroy.crud.uz/token",
+    baseURL: "https://savdo.crud.uz/token",
     timeout: 10000,
     withCredentials: true,
     headers: {

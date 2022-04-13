@@ -48,7 +48,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <!-- <tr>
                   <td>
                     <input
                       class="form-control form-control-sm"
@@ -98,7 +98,7 @@
                   </td>
                   <td></td>
                   <td v-if="role == 'cashier'"></td>
-                </tr>
+                </tr> -->
                 <tr v-for="savdo in savdolar || []" :key="savdo.id">
                   <td>{{ savdo.product }}</td>
                   <td>{{ savdo.brand }}</td>

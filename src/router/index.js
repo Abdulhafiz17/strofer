@@ -195,6 +195,13 @@ const routes = [
     component: () => import("../components/Pages/Nasiyalar/kirim.vue"),
   },
 
+  {
+    path: "/thisTrade/:id",
+    meta: { requiresAuth: true },
+    name: "ThisTrade",
+    component: () => import("../components/Pages/Savdo/ThisTrade.vue"),
+  },
+
 ];
 
 const router = createRouter({

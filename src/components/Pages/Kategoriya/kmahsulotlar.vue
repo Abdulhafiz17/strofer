@@ -111,14 +111,14 @@
                         <i class="fa fa-coins"></i>
                       </button>
 
-                      <button
+                      <!-- <button
                         class="btn btn-primary btn-sm"
                         data-toggle="modal"
                         data-target="#code"
                         @click="code(mahsulotlar)"
                       >
                         <span class="fa fa-barcode" />
-                      </button>
+                      </button> -->
 
                       <button
                         class="btn btn-outline-warning btn-sm"
