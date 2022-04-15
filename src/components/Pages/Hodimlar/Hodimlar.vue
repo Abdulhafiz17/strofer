@@ -437,6 +437,7 @@ export default {
         this.branch_id = localStorage.getItem("branch_id");
       }
       this.yangiHodim.branch_id = this.branch_id;
+      this.yangiHodim.phone = Number(this.yangiHodim.phone)
       console.log(this.yangiHodim);
       instance
         .post("user_create", this.yangiHodim)
@@ -451,7 +452,7 @@ export default {
                 window.location.reload();
               });
             } else if (
-              (res.data = "Bu username bilan avval ham ro`yxatga olingan")
+              (res.data == "Bu username bilan avval ham royxatga olingan")
             ) {
               swal({
                 icon: "warning",
@@ -461,6 +462,11 @@ export default {
               }).then(() => {
                 window.location.reload();
               });
+            } else if (res.data == "Sorovda xatolikk") {
+              swal({
+                icon: "warning",
+                title: "So'rovda xatolik"
+              })
             }
           }
         })

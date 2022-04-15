@@ -22,12 +22,23 @@
       </div>
       <div class="card-body">
         <nav>
-          <div class="nav nav-pills" id="nav-tab" role="tablist">
+          <div
+            class="nav nav-pills"
+            style="
+              height: 110px;
+              width: 100%;
+              overflow-y: hidden;
+              overflow-x: scroll;
+            "
+            id="nav-tab"
+            role="tablist"
+          >
             <button
               v-for="tab in buyurtmalar"
               :key="tab.id"
               :id="tab.id"
               class="nav-link"
+              style="display: inline !important"
               data-bs-toggle="tab"
               :href="'/#nav' + tab.id"
               type="button"
@@ -55,7 +66,7 @@
         <hr />
         <span class="tab-content" id="nav-tabContent">
           <span
-            v-for="tab in buyurtmalar"
+            v-for="(tab, sum) in buyurtmalar"
             :key="tab.id"
             class="tab-pane fade"
             :id="'nav' + tab.id"
@@ -102,8 +113,9 @@
                       </thead>
                       <tbody>
                         <tr
-                          v-for="(mahsulot, n) in tab.data"
+                          v-for="(mahsulot, n, sum2) in tab.data"
                           :key="mahsulot.id"
+                          v-if="editRow == true"
                         >
                           <td>{{ n + 1 }}</td>
                           <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
@@ -141,20 +153,48 @@
                             </div>
                           </td>
                           <td>
-                            {{
-                              Intl.NumberFormat({ style: "currency" }).format(
-                                mahsulot.selling_price * mahsulot.quantity
-                              )
-                            }}
+                            {{ Intl.NumberFormat({ style: "currency" }).format(mahsulot.selling_price * mahsulot.quantity)}}
                             so'm
-                            <!-- <span > {{ sum += (mahsulot.selling_price * mahsulot.quantity)}} </span> -->
+                            <span style="display: none"> {{ sum2 = (mahsulot.selling_price * mahsulot.quantity)}} </span>
+                            <span style="display: none"> {{ sum += sum2}} </span>
                           </td>
                           <td>
                             <button
                               class="btn btn-sm btn-outline-success"
-                              @click="postOrder(mahsulot, tab)"
+                              @click="postOrder(mahsulot, tab), this.editRow = false"
                             >
                               <span class="far fa-circle-check" />
+                            </button>
+                            <button
+                              class="btn btn-sm btn-outline-danger"
+                              type="button"
+                              @click="deleteTrade(mahsulot.code)"
+                            >
+                              <span class="far fa-circle-xmark" />
+                            </button>
+                          </td>
+                        </tr>
+                        <tr
+                          v-for="(mahsulot, n, sum2) in tab.data"
+                          :key="mahsulot.id"
+                          v-if="editRow == false"
+                        >
+                          <td>{{ n + 1 }}</td>
+                          <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
+                          <td>{{mahsulot.quantity}} {{mahsulot.measure}}</td>
+                          <td> {{ mahsulot.selling_price }} so'm </td>
+                          <td>
+                            {{ Intl.NumberFormat({ style: "currency" }).format(mahsulot.selling_price * mahsulot.quantity)}}
+                            so'm
+                            <span style="display: none"> {{ sum2 = (mahsulot.selling_price * mahsulot.quantity)}} </span>
+                            <span style="display: none"> {{ sum += sum2}} </span>
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-sm btn-outline-warning"
+                              @click="this.editRow = true"
+                            >
+                              <span class="far fa-edit" />
                             </button>
                             <button
                               class="btn btn-sm btn-outline-danger"
@@ -178,7 +218,7 @@
                           </th>
                           <td>
                             <span class="float-right">
-                              {{ Intl.NumberFormat().format(tab.order_price) }}
+                              {{ Intl.NumberFormat().format(sum - 1) }}
                               so'm
                               <span class="fa fa-coin" />
                             </span>
@@ -187,10 +227,11 @@
                       </tfoot>
                     </table>
                     <button
+                      v-if="this.editRow == false"
                       class="btn btn-outline-success m-2 float-right"
                       data-toggle="modal"
                       data-target="#cash"
-                      @click="balance = tab.order_price"
+                      @click="balance = (sum - 1)"
                     >
                       <span class="far fa-circle-check" /> Tasdiqlash
                     </button>
@@ -426,6 +467,7 @@
               <button class="btn btn-outline-danger" data-dismiss="modal">
                 <span class="far fa-circle-xmark" /> Bekor qilish
               </button>
+              <input type="hidden" data-dismiss="modal" id="close_modal1" />
             </div>
           </form>
         </div>
@@ -530,7 +572,13 @@
                   autocomplete="false"
                 />
                 <datalist id="products">
-                  <option v-for="mahsulot in mahsulotlar" :key="mahsulot" :value="mahsulot.product_code"> {{ mahsulot.name }} {{ mahsulot.brand }} </option>
+                  <option
+                    v-for="mahsulot in mahsulotlar"
+                    :key="mahsulot"
+                    :value="mahsulot.product_code"
+                  >
+                    {{ mahsulot.name }} {{ mahsulot.brand }}
+                  </option>
                 </datalist>
                 <div class="input-group-append">
                   <div class="input-group-text">
@@ -594,6 +642,67 @@
       </div>
     </div>
   </div>
+  <span id="receipent" style="display: none" v-if="receipentValue">
+    <center>
+      <ul style="list-decoration: none; margin: 0; padding: 0">
+        <li style="display: flex; justify-content: space-between">
+          <strong>Sana: </strong>
+          <span>{{ receipent.time.replace("T", " ") }}</span>
+        </li>
+        <li style="display: flex; justify-content: space-between">
+          <strong> Mijoz: </strong> <span> {{ receipent.client }} </span>
+        </li>
+        <li style="display: flex; justify-content: space-between">
+          <strong> Sotuvchi: </strong> <span> {{ receipent.owner }} </span>
+        </li>
+      </ul>
+      <hr />
+      <table border="1px" style="border-collapse: collapse">
+        <thead>
+          <tr>
+            <th>Mahsulot</th>
+            <th>Narx</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="mahsulot in receipent.data" :key="mahsulot">
+            <th>{{ mahsulot.name }} {{ mahsulot.brand }}</th>
+            <td>
+              {{ Intl.NumberFormat().format(mahsulot.selling_price) }}so'm
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <ul style="list-decoration: none; margin: 0; padding: 0">
+        <li style="display: flex; justify-content: space-between">
+          <strong>To'lov summa: </strong>
+          <strong
+            >{{ Intl.NumberFormat().format(receipent.order_price) }}so'm</strong
+          >
+        </li>
+        <hr />
+        <li style="display: flex; justify-content: space-between">
+          <strong>Naxt: </strong>
+          <strong>{{ Intl.NumberFormat().format(receipent.naxt) }} so'm</strong>
+        </li>
+        <li style="display: flex; justify-content: space-between">
+          <strong>Plastik: </strong>
+          <strong
+            >{{ Intl.NumberFormat().format(receipent.plastik) }} so'm</strong
+          >
+        </li>
+        <li style="display: flex; justify-content: space-between">
+          <strong>Nasiya: </strong>
+          <strong
+            >{{ Intl.NumberFormat().format(receipent.loan_price) }} so'm</strong
+          >
+        </li>
+      </ul>
+      <!-- <img id="barcodeReceipent" class="" /> -->
+      <div id="demo"/>
+    </center>
+  </span>
   <isloading :isloading="isloading" :message="errorr" />
 </template>
 
@@ -601,16 +710,18 @@
 import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 import swal from "sweetalert";
+import JsBarcode from "jsbarcode";
 
 export default {
   components: { isloading },
   data() {
     return {
       role: localStorage.getItem("role"),
+      editRow: false,
       buyurtmalar: [],
       mahsulotlar: [],
       buyurtmaMahsulotlar: [],
-      balance: {},
+      balance: 0,
       barcode: "",
       mijozlar: [],
       tradesLength: 0,
@@ -639,6 +750,8 @@ export default {
       alert: String,
       product: null,
       order_price: 0,
+      receipent: {},
+      receipentValue: false,
     };
   },
   methods: {
@@ -650,7 +763,7 @@ export default {
       instance
         .get("all_orders/false")
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.buyurtmalar = res.data;
           this.isloading = false;
         })
@@ -660,25 +773,31 @@ export default {
         });
     },
     getMahsulot() {
-      this.isloading = false,
-      instance.get("all_products_for_trade_to_search").then((products) => {
-        this.mahsulotlar = products.data
-        this.isloading = false
-      }).catch((err) => {
-        this.errorr = err.message
-        this.isloading = false
-      })
+      (this.isloading = false),
+        instance
+          .get("all_products_for_trade_to_search")
+          .then((products) => {
+            this.mahsulotlar = products.data;
+            this.isloading = false;
+          })
+          .catch((err) => {
+            this.errorr = err.message;
+            this.isloading = false;
+          });
     },
     createOrder() {
       this.isloading = true;
-      instance.post("create_order").then((response) => {
-        console.log(response.data);
-        this.buyurtmalar = response.data;
-        this.isloading = false;
-      }).catch((err) => {
-        this.isloading = false
-        this.errorr = err.message
-      })
+      instance
+        .post("create_order")
+        .then((response) => {
+          console.log(response.data);
+          this.buyurtmalar = response.data;
+          this.isloading = false;
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.errorr = err.message;
+        });
     },
     getMijozlar() {
       instance
@@ -823,14 +942,24 @@ export default {
                 icon: "success",
                 title: "Savdo tugatildi",
                 timer: 1000,
-              }).then(window.location.reload());
+              }).then(
+                document.querySelector("#close_modal1").click(),
+                setTimeout(() => {
+                  instance
+                    .get("this_order/" + this.orderId)
+                    .then((response) => {
+                      this.receipent = response.data;
+                      this.receipentValue = true;
+                      this.printCheck(response.data.id);
+                    });
+                }, 1000)
+              );
             }
           })
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
-          })
-          .finally((this.isloading = false));
+          });
       } else {
         let new_incomes = [];
         if (naxt.price == 0 || naxt.price == null) {
@@ -854,16 +983,52 @@ export default {
               swal({
                 icon: "success",
                 title: "Savdo tugatildi",
-                timer: 1500,
-              }).then(window.location.reload());
+                timer: 1000,
+              }).then(
+                document.querySelector("#close_modal1").click(),
+                setTimeout(() => {
+                  instance
+                    .get("this_order/" + this.orderId)
+                    .then((response) => {
+                      this.receipent = response.data;
+                      this.receipentValue = true;
+                      this.printCheck(response.data.id);
+                    });
+                }, 1000)
+              );
             }
           })
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
           })
-          .finally((this.isloading = false));
       }
+    },
+    printCheck(id) {
+      setTimeout(() => {
+        var qrcode = new QRCode(document.querySelector("#demo"), {
+          text: id,
+          width: 100, //default 128
+          height: 100,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+        // JsBarcode("#barcodeReceipent", id, {
+        //   height: 30,
+        //   width: 1,
+        //   displayValue: true,
+        // });
+        let check = window.open("_blank", "Check", "width=350,height=500");
+        let receipent = document.querySelector("#receipent");
+        check.console.log(receipent);
+        check.document.write(`${receipent.innerHTML}`);
+        setTimeout(() => {
+          check.print();
+          // check.close()
+          this.isloading = false;
+        }, 500);
+      }, 1500);
     },
     mijozQoshish() {
       instance
@@ -883,7 +1048,7 @@ export default {
     },
     addProduct(barcode) {
       instance.get("this_product/empty/" + barcode).then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data) {
           this.product = response.data[0];
         }
@@ -898,7 +1063,7 @@ export default {
       };
       instance.post("to_trade/" + this.orderId, data).then((response) => {
         if (response.status == 200) {
-          console.log(response.data);
+          // console.log(response.data);
           swal("", "", "success", { timer: 1000 }).then(() => {
             this.getBuyurtma();
             document.querySelector("#close_modal").click();
@@ -951,7 +1116,7 @@ export default {
     console.clear();
     this.getBuyurtma();
     this.getMijozlar();
-    this.getMahsulot()
+    this.getMahsulot();
   },
 };
 </script>
@@ -968,5 +1133,10 @@ export default {
 
   border: 1px solid gold;
   color: black;
+}
+
+td,
+th {
+  padding: 2px;
 }
 </style>

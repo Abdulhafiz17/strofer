@@ -195,6 +195,7 @@ export default {
             });
           });
           console.log(this.get);
+          this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;

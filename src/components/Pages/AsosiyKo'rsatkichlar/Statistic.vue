@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-header">
-        <h3 v-if="role == 'cashier'">Vozvrat qilish</h3>
+        <h3 v-if="this.$route.name == 'Vozvrat'">Vozvrat qilish</h3>
         <h3 v-else>Asosiy ko'rsatgichlar</h3>
       </div>
       <div class="card-body">
@@ -33,7 +33,7 @@
             "
             v-if="table"
           >
-            <table class="table-sm table-hover">
+            <table class=" table table-sm table-hover">
               <thead>
                 <tr>
                   <th>Mahuslot</th>
@@ -44,7 +44,7 @@
                   <th>Sotuvchi</th>
                   <th>Mijoz</th>
                   <th>Sana</th>
-                  <th v-if="role == 'cashier'"></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -122,7 +122,7 @@
                   <td>{{ savdo.owner }}</td>
                   <td>{{ savdo.client }}</td>
                   <td>{{ savdo.time }}</td>
-                  <td v-if="role == 'cashier'">
+                  <td>
                     <button
                       class="btn btn-sm btn-outline-primary"
                       @click="returnProduct(savdo)"
