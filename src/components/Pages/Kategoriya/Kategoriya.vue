@@ -88,12 +88,12 @@
                     </div>
                     <div class="row">
                       <div class="col">
-                        <a
-                          :href="'/kmahsulotlar/' + kategoriya.id"
+                        <router-link
+                          :to="'/kmahsulotlar/' + kategoriya.id"
                           class="btn btn-outline-success btn-block mt-3"
                         >
                           Mahsulotlar
-                        </a>
+                        </router-link>
                       </div>
                     </div>
                   </div>

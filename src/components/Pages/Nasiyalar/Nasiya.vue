@@ -182,17 +182,19 @@ export default {
         .get("all_loans")
         .then((response) => {
           response.data.forEach((element) => {
-            instance.get("this_customer/" + element.customer_id).then((res) => {
-              let loan = {
-                id: element.id,
-                customer: res.data.name,
-                price: element.price,
-                return_date: element.return_date,
-                time: element.time.replace("T", " "),
-              };
-              this.get.push(loan);
-              this.isloading = false
-            });
+            if (response.data.length > 0) {
+              instance.get("this_customer/" + element.customer_id).then((res) => {
+                let loan = {
+                  id: element.id,
+                  customer: res.data.name,
+                  price: element.price,
+                  return_date: element.return_date,
+                  time: element.time.replace("T", " "),
+                };
+                this.get.push(loan);
+                this.isloading = false
+              });
+            }
           });
           console.log(this.get);
           this.isloading = false

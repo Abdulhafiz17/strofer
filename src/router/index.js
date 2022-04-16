@@ -197,7 +197,7 @@ const routes = [
 
   {
     path: "/thisTrade/:id",
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, icon: "./1(2).png" },
     name: "ThisTrade",
     component: () => import("../components/Pages/Savdo/ThisTrade.vue"),
   },

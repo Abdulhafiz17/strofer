@@ -27,11 +27,11 @@
             </button>
           </div>
           <div class="col-md-2">
-            <a
-              href="/Chiqimlartarixi"
+            <router-link
+              to="/Chiqimlartarixi"
               class="btn btn-outline-success btn-sm btn-block"
               ><span class="fa fa-clock-rotate-left"></span
-            ></a>
+            ></router-link>
           </div>
         </div>
 

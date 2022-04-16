@@ -13,28 +13,29 @@
       <li class="list-group-item" style="width: 100%">
         <h4> Mahsulotlar </h4>
         <ul class="list-group list-group-sm">
-          <a class="list-group-item d-flex justify-content-between" v-for="mahsulot in mahsulotlar" :key="mahsulot" :href="'/kmahsulotlar/' + mahsulot.category_id"><span>{{ mahsulot.name }}</span><span>{{ mahsulot.quantity }} {{ mahsulot.measure }}</span></a>
+          <router-link @click="close()" class="list-group-item d-flex justify-content-between" v-for="mahsulot in mahsulotlar" :key="mahsulot" :to="'/kmahsulotlar/' + mahsulot.category_id"><span>{{ mahsulot.name }}</span><span>{{ mahsulot.quantity }} {{ mahsulot.measure }}</span></router-link>
         </ul>
       </li>
       <li class="list-group-item" style="width: 100%">
         <h4> Nasiyalar </h4>
         <ul class="list-group list-group-sm">
-          <a class="list-group-item d-flex justify-content-between" v-for="nasiya in nasiyalar" :key="nasiya" href="/nasiya"><span>{{ Intl.NumberFormat().format(nasiya.price) }} so'm</span><span>{{ nasiya.return_date }}</span></a>
+          <router-link @click="close()" class="list-group-item d-flex justify-content-between" v-for="nasiya in nasiyalar" :key="nasiya" to="/nasiya"><span>{{ Intl.NumberFormat().format(nasiya.price) }} so'm</span><span>{{ nasiya.return_date }}</span></router-link>
         </ul>
       </li>
       <li class="list-group-item" style="width: 100%">
         <h4> Noto'g'ri sotuv narxlar </h4>
         <ul class="list-group list-group-sm">
           <li class="list-group-item d-flex justify-content-between"><strong> Mahsulot narx </strong><strong> Savdo narx </strong></li>
-          <a
+          <router-link
             class="list-group-item d-flex justify-content-between" 
             v-for="narx in narxlar" 
             :key="narx"
-            :href="'/thisTrade/' + narx.order_id"
+            :to="'/thisTrade/' + narx.order_id"
+            @click="close()"
           >
             <span> {{ Intl.NumberFormat().format(narx.product_price) }} so'm </span>
             <span> {{ Intl.NumberFormat().format(narx.trade_price) }} so'm </span>
-          </a>
+          </router-link>
         </ul>
       </li>
     </ul>
@@ -79,6 +80,11 @@ export default {
           this.notice += respon.data.length
           this.narxlar = respon.data
         })
+    },
+    close() {
+      setTimeout(() => {
+        this.notification = false
+      }, 100);
     },
   },
   mounted() {

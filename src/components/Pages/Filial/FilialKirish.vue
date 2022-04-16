@@ -114,9 +114,9 @@
                             {{ mahsulot.quantity }} {{ mahsulot.measure }}
                           </td>
                           <td> {{ mahsulot.quantity_note }} {{ mahsulot.measure }} </td>
-                          <td> {{ mahsulot.price }} {{ mahsulot.currency_id }} </td>
-                          <td> {{ mahsulot.selling_price }} {{ mahsulot.currency_id_for_sell }} </td>
-                          <td> {{ mahsulot.final_price }} {{ mahsulot.currency_id_for_final }} </td>
+                          <td> {{ Intl.NumberFormat().format(mahsulot.price) }} {{ mahsulot.currency_id }} </td>
+                          <td> {{ Intl.NumberFormat().format(mahsulot.selling_price) }} {{ mahsulot.currency_id_for_sell }} </td>
+                          <td> {{ Intl.NumberFormat().format(mahsulot.final_price) }} {{ mahsulot.currency_id_for_final }} </td>
                           <td>
                             <span v-if="!mahsulot.category_id" class="fa fa-folder" />
                           </td>
@@ -203,7 +203,7 @@ export default {
     },
 
     getProduct(id) {
-      instance.get("all_products/" + id).then((response) => {
+      instance.get("all_products_admin/" + id + "/" + this.$route.params.id).then((response) => {
         this.mahsulotlar = response.data
       })
     },

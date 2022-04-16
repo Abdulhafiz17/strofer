@@ -3,15 +3,16 @@
     class="navbar fixed-top d-flex flex-row bg-dark p-2 shadow"
     style="height: 80px"
   >
-    <div class="cont d-flex">
-      <div class="text-center navbar-brand-wrapper">
+    <div class="cont d-flex"
+          @click="toggleSidebar">
+      <div class="text-center navbar-brand-wrapper" >
         <img
-          src="../../../public/photo_2021-11-12_17-55-00.jpg"
+          src="../../components/pictures/1(2).png"
           alt="Logo"
-          style="width: 50px; border-radius: 5px"
+          class="img-responsive"
         />
       </div>
-      <div class="icon">
+      <!-- <div class="icon">
         <span
           @click="toggleSidebar"
           id="bars"
@@ -24,7 +25,7 @@
             text-secondary
           "
         ></span>
-      </div>
+      </div> -->
     </div>
 
     <div class="inline-block d-flex justify-content-between align-items-center">
@@ -53,10 +54,10 @@ export default {
   methods: {
     logout() {
       this.$router.push("/");
-      console.clear()
-      console.log(localStorage)
-      localStorage.clear()
-      console.log(localStorage)
+      console.clear();
+      console.log(localStorage);
+      localStorage.clear();
+      console.log(localStorage);
     },
   },
 
@@ -73,6 +74,9 @@ export default {
 
 <style>
 .logout {
+  cursor: pointer;
+}
+.cont {
   cursor: pointer;
 }
 
@@ -116,13 +120,7 @@ export default {
   transform: translateY(20px);
 }
 
-/* .img-responsive { */
-/* height: 40px;
-  width: 60px;
-  padding-left: 11px; */
-/* } */
-
-.dropdown-menu {
-  background: var(--dark);
+.img-responsive {
+  width: 50px;
 }
 </style>

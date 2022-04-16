@@ -74,12 +74,12 @@
                   </tbody>
                 </table>
                 <div class="card-footer">
-                  <a
-                    :href="'/mijozhaqida/' + mijozgets.id"
+                  <router-link
+                    :to="'/mijozhaqida/' + mijozgets.id"
                     class="btn btn-outline-info btn-block mt-3"
                   >
                     <span class="fa fa-info" /> Mijoz haqida
-                  </a>
+                  </router-link>
                 </div>
               </div>
             </div>

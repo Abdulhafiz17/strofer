@@ -80,12 +80,12 @@
                 </table>
               </div>
               <div class="card-footer">
-                <a
+                <router-link
                   class="btn btn-outline-success btn-block"
-                  :href="'/filialKirish/' + filial.id"
+                  :to="'/filialKirish/' + filial.id"
                 >
                   Kirish
-                </a>
+                </router-link>
               </div>
             </div>
           </div>

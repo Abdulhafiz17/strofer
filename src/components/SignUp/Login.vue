@@ -4,8 +4,8 @@
       <div class="card col-lg-4 mx-auto custom-card">
         <form @submit.prevent="handleSubmit">
           <div class="autho-form-light text-left py-5 px-4 px-sm-5">
-            <div class="brand-logo text-center">
-              <img src="../../../public/photo_2021-11-12_17-55-00.jpg" class="w-25" alt="logo" />
+            <div class="brand-logo mb-3 text-center">
+              <img src="../../components/pictures/1.png" class="w-75" alt="logo" />
             </div>
             <h4 class="text-center">Xush kelibsiz !</h4>
             <!-- <h6 class="font-weight-light">
