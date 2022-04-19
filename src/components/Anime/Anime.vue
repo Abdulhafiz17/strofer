@@ -36,6 +36,16 @@ export default {
         }).then(() => {
           this.isloading = false
         })
+      } else if (this.message == "Request failed with status code 422") {
+        swal({
+          icon: "warning",
+          title: "Ma'lumot to'liq emas !",
+          closeOnClickOutside: false,
+          closeOnEsc: false,
+          buttons: false,
+        }).then(() => {
+          this.isloading = false
+        })
       }
     }, 500);
   },

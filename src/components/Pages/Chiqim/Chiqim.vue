@@ -54,12 +54,12 @@
                         </button>
                       </h3>
                       {{ card.name }}
-                      <a
-                        :href="'/idboyichachiqim/' + card.id"
+                      <router-link
+                        :to="'/idboyichachiqim/' + card.id"
                         class="btn btn-success float-right btn-sm mb-2"
                       >
                         <i class="fa fa-clock-rotate-left"></i>
-                      </a>
+                      </router-link>
                     </h3>
                     <!-- input input-group -->
                     <div>
@@ -431,7 +431,6 @@ export default {
         .get("all_fixed_expenses")
         .then((response) => {
           this.cards = response.data;
-          console.log(response.data);
           this.isloading = false;
         })
         .catch((err) => {

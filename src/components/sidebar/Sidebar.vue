@@ -34,7 +34,7 @@ export default {
     },
   },
   mounted() {
-    if (localStorage.getItem("access_token")) {
+    if (localStorage.getItem("access_token") && localStorage.getItem("role") == "admin") {
       this.getData();
     }
 

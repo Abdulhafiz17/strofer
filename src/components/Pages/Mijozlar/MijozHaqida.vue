@@ -1,5 +1,8 @@
 <template>
   <div class="container-fluid">
+    <router-link class="btn btn-sm mb-2 btn-outline-success" to="/mijozlar">
+      <span class="fa fa-arrow-left"/> Ortga
+    </router-link>
     <div class="card shadow">
       <div class="card-header"><h3>Mijoz haqida</h3></div>
       <div class="card-body">
@@ -77,7 +80,7 @@
                         <td> {{ tarix.user }} </td>
                         <td>
                           <button 
-                            class="btn btn-sm btn-outline-info"
+                            class="btn btn-sm btn-info"
                             data-toggle="modal"
                             data-target="#exampleModal"
                             @click="getData1(tarix)"

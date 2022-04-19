@@ -15,9 +15,12 @@
                 placeholder="Qidiruv"
               />
               <div class="input-group-append">
-                <span class="input-group-text">
-                  <i class="fa fa-search"></i>
-                </span>
+                <select class="custom-select" v-model="comment">
+                  <option value="Umumiy">Umumiy</option>
+                  <option value="narx">Narx</option>
+                  <option value="sifat">Sifat</option>
+                  <option value="premium">Premium</option>
+                </select>
               </div>
             </div>
           </div>
@@ -36,8 +39,8 @@
         <div class="row">
           <div
             class="col-md-4 mt-3"
-            v-for="mijozgets in filteredCards"
-            :key="mijozgets.id"
+            v-for="mijoz in filteredCards"
+            :key="mijoz.id"
           >
             <div class="card shadow">
               <div class="card-body">
@@ -46,14 +49,14 @@
                     <tr>
                       <th><span class="fa fa-user text-secondary" /></th>
                       <td>
-                        <strong>{{ mijozgets.name }}</strong>
+                        <strong>{{ mijoz.name }}</strong>
                       </td>
                       <td>
                         <button
                           class="btn btn-sm btn-outline-warning float-right"
                           data-toggle="modal"
                           data-target="#example"
-                          @click="editT = mijozgets"
+                          @click="editT = mijoz"
                         >
                           <span class="fa fa-edit" />
                         </button>
@@ -61,21 +64,25 @@
                     </tr>
                     <tr>
                       <th><span class="fa fa-map-marker text-secondary" /></th>
-                      <td>{{ mijozgets.address }}</td>
+                      <td>{{ mijoz.address }}</td>
                     </tr>
                     <tr>
                       <th><span class="fa fa-phone text-secondary" /></th>
                       <td>
-                        <a :href="'tel:+998' + mijozgets.phone"
-                          >+998{{ mijozgets.phone }}</a
+                        <a :href="'tel:+998' + mijoz.phone"
+                          >+998{{ mijoz.phone }}</a
                         >
                       </td>
+                    </tr>
+                    <tr>
+                      <th><span class="fa fa-project-diagram text-secondary" /></th>
+                      <td>{{ mijoz.comment }}</td>
                     </tr>
                   </tbody>
                 </table>
                 <div class="card-footer">
                   <router-link
-                    :to="'/mijozhaqida/' + mijozgets.id"
+                    :to="'/mijozhaqida/' + mijoz.id"
                     class="btn btn-outline-info btn-block mt-3"
                   >
                     <span class="fa fa-info" /> Mijoz haqida
@@ -148,12 +155,15 @@
                     />
                   </div>
 
-                  <select v-model="editT.comment" class="form-control mt-4">
-                    <option disabled value="">Iltimos, birini tanlang</option>
-                    <option>A'lo</option>
-                    <option>Yaxshi</option>
-                    <option>Yomon</option>
-                  </select>
+                  <label class="mt-3">Toifa</label>
+                  <div class="input-group">
+                    <select class="custom-select" v-model="editT.comment">
+                      <option value="Umumiy">Umumiy</option>
+                      <option value="Narx">Narx</option>
+                      <option value="Sifat">Sifat</option>
+                      <option value="Premium">Premium</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -200,7 +210,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group field-client-ism required">
-                <label class="mt-3">Ism</label>
+                <label>Ism</label>
                 <input
                   type="text"
                   class="form-control"
@@ -219,7 +229,7 @@
                 />
 
                 <label class="mt-3">Telefon</label>
-                <div class="input-group mb-3">
+                <div class="input-group">
                   <div class="input-group-prepend">
                     <span
                       class="input-group-text"
@@ -239,6 +249,16 @@
                     aria-label="Default"
                     aria-describedby="inputGroup-sizing-default"
                   />
+                </div>
+
+                <label class="mt-3">Toifa</label>
+                <div class="input-group">
+                  <select class="custom-select" v-model="mijozpost.comment">
+                    <option value="Umumiy">Umumiy</option>
+                    <option value="Narx">Narx</option>
+                    <option value="Sifat">Sifat</option>
+                    <option value="Premium">Premium</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -268,7 +288,7 @@
       </div>
     </div>
   </div>
-  <isloading :isloading="isloading" :message="error"/>
+  <isloading :isloading="isloading" :message="error" />
 </template>
 
 <script>
@@ -290,77 +310,69 @@ export default {
       mijozget: [],
       editT: {},
       search: "",
-      isloading: false,
+      isloading: true,
       error: "",
+      comment: ""
     };
   },
 
   methods: {
     postData() {
+      this.isloading = true
       instance.post("customer_create", this.mijozpost).then((response) => {
-        console.log(response.data);
         if (response.status == 200) {
-          swal({icon: "success"}).then(() => {
+          swal({icon: "success", timer: 1000}).then(() => {
             this.getData();
             // window.location.reload();
+            this.mijozpost = {
+              name: "",
+              phone: null,
+              address: "",
+              comment: "",
+            },
+            this.isloading = false
           })
         }
       }).catch((err) => {
         this.error = err.message
+        this.isloading = false
       })
     },
 
     getData() {
       instance.get("all_customers").then((response) => {
         this.mijozget = response.data;
-        console.log(response.data);
+        this.isloading = false
       }).catch((err) => {
         this.error = err.message
-        // console.log(this.error)
+        this.isloading = false
       })
     },
 
     putData(id) {
-      console.log(this.editT)
+      this.isloading = true
       instance
         .put("this_customer_update/" + id, this.editT)
         .then((response) => {
-          console.log(response.data);
           if (response.status == 200) {
-            swal({icon: "success"}).then(() => {
+            swal({icon: "success", timer: 1000}).then(() => {
               this.getData();
               // window.location.reload();
-
+              this.isloading = false
             })
           }
         });
     },
-
-  computed: {
-    searchHandler: function () {
-      return this.mijozget.filter((items) => {
-        for (let item in items) {
-          if (
-            String(items[item])
-              .toLowerCase()
-              .indexOf(this.search.toLowerCase()) !== -1
-          ) {
-            return true;
-          }
-        }
-        return false;
-      });
-    },
-  },
   },
   computed: {
     filteredCards: function () {
-      return this.mijozget.filter((taminotchis) => {
-        return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+      return this.mijozget.filter((mijoz) => {
+        return mijoz.name.toLowerCase().match(this.search.toLowerCase()) && mijoz.comment == this.comment
       });
     },
   },
   mounted() {
+    console.clear()
     this.getData();
   },
 };

@@ -2,7 +2,7 @@
   <button
     class="btn btn-sm float-right"
     style="box-shadow: none"
-    @click="notification = !notification, getData()"
+    @click="getData(), notification = !notification"
     v-if="role == 'branch_admin'"
   >
     <span class="fa fa-bell" style="color: white; font-size: 15px" />
@@ -19,7 +19,7 @@
       <li class="list-group-item" style="width: 100%">
         <h4> Nasiyalar </h4>
         <ul class="list-group list-group-sm">
-          <router-link @click="close()" class="list-group-item d-flex justify-content-between" v-for="nasiya in nasiyalar" :key="nasiya" to="/nasiya"><span>{{ Intl.NumberFormat().format(nasiya.price) }} so'm</span><span>{{ nasiya.return_date }}</span></router-link>
+          <router-link @click="close()" class="list-group-item d-flex justify-content-between" v-for="nasiya in nasiyalar" :key="nasiya" to="/nasiya"><span>{{ nasiya.name }}</span></router-link>
         </ul>
       </li>
       <li class="list-group-item" style="width: 100%">
@@ -71,7 +71,7 @@ export default {
           }
         });
 
-        instance.get("all_loans").then((respon) => {
+        instance.get("loan_customers").then((respon) => {
           this.notice += respon.data.length
           this.nasiyalar = respon.data
         })
@@ -89,12 +89,12 @@ export default {
   },
   mounted() {
     console.clear()
-    // if (localStorage.getItem("access_token") && this.role == "branch_admin") {
-    //   this.getData();
-    //   setInterval(() => {
-    //     this.getData();
-    //   }, 5000);
-    // }
+    if (localStorage.getItem("access_token") && this.role == "branch_admin") {
+      this.getData();
+      setInterval(() => {
+        this.getData();
+      },60000);
+    }
   },
 };
 </script>

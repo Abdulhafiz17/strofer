@@ -11,7 +11,7 @@
       </div>
       <div class="card-body">
         <div class="my-custom-scrollbar table-wrapper-scroll-y">
-          <table class="table table-sm table-hover">
+          <table class="table table-sm table-hover text-center">
             <thead>
               <tr>
                 <th>№</th>

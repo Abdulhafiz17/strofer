@@ -152,6 +152,12 @@ const routes = [
     name: "Kassa",
     component: () => import("../components/Pages/Kassa/Kassa.vue"),
   },
+  {
+    path: "/buyurtma/:id",
+    meta: { requiresAuth: true },
+    name: "Buyurtma",
+    component: () => import("../components/Pages/Kassa/Buyurtma.vue"),
+  },
 
   {
     path: "/mijozlar",

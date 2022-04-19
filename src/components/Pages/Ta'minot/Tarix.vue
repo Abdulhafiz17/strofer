@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div id="chevron"></div>
     <router-link class="btn btn-outline-success btn-sm mb-2" to="/taminot">
-      <span class="fa fa-arrow-left"></span> Orqaga
+      <span class="fa fa-arrow-left"></span> Ortga
     </router-link>
     <div class="card shadow">
       <div class="card-header">

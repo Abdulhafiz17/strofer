@@ -1,5 +1,8 @@
 <template>
   <div class="container-fluid">
+    <router-link class="btn btn-sm mb-2 btn-outline-success" to="/chiqim">
+      <span class="fa fa-arrow-left"/> Ortga
+    </router-link>
     <div class="card shadow">
       <div class="card-body">
         <div class="row">
@@ -13,7 +16,6 @@
               <tr>
                 <th scope="col" class="text-center">№</th>
                 <th class="col-md-3 text-center">Narx</th>
-                <th class="col-md-4 text-center">Valyuta</th>
 
                 <th class="col-md-4 text-center">Izoh</th>
               </tr>
@@ -21,8 +23,7 @@
             <tbody>
               <tr v-for="(chiqim, idx) in chiqimtarixi" :key="chiqim">
                 <th class="text-center">{{ idx + 1 }}</th>
-                <td class="text-center">{{ Intl.NumberFormat().format(chiqim.price) }}</td>
-                <td class="text-center">{{ chiqim.currency_id }}</td>
+                <td class="text-center">{{ Intl.NumberFormat().format(chiqim.price) }} so'm</td>
                 <td class="text-center">{{ chiqim.comment }}</td>
               </tr>
             </tbody>

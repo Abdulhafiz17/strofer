@@ -138,7 +138,7 @@
           </div>
         </div>
         <hr />
-        <Chart v-if="role == 'admin' || role == 'branch_admin'"/>
+        <Chart v-if="(role == 'admin' || role == 'branch_admin') && (this.$route.name !== 'Vozvrat')"/>
       </div>
     </div>
   </div>

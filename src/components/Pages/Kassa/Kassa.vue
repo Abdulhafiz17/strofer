@@ -14,9 +14,6 @@
             <h3>Kassa</h3>
           </div>
           <div class="col">
-            <button class="btn btn-primary float-right" @click="getBuyurtma()">
-              <span class="fa fa-sync" />
-            </button>
           </div>
         </div>
       </div>
@@ -24,12 +21,6 @@
         <nav>
           <div
             class="nav nav-pills"
-            style="
-              height: 110px;
-              width: 100%;
-              overflow-y: hidden;
-              overflow-x: scroll;
-            "
             id="nav-tab"
             role="tablist"
           >
@@ -37,14 +28,7 @@
               v-for="tab in buyurtmalar"
               :key="tab.id"
               :id="tab.id"
-              class="nav-link"
-              style="display: inline !important"
-              data-bs-toggle="tab"
-              :href="'/#nav' + tab.id"
-              type="button"
-              role="tab"
-              :aria-controls="'nav' + tab.id"
-              aria-selected="true"
+              class="nav-link btn btn-sm"
               @click="orderId = tab.id"
             >
               <button
@@ -53,10 +37,10 @@
               >
                 <span class="far fa-circle-xmark" />
               </button>
-              <center v-if="tab">
-                {{ tab.number }} - buyutma <br />
+              <router-link class="nav-link btn btn-sm" :to="'/buyurtma/' + tab.id" v-if="tab">
+                {{ tab.number }} - buyurtma <br />
                 {{ tab.time.substr(11, 8) }}
-              </center>
+              </router-link>
             </button>
             <button class="btn btn-sm" @click="createOrder()">
               <span class="fa fa-circle-plus" />
@@ -757,13 +741,11 @@ export default {
   methods: {
     getBuyurtma() {
       this.isloading = true;
-      this.alert = String;
       this.buyurtmalar = [];
       this.buyurtmaMahsulotlar = [];
       instance
         .get("all_orders/false")
         .then((res) => {
-          // console.log(res.data);
           this.buyurtmalar = res.data;
           this.isloading = false;
         })
@@ -772,44 +754,21 @@ export default {
           this.errorr = err.message;
         });
     },
-    getMahsulot() {
-      (this.isloading = false),
-        instance
-          .get("all_products_for_trade_to_search")
-          .then((products) => {
-            this.mahsulotlar = products.data;
-            this.isloading = false;
-          })
-          .catch((err) => {
-            this.errorr = err.message;
-            this.isloading = false;
-          });
-    },
     createOrder() {
       this.isloading = true;
+      this.buyurtmalar = [];
       instance
         .post("create_order")
         .then((response) => {
-          console.log(response.data);
-          this.buyurtmalar = response.data;
-          this.isloading = false;
+          if (response.status == 200) {
+            this.buyurtmalar = response.data;
+            this.isloading = false;
+          }
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         });
-    },
-    getMijozlar() {
-      instance
-        .get("all_customers")
-        .then((res) => {
-          this.mijozlar = res.data;
-        })
-        .catch((err) => {
-          this.isloading = false;
-          this.errorr = err.message;
-        })
-        .finally((this.isloading = false));
     },
     deleteOrder(id) {
       this.isloading = true;
@@ -818,291 +777,31 @@ export default {
         .delete("remove_this_order/" + id)
         .then((res) => {
           if (res.status == 200) {
-            swal({
-              icon: "success",
-              title: "Buyurtma o'chirildi !",
-              timer: 800,
-            });
-          }
-          this.buyurtmalar = res.data;
-        })
-        .catch((err) => {
-          this.isloading = false;
-          this.errorr = err.message;
-        })
-        .finally((this.isloading = false));
-    },
-    postOrder(mahsulot, order) {
-      this.isloading = true;
-      let product = {
-        product_code: mahsulot.code,
-        quantity: mahsulot.quantity,
-        selling_price: mahsulot.selling_price,
-        order_id: order.id,
-      };
-      instance
-        .put("update_this_trade", product)
-        .then((res) => {
-          console.log(res.data);
-          // order.order_price = res.data.order_price
-          if (res.data[0] == "So'rovda xatolik") {
-            swal({
-              icon: "warning",
-              title: "Mahsulot qoldig'ida xatolik",
-              timer: 1000,
-            }).then(() => {
-              mahsulot.quantity = res.data[1];
-              let product = {
-                product_code: mahsulot.code,
-                quantity: mahsulot.quantity,
-                selling_price: mahsulot.selling_price,
-                order_id: order.id,
-              };
-              instance.put("update_this_trade", product).then((res) => {
-                console.log(res.data);
-              });
-            });
+            this.buyurtmalar = res.data;
+            this.isloading = false
           }
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         })
-        .finally((this.isloading = false));
     },
-    deleteTrade(code) {
-      this.isloading = true;
-      console.log(code, this.orderId);
-      instance
-        .delete("remove_this_trade/" + code + "/" + this.orderId)
-        .then((res) => {
-          console.log(res.data);
-          if (res.status == 200) {
-            swal({
-              icon: "success",
-              timer: 1000,
-            }).then(() => {
-              this.getBuyurtma();
-            });
-          }
-        })
-        .catch((err) => {
-          this.isloading = false;
-          this.errorr = err.message;
-        })
-        .finally((this.isloading = false));
-    },
-    count1() {
-      this.plastikSavdo.price = this.balance - this.naxtSavdo.price;
-    },
-    count2() {
-      this.naxtSavdo.price = this.balance - this.plastikSavdo.price;
-    },
-    nasiya1() {
-      this.nasiyaSumma =
-        this.balance - this.plastikSavdo.price - this.naxtSavdo.price;
-    },
-    nasiya2() {
-      this.nasiyaSumma =
-        this.balance - this.naxtSavdo.price - this.plastikSavdo.price;
-    },
-    payToCass(naxt, plastik) {
-      this.isloading = true;
-      // let date = new Date();
-      let new_loan = {
-        return_date: this.new_loan,
-      };
-
-      if (this.client == true && this.client_id == "") {
-        swal({
-          icon: "warning",
-          title: "Mijoz tanlang !",
-          timer: 2000,
-          closeOnClickOutside: false,
-          closeOnEsc: false,
-        });
-      } else if (this.client == false && this.client_id == "") {
-        let new_incomes = [];
-        if (naxt.price == 0 || naxt.price == null) {
-          new_incomes.push(plastik);
-        } else if (plastik.price == 0 || plastik.price == null) {
-          new_incomes.push(naxt);
-        } else {
-          new_incomes.push(naxt, plastik);
-        }
-        instance
-          .post("order_confirmation/" + this.orderId + "/unknown", {
-            new_incomes,
-            new_loan,
-          })
-          .then((res) => {
-            console.log(res.data);
-            if (res.status == 200) {
-              swal({
-                icon: "success",
-                title: "Savdo tugatildi",
-                timer: 1000,
-              }).then(
-                document.querySelector("#close_modal1").click(),
-                setTimeout(() => {
-                  instance
-                    .get("this_order/" + this.orderId)
-                    .then((response) => {
-                      this.receipent = response.data;
-                      this.receipentValue = true;
-                      this.printCheck(response.data.id);
-                    });
-                }, 1000)
-              );
-            }
-          })
-          .catch((err) => {
-            this.isloading = false;
-            this.errorr = err.message;
-          });
-      } else {
-        let new_incomes = [];
-        if (naxt.price == 0 || naxt.price == null) {
-          new_incomes = [];
-          new_incomes.push(plastik);
-        } else if (plastik.price == 0 || plastik.price == null) {
-          new_incomes = [];
-          new_incomes.push(naxt);
-        } else {
-          new_incomes = [];
-          new_incomes.push(naxt, plastik);
-        }
-        instance
-          .post("order_confirmation/" + this.orderId + "/" + this.client_id, {
-            new_incomes,
-            new_loan,
-          })
-          .then((res) => {
-            console.log(res.data);
-            if (res.status == 200) {
-              swal({
-                icon: "success",
-                title: "Savdo tugatildi",
-                timer: 1000,
-              }).then(
-                document.querySelector("#close_modal1").click(),
-                setTimeout(() => {
-                  instance
-                    .get("this_order/" + this.orderId)
-                    .then((response) => {
-                      this.receipent = response.data;
-                      this.receipentValue = true;
-                      this.printCheck(response.data.id);
-                    });
-                }, 1000)
-              );
-            }
-          })
-          .catch((err) => {
-            this.isloading = false;
-            this.errorr = err.message;
-          })
-      }
-    },
-    printCheck(id) {
-      setTimeout(() => {
-        var qrcode = new QRCode(document.querySelector("#demo"), {
-          text: id,
-          width: 100, //default 128
-          height: 100,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H,
-        });
-        // JsBarcode("#barcodeReceipent", id, {
-        //   height: 30,
-        //   width: 1,
-        //   displayValue: true,
-        // });
-        let check = window.open("_blank", "Check", "width=350,height=500");
-        let receipent = document.querySelector("#receipent");
-        check.console.log(receipent);
-        check.document.write(`${receipent.innerHTML}`);
-        setTimeout(() => {
-          check.print();
-          // check.close()
-          this.isloading = false;
-        }, 500);
-      }, 1500);
-    },
-    mijozQoshish() {
-      instance
-        .post("customer_create", this.yangiMijoz)
-        .then((response) => {
-          swal({
-            icon: "success",
-            timer: 1000,
-          }).then(() => {
-            this.getMijozlar();
-          });
-        })
-        .catch((err) => {
-          this.errorr = err.message;
-          this.isloading = false;
-        });
-    },
-    addProduct(barcode) {
-      instance.get("this_product/empty/" + barcode).then((response) => {
-        // console.log(response.data);
-        if (response.data) {
-          this.product = response.data[0];
-        }
-      });
-    },
-    toTrade(product) {
-      this.isloading = true;
-      let quantity = document.querySelector("#quantity").value;
-      let data = {
-        product_code: product.product_code,
-        quantity: quantity,
-      };
-      instance.post("to_trade/" + this.orderId, data).then((response) => {
-        if (response.status == 200) {
-          // console.log(response.data);
-          swal("", "", "success", { timer: 1000 }).then(() => {
-            this.getBuyurtma();
-            document.querySelector("#close_modal").click();
-            (document.querySelector("#barcode").value = null),
-              (this.product = null),
-              (this.isloading = false);
-          });
-        }
-      });
-    },
-    countPrice(mahsulot) {
-      if (mahsulot.selling_price < mahsulot.final_price) {
-        this.alert = "price";
-      } else {
-        this.alert = String;
-      }
-    },
-    tooltip(id) {
-      let input = document.querySelector("#currency" + id);
-      let sum = Intl.NumberFormat().format(Number(input.value));
-      let tooltip = document.querySelector(
-        "span[class='tooltiptext " + id + "']"
-      );
-      tooltip.style = `
-        border: 1px solid gray;
-        border-radius: 10px;
-        background: var(--dark);
-        color: white;
-        padding: 5px 10px 5px 10px;
-        top: 100px;
-        
-        position: absolute;
-        z-index: 1;
-  `;
-      tooltip.innerHTML = `${sum}`;
-      // if (sum == 0) {
-      //   tooltip.style = "display: none";
-      // }
-    },
+    // mijozQoshish() {
+    //   instance
+    //     .post("customer_create", this.yangiMijoz)
+    //     .then((response) => {
+    //       swal({
+    //         icon: "success",
+    //         timer: 1000,
+    //       }).then(() => {
+    //         this.getMijozlar();
+    //       });
+    //     })
+    //     .catch((err) => {
+    //       this.errorr = err.message;
+    //       this.isloading = false;
+    //     });
+    // },
   },
   computed: {
     even: function (arr) {
@@ -1115,8 +814,6 @@ export default {
   mounted() {
     console.clear();
     this.getBuyurtma();
-    this.getMijozlar();
-    this.getMahsulot();
   },
 };
 </script>

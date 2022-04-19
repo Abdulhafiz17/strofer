@@ -1,5 +1,8 @@
 <template>
   <div class="container-fluid">
+    <router-link class="btn btn-sm mb-2 btn-outline-success" to="/kategoriya">
+      <span class="fa fa-arrow-left"/> Ortga
+    </router-link>
     <div class="card shadow">
       <div class="card-header">
         <div class="row">

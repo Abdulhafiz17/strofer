@@ -17,49 +17,73 @@
           </div>
         </div>
         <div class="card-body">
-          <span class="my-custom-scrollbar table-wrapper-scroll-y">
-            <table class="table table-bordered table-hover">
+          <span class="my-custom-scrollbar table-wrapper-scroll-y text-center" v-if="!table">
+            <table class="table table-sm table-borderless table-hover">
               <thead>
                 <tr>
-                  <th scope="col">№</th>
-                  <th scope="col">Mijoz</th>
-                  <th scope="col">Miqdori</th>
-                  <th scope="col">Sana</th>
-                  <th scope="col">Qaytarish vaqti</th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
+                  <th>№</th>
+                  <th>Mijoz</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(gets, idx) in filterRow" :key="gets">
-                  <th scope="row">{{ idx + 1 }}</th>
-                  <td class="text-center col-md-3">{{ gets.customer }}</td>
-                  <td class="text-center col-md-3">
+                <tr v-for="(mijoz, idx) in mijozlar" :key="mijoz">
+                  <th>{{ idx + 1 }}</th>
+                  <td>{{ mijoz.name }}</td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-info"
+                      @click="getNasiya(mijoz.id)"
+                    >
+                      <span class="fa fa-info"/>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+          <span  class="my-custom-scrollbar table-wrapper-scroll-y text-center" v-if="table">
+            <table class="table table-sm table-borderless table-hover">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Miqdori</th>
+                  <th>Sana</th>
+                  <th>Qaytarish vaqti</th>
+                  <th>
+                    <button class="btn btn-sm" @click="table = false">
+                      <span class="fa fa-arrow-up"/>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(nasiya, idx) in nasiyalar" :key="nasiya">
+                  <th>{{ idx + 1 }}</th>
+                  <td>
                     {{
                       Intl.NumberFormat({ style: "currency" }).format(
-                        gets.price
+                        nasiya.price
                       )
                     }}
                     so'm
                   </td>
-                  <td class="text-center col-md-3">{{ gets.time }}</td>
-                  <td class="text-center col-md-3">{{ gets.return_date }}</td>
+                  <td>{{ nasiya.time.replace("T", " ") }}</td>
+                  <td>{{ nasiya.return_date }}</td>
                   <td>
                     <button
                       class="btn btn-outline-success float-right btn-sm mr-2"
                       data-toggle="modal"
                       data-target="#exampleModal"
-                      @click="loan_id = gets.id"
+                      @click="loan_id = nasiya.id"
                     >
                       <i class="fa fa-coins"></i>
                     </button>
-                  </td>
-                  <td>
                     <a
                       class="btn btn-outline-secondary float-right btn-sm mb-2"
                       href="#loan"
                       data-toggle="modal"
-                      @click="getLoan(gets.id)"
+                      @click="getLoan(nasiya.id)"
                     >
                       <i class="fa fa-clock-rotate-left"></i>
                     </a>
@@ -141,7 +165,7 @@
         <div class="modal-body">
           <table class="table table-hover table-borderless text-center">
             <tbody>
-              <tr v-for="nasiya in nasiyalar" :key="nasiya">
+              <tr v-for="nasiya in tolovlar" :key="nasiya">
                 <td> {{ Intl.NumberFormat().format(nasiya.price) }} so'm </td>
                 <td> {{ nasiya.time.replace("T", " ") }} </td>
               </tr>
@@ -163,46 +187,44 @@ export default {
   components: { isloading },
   data() {
     return {
-      get: [],
       post: {
         price: null,
         comment: "",
       },
       nasiyalar: [],
+      mijozlar: [],
+      tolovlar: [],
       loan_id: "",
       search: "",
       errorr: "",
-      isloading: true
+      isloading: true,
+      table: false,
     };
   },
   methods: {
     getData() {
-      this.get = [];
+      this.mijozlar = [];
       instance
-        .get("all_loans")
+        .get("loan_customers")
         .then((response) => {
-          response.data.forEach((element) => {
-            if (response.data.length > 0) {
-              instance.get("this_customer/" + element.customer_id).then((res) => {
-                let loan = {
-                  id: element.id,
-                  customer: res.data.name,
-                  price: element.price,
-                  return_date: element.return_date,
-                  time: element.time.replace("T", " "),
-                };
-                this.get.push(loan);
-                this.isloading = false
-              });
-            }
-          });
-          console.log(this.get);
+          this.mijozlar = response.data
           this.isloading = false
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         });
+    },
+    getNasiya(id) {
+      this.isloading = true
+      instance.get("this_customer_loans/" + id).then((response) => {
+        this.nasiyalar = response.data
+        this.table = true
+        this.isloading = false
+      }).catch((err) => {
+        this.errorr = err.message
+        this.isloading = false
+      })
     },
     payToLoan(id) {
       instance
@@ -225,15 +247,14 @@ export default {
     getLoan(id) {
       this.isloading = true
       instance.get("this_loan_incomes/" + id).then((respon) => {
-        console.log(respon.data);
-        this.nasiyalar = respon.data
+        this.tolovlar = respon.data
         this.isloading = false
       })
     },
   },
   computed: {
     filterRow: function () {
-      return this.get.filter((items) => {
+      return this.mijozlar.filter((items) => {
         for (let item in items) {
           if (
             String(items[item])

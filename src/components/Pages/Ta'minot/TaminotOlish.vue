@@ -19,7 +19,7 @@
       </div>
     </div>
     <router-link class="btn btn-outline-success btn-sm mb-2" to="/taminot">
-      <span class="fa fa-arrow-left"></span> Orqaga
+      <span class="fa fa-arrow-left"></span> Ortga
     </router-link>
     <div class="card shadow">
       <div class="card-header">
@@ -59,13 +59,18 @@
             </div>
             <div class="col-sm-3 my-2 mx-auto">
               <input
-                type="number"
+                type="text"
+                id="barcode"
                 min="0"
+                list="mahsulotlar"
                 class="form-control"
                 placeholder="code"
                 v-model="barcode"
                 required
               />
+              <datalist id="mahsulotlar">
+                <option v-for="mahsulot in mahsulotlar" :key="mahsulot" :value="mahsulot.product_code">{{ mahsulot.name }} {{mahsulot.brand}}</option>
+              </datalist>
               <!-- <button type="submit" class="btn btn-outline-success">
                 <span class="far fa-circle-check" />
               </button> -->
@@ -403,7 +408,7 @@
                     type="number"
                     step="any"
                     min="0"
-                    class="form-control"
+                    class="form-control w-50"
                     v-model="postMahsulot.new_supply.price"
                     required
                   />
@@ -415,6 +420,15 @@
                     <option value="so'm" selected>so'm</option>
                     <option value="dollar">dollar</option>
                   </select>
+                  <input
+                    type="number"
+                    placeholder="%"
+                    step="any"
+                    min="0"
+                    class="form-control"
+                    v-model="percent"
+                    @keyup="count()"
+                  />
                 </div>
               </div>
             </div>
@@ -423,51 +437,6 @@
             </button>
           </span>
         </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="modal1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Ta'minotni tasdiqlash</h3>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md">
-              <h4><small> Ta'minot summasi: </small> 42 150 000 so'm</h4>
-            </div>
-          </div>
-          <!-- <button
-            class="btn btn-outline-success btn-block"
-            data-toggle="collapse"
-            data-target="#collapse1"
-          >
-            To'lo'v qilish
-          </button> -->
-          <div class="" id="">
-            <div class="input-group mt-3">
-              <input
-                type="text"
-                class="form-control"
-                value=""
-                placeholder="0"
-              />
-              <div class="input-group-append">
-                <span class="input-group-text"> so'm </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-outline-primary">
-            <span class="far fa-circle-check"></span> Tasdiqlash
-          </button>
-          <button class="btn btn-outline-danger" data-dismiss="modal">
-            <span class="far fa-xmark-circle"></span> Bekor qilish
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -536,6 +505,7 @@ export default {
     return {
       isLoading: false,
       taminotchi: {},
+      mahsulotlar: [],
       barcode: "",
       alert: "",
       postMahsulot: {
@@ -579,31 +549,41 @@ export default {
       openRow: Boolean,
       collapse: false,
       errorr: "",
+      percent: null,
     };
   },
   methods: {
     getData() {
       this.isLoading = true;
-      instance.get("this_market/" + this.$route.params.id).then((res) => {
-        this.taminotchi = res.data;
-      });
       instance
-        .get("all_categories")
+        .get("this_market/" + this.$route.params.id)
         .then((res) => {
-          this.kategoriyalar = res.data;
+          this.taminotchi = res.data;
+          instance
+            .get("all_categories")
+            .then((res) => {
+              this.kategoriyalar = res.data;
+              instance
+                .get("all_products_for_trade_to_search")
+                .then((response) => {
+                  this.mahsulotlar = response.data
+                  this.isLoading = false
+                })
+            })
+            .catch((err) => {
+              this.isloading = false;
+              this.errorr = err.message;
+            })
+        }).catch((err) => {
+          this.errorr = err.message
+          this.isLoading = false
         })
-        .finally((this.isLoading = false))
-        .catch((err) => {
-          this.isloading = false;
-          this.errorr = err.message;
-        });
     },
     postCode() {
       this.isloading = true;
       instance
         .get("this_product_codee/" + this.barcode)
         .then((res) => {
-          console.log(res.data)
           if (res.data.length !== 0) {
             this.openRow = true;
             this.postMahsulot.product = {
@@ -679,7 +659,6 @@ export default {
       instance
         .post("take_supply", this.postMahsulot)
         .then((res) => {
-          console.log(res.data);
           if (res.data == "Bunday mahsulot olinganlar royhatida mavjud") {
             swal({
               icon: "warning",
@@ -721,10 +700,10 @@ export default {
                   market_id: this.$route.params.id,
                 },
               };
+              document.querySelector("#barcode").focus()
               this.isLoading = false
             })
           }
-          console.log(this.postMahsulot);
         })
         .catch((err) => {
           this.isloading = false;
@@ -737,7 +716,6 @@ export default {
       instance
         .get("all_supplies/" + this.$route.params.id + "/false")
         .then((res) => {
-          console.log(res.data)
           this.taminotlar = res.data
         }).catch((err) => {
           this.errorr = err.message
@@ -775,7 +753,6 @@ export default {
         instance
           .put("confirmation_all_supplies/" + this.$route.params.id)
           .then((res) => {
-            console.log(res.data);
             if (res.status == 200) {
               swal({
                 icon: "success",
@@ -796,10 +773,14 @@ export default {
         });
       }
     },
+    count() {
+      this.postMahsulot.product.selling_price = (this.postMahsulot.new_supply.price / 100) * this.percent
+    },
   },
   mounted() {
     console.clear();
     this.getData();
+    document.querySelector("#barcode").focus()
   },
 };
 </script>

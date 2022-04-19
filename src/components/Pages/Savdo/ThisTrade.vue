@@ -1,5 +1,8 @@
 <template>
     <div class="container-fluid">
+        <button class="btn btn-sm mb-2 btn-outline-success" @click="$router.go(-1)">
+            <span class="fa fa-arrow-left"/> Ortga
+        </button>
         <div class="card shadow">
             <div class="card-body">
                 <table class="table table-hover table-borderless text-center">
