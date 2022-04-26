@@ -109,8 +109,14 @@
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-body">
-          <center id="price" style="color: black !important; font-size: 14px">
-            <strong>{{ mahsulot.name }} {{ mahsulot.brand }} {{Intl.NumberFormat({ style: "currency" }).format(mahsulot.selling_price)}} so'm</strong>
+          <center id="price" style="color: black !important; margin: 0 !important; padding: 0 !important">
+            <strong v-if="uzunlik &lt 15 || uzunlik == 15" style="font-size: 30px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+            <strong v-if="uzunlik &lt 20 && (uzunlik &gt 15 || uzunlik == 15)" style="font-size: 21px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+            <strong v-if="(uzunlik &gt 20 || uzunlik == 20) && uzunlik &lt 30" style="font-size: 17px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+            <strong v-if="(uzunlik &gt 30 || uzunlik == 30) && uzunlik &lt 40" style="font-size: 15px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+            <strong v-if="(uzunlik &gt 40 || uzunlik == 40) && uzunlik &lt 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+            <strong v-if="uzunlik &gt 50 || uzunlik == 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+            <!-- <span style="font-size: 18px !important">{{ mahsulot.name }}<br>{{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</span> -->
             <div class="row">
               <img id="barcode" class="" />
             </div>
@@ -151,6 +157,7 @@ export default {
       backgroun: null,
       search: "",
       mahsulot: {},
+      uzunlik: null,
       errorr: "",
     };
   },
@@ -172,10 +179,12 @@ export default {
     },
 
     code(mahsulot) {
+      this.uzunlik = mahsulot.name.toString().length + mahsulot.brand.toString().length + mahsulot.selling_price.toString().length
+      console.log(this.uzunlik)
       this.mahsulot = mahsulot;
       JsBarcode("#barcode", mahsulot.product_code, {
-        height: 30,
-        width: 3,
+        height: 12,
+        width: 2,
         displayValue: true,
       });
     },
@@ -187,7 +196,7 @@ export default {
         "Barcode",
         "width=auto",
       );
-      windowPrint.document.write(barcode);
+      windowPrint.document.write(`${barcode}`);
       windowPrint.print();
       windowPrint.window.close()
       this.isloading = false

@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <!-- <button @click="printCheck">print</button> -->
     <router-link class="btn btn-sm mb-2 btn-outline-success" to="/kassa">
       <span class="fa fa-arrow-left" /> Ortga
     </router-link>
@@ -477,6 +478,16 @@
                     aria-describedby="inputGroup-sizing-default"
                   />
                 </div>
+
+                <label class="mt-3">Toifa</label>
+                <div class="input-group">
+                  <select class="custom-select" v-model="yangiMijoz.comment">
+                    <option value="Umumiy">Umumiy</option>
+                    <option value="Narx">Narx</option>
+                    <option value="Sifat">Sifat</option>
+                    <option value="Premium">Premium</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -622,7 +633,7 @@ export default {
         name: "",
         phone: null,
         address: "",
-        comment: "string",
+        comment: "Umumiy",
       },
     };
   },
@@ -850,9 +861,9 @@ export default {
         check.document.write(`${receipent.innerHTML}`);
         setTimeout(() => {
           check.print();
-          check.close()
+          // check.close()
           this.isloading = false;
-          this.$router.push({path: "/kassa"})
+          // this.$router.push({path: "/kassa"})
         }, 100);
       }, 500);
     },
@@ -960,7 +971,7 @@ export default {
             icon: "success",
             timer: 1000,
           }).then(() => {
-            this.getMijozlar();
+            this.getData();
           });
         })
         .catch((err) => {
@@ -970,6 +981,7 @@ export default {
     },
   },
   mounted() {
+    document.querySelector("#barcode").focus()
     console.clear();
     setTimeout(() => {
       this.getData();

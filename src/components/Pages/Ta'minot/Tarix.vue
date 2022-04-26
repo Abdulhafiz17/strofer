@@ -219,6 +219,7 @@ export default {
         .get("all_supplies/" + this.$route.params.id + "/true")
         .then((res) => {
           this.taminotTarix = res.data
+          console.log(res.data);
           this.isloading = false
         }).catch((err) => {
             this.isloading = false;

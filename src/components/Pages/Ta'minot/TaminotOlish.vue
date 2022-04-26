@@ -774,7 +774,7 @@ export default {
       }
     },
     count() {
-      this.postMahsulot.product.selling_price = (this.postMahsulot.new_supply.price / 100) * this.percent
+      this.postMahsulot.product.selling_price = ((this.postMahsulot.new_supply.price / 100) * this.percent) + this.postMahsulot.new_supply.price
     },
   },
   mounted() {
