@@ -3,8 +3,7 @@
     class="navbar fixed-top d-flex flex-row bg-dark p-2 shadow"
     style="height: 80px"
   >
-    <div class="cont d-flex"
-          @click="toggleSidebar">
+    <div class="d-flex">
       <div class="text-center navbar-brand-wrapper" >
         <img
           src="../../components/pictures/1(2).png"
@@ -12,7 +11,7 @@
           class="img-responsive"
         />
       </div>
-      <!-- <div class="icon">
+      <div class="cont icon">
         <span
           @click="toggleSidebar"
           id="bars"
@@ -25,7 +24,7 @@
             text-secondary
           "
         ></span>
-      </div> -->
+      </div>
     </div>
 
     <div class="inline-block d-flex justify-content-between align-items-center">

@@ -845,8 +845,8 @@ export default {
         document.querySelector("#demo").innerHTML = "";
         var qrcode = new QRCode(document.querySelector("#demo"), {
           text: this.$route.params.id,
-          width: 100, //default 128
-          height: 100,
+          width: 90, //default 128
+          height: 90,
           colorDark: "#000000",
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.H,
@@ -856,16 +856,16 @@ export default {
         //   width: 1,
         //   displayValue: true,
         // });
-        let receipent = document.querySelector("#receipent");
-        let check = window.open("_blank", "Check", "width=auto");
-        check.document.write(`${receipent.innerHTML}`);
         setTimeout(() => {
+          let receipent = document.querySelector("#receipent");
+          let check = window.open("_blank", "Check", "width=auto");
+          check.document.write(`${receipent.innerHTML}`);
           check.print();
-          // check.close()
+          check.close()
           this.isloading = false;
-          // this.$router.push({path: "/kassa"})
+          this.$router.push({path: "/kassa"})
         }, 100);
-      }, 500);
+      }, 100);
     },
     count1() {
       this.plastikSavdo.price = this.buyurtma.order_price - this.naxtSavdo.price;
