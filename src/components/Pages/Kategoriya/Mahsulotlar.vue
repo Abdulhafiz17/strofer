@@ -117,7 +117,7 @@
             <strong v-if="(uzunlik &gt 30 || uzunlik == 30) && uzunlik &lt 40" style="font-size: 15px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
             <strong v-if="(uzunlik &gt 40 || uzunlik == 40) && uzunlik &lt 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
             <strong v-if="uzunlik &gt 50 || uzunlik == 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong> -->
-            <br><span style="font-size: 13px">{{ mahsulot.name }} <b>{{Intl.NumberFormat().format(mahsulot.selling_price)}}so'm</b></span>
+            <br><span style="font-size: 13px">{{ mahsulot.name }} {{mahsulot.brand}} <b>{{Intl.NumberFormat().format(mahsulot.selling_price)}}so'm</b></span>
             <div class="row">
               <img id="barcode" class="" />
             </div>
