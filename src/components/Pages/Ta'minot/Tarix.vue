@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div id="chevron"></div>
-    <router-link class="btn btn-outline-success btn-sm mb-2" to="/taminot">
+    <router-link class="btn btn-outline-info btn-sm mb-2" to="/taminot">
       <span class="fa fa-arrow-left"></span> Ortga
     </router-link>
     <div class="card shadow">
@@ -72,7 +72,12 @@
                           </td>
                           <td>{{ tarix.time.substr("T", 10) }}</td>
                           <td>
-                            <button class="btn btn-sm btn-light">
+                            <button
+                              class="btn btn-sm btn-light"
+                              data-toggle="modal"
+                              href="#return"
+                              @click="returnProduct(tarix.id)"
+                            >
                               <span class="fa fa-undo"/>
                             </button>
                           </td>
@@ -105,7 +110,7 @@
                   <div class="col-sm-4">
                     <div class="row">
                       <div class="col-sm mb-2">
-                        <button class="btn btn-block btn-outline-success" @click="searchByDate(dateFrom, dateTo)">
+                        <button class="btn btn-block btn-outline-info" @click="searchByDate(dateFrom, dateTo)">
                           <span class="fa fa-search"></span>
                         </button>
                       </div>
@@ -160,6 +165,17 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="return">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>{mahsulot} dan qaytarish</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <isloading :isloading="isloading" :message="error"/>
 </template>
 
@@ -219,7 +235,6 @@ export default {
         .get("all_supplies/" + this.$route.params.id + "/true")
         .then((res) => {
           this.taminotTarix = res.data
-          console.log(res.data);
           this.isloading = false
         }).catch((err) => {
             this.isloading = false;
@@ -237,6 +252,13 @@ export default {
       });
       this.tolovTarix = tarix
       this.isloading = false
+    },
+    returnProduct(id) {
+      this.isloading = true
+      setTimeout(() => {
+        console.log(id);
+        this.isloading = false
+      }, 200);
     },
   },
   mounted() {
@@ -272,7 +294,7 @@ export default {
       left: 0;
       height: 100%;
       width: 51%;
-      background: var(--success);
+      background: var(--info);
       transform: skew(0deg, 20deg);
     }
     #chevron:after {
@@ -282,7 +304,7 @@ export default {
       right: 0;
       height: 100%;
       width: 50%;
-      background: var(--success);
+      background: var(--info);
       transform: skew(0deg, -20deg);
     } */
 </style>

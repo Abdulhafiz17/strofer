@@ -4,40 +4,49 @@
 
 <script>
 export default {
+  props: {
+    statistic: Object,
+  },
   mounted() {
+    console.clear();
     const ctx = document.getElementById("myChart").getContext("2d");
-    const myChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Kirirm", "Chiqim", "Nasiya",],
-        datasets: [
-          {
-            data: [12, 19, 3, 0],
-            backgroundColor: [
-              "lightgreen",
-              "lightpink",
-              "lightblue"
-            ],
-            borderColor: [
-              "green",
-              "red",
-              "blue",
-            ],
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        legend: {
-          display: false,
+    setTimeout(() => {
+      console.log(this.statistic);
+      const myChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Savdo", "Chiqim", "Nasiya", "Kirim"],
+          datasets: [
+            {
+              data: [
+                this.statistic.sum_order_price,
+                this.statistic.sum_expense_price,
+                this.statistic.sum_loan_price,
+                this.statistic.sum_income_price
+              ],
+              backgroundColor: [
+                "lightgreen",
+                "lightpink",
+                "lightyellow",
+                "lightblue",
+              ],
+              borderColor: ["green", "red", "gold", "blue"],
+              borderWidth: 1,
+            },
+          ],
         },
-        scales: {
-          y: {
-            beginAtZero: true,
+        options: {
+          legend: {
+            display: false,
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
           },
         },
-      },
-    });
+      });
+    }, 500);
   },
 };
 </script>

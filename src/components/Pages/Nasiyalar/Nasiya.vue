@@ -3,16 +3,17 @@
     <div class="card shadow">
       <div class="card-header">
         <div class="row">
-          <div class="col-md-4">
-            <h3>Nasiyalar</h3>
+          <div class="col-md">
+            <h3><span v-if="!table">Nasiyalar</span><span v-if="table">{{ mijoz.name }}</span> <a v-if="table" :href="'tel:+998' + mijoz.phone">+998{{ mijoz.phone }}</a></h3>
           </div>
 
           <div class="col-md-4">
             <input
-              type="text"
+              type="search"
               class="form-control"
-              placeholder="qidiruv"
+              placeholder="Qidiruv"
               v-model="search"
+              v-if="!table"
             />
           </div>
         </div>
@@ -27,13 +28,13 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(mijoz, idx) in mijozlar" :key="mijoz">
+                <tr v-for="(mijoz, idx) in filterRow" :key="mijoz">
                   <th>{{ idx + 1 }}</th>
-                  <td>{{ mijoz.name }}</td>
+                  <td>{{ mijoz.name }} <a :href="'tel:+998' + mijoz.phone">+998{{ mijoz.phone }}</a></td>
                   <td>
                     <button
                       class="btn btn-sm btn-info"
-                      @click="getNasiya(mijoz.id)"
+                      @click="getNasiya(mijoz)"
                     >
                       <span class="fa fa-info"/>
                     </button>
@@ -72,7 +73,7 @@
                   <td>{{ nasiya.return_date }}</td>
                   <td>
                     <button
-                      class="btn btn-outline-success float-right btn-sm mr-2"
+                      class="btn btn-outline-info float-right btn-sm mr-2"
                       data-toggle="modal"
                       data-target="#exampleModal"
                       @click="loan_id = nasiya.id"
@@ -140,7 +141,7 @@
             />
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-success">
+            <button type="submit" class="btn btn-outline-info">
               Tasdiqlash
             </button>
             <button
@@ -193,6 +194,7 @@ export default {
       },
       nasiyalar: [],
       mijozlar: [],
+      mijoz: "",
       tolovlar: [],
       loan_id: "",
       search: "",
@@ -215,9 +217,10 @@ export default {
           this.errorr = err.message;
         });
     },
-    getNasiya(id) {
+    getNasiya(mijoz) {
+      this.mijoz = mijoz
       this.isloading = true
-      instance.get("this_customer_loans/" + id).then((response) => {
+      instance.get("this_customer_loans/" + mijoz.id).then((response) => {
         this.nasiyalar = response.data
         this.table = true
         this.isloading = false
@@ -254,17 +257,8 @@ export default {
   },
   computed: {
     filterRow: function () {
-      return this.mijozlar.filter((items) => {
-        for (let item in items) {
-          if (
-            String(items[item])
-              .toLowerCase()
-              .indexOf(this.search.toLowerCase()) !== -1
-          ) {
-            return true;
-          }
-        }
-        return false;
+      return this.mijozlar.filter((mijozlar) => {
+        return mijozlar.name.toLowerCase().match(this.search.toLowerCase()) || String(mijozlar.phone).match(this.search)
       });
     },
   },

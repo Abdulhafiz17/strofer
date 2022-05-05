@@ -216,7 +216,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem('access_token') != null
+  const loggedIn = localStorage.getItem('access_token') !== null
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!loggedIn) {

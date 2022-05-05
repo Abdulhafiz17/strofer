@@ -2,24 +2,37 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-header">
-        <h3 v-if="this.$route.name == 'Vozvrat'">Vozvrat qilish</h3>
-        <h3 v-else>Asosiy ko'rsatgichlar</h3>
+        <h4 v-if="this.$route.name == 'Vozvrat'">Vozvrat qilish</h4>
+        <h4 v-else>Asosiy ko'rsatgichlar</h4>
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-md-4 mb-2">
-            <input type="date"  class="form-control" min="2022-02-20" max="2032-02-20" v-model="fromDate" />
+          <div class="col-md-4 mb-1">
+            <input type="date"  class="form-control form-control-sm" v-model="fromDate" />
           </div>
-          <div class="col-md-4 mb-2">
-            <input type="date" class="form-control" v-model="toDate" />
+          <div class="col-md-4 mb-1">
+            <input type="date" class="form-control form-control-sm" v-model="toDate" />
           </div>
-          <div class="col-md-4 mb-2">
-            <button
-              class="btn btn-block btn-outline-success"
-              @click="getData()"
-            >
-              <span class="far fa-circle-check" /> Qidirish
-            </button>
+          <div class="col-md-4 mb-1">
+            <div class="row">
+              <div class="col-md-6 mb-1">
+                <button
+                  class="btn btn-sm btn-block btn-outline-success"
+                  @click="getStatistic(); getData()"
+                >
+                  <span class="far fa-circle-check" /> Qidirish
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button
+                  class="btn btn-sm btn-block btn-outline-success"
+                  data-toggle="collapse"
+                  href="#table"
+                >
+                  <span class="fa fa-chevron-down"/>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="my-2">
@@ -30,16 +43,16 @@
               table-bordered
               my-custom-scrollbar
               table-wrapper-scroll-y
+              collapse
             "
+            style="max-height: 60vh"
             v-if="table"
+            id="table"
           >
             <table class=" table table-sm table-hover">
               <thead>
                 <tr>
-                  <th>Mahuslot</th>
-                  <th>Brend</th>
-                  <th>Miqdor</th>
-                  <th>Narx</th>
+                  <th>№</th>
                   <th>Summa</th>
                   <th>Sotuvchi</th>
                   <th>Mijoz</th>
@@ -99,37 +112,20 @@
                   <td></td>
                   <td v-if="role == 'cashier'"></td>
                 </tr> -->
-                <tr v-for="savdo in savdolar || []" :key="savdo.id">
-                  <td>{{ savdo.product }}</td>
-                  <td>{{ savdo.brand }}</td>
-                  <td>{{ savdo.quantity }} {{ savdo.measure }}</td>
-                  <td>
-                    {{
-                      Intl.NumberFormat({ style: "currency" }).format(
-                        savdo.selling_price
-                      )
-                    }}
-                    so'm
-                  </td>
-                  <td>
-                    {{
-                      Intl.NumberFormat({ style: "currency" }).format(
-                        savdo.selling_price * savdo.quantity
-                      )
-                    }}
-                    so'm
-                  </td>
-                  <td>{{ savdo.owner }}</td>
-                  <td>{{ savdo.client }}</td>
-                  <td>{{ savdo.time }}</td>
+                <tr v-for="(savdo, n) in savdolar || []" :key="savdo.id">
+                  <td> {{ n + 1 }} </td>
+                  <td>{{Intl.NumberFormat().format(savdo.order_price)}}so'm</td>
+                  <td>{{ savdo.owner_id }}</td>
+                  <td>{{ savdo.client_id }}</td>
+                  <td>{{ savdo.time.replace("T", " ") }}</td>
                   <td>
                     <button
-                      class="btn btn-sm btn-outline-primary"
-                      @click="returnProduct(savdo)"
+                      class="btn btn-sm btn-success"
                       data-toggle="modal"
-                      data-target="#returnProduct"
+                      href="#products"
+                      @click="mahsulotlar = savdo.data"
                     >
-                      <span class="fa fa-undo" />
+                      <span class="fa fa-info"/>
                     </button>
                   </td>
                 </tr>
@@ -138,7 +134,39 @@
           </div>
         </div>
         <hr />
-        <Chart v-if="(role == 'admin' || role == 'branch_admin') && (this.$route.name !== 'Vozvrat')"/>
+        <Chart :statistic="statistic" v-if="(role == 'admin' || role == 'branch_admin') && (this.$route.name !== 'Vozvrat')"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="products">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Ushbu savdo mahsulotlari</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-sm table-hover table-borderless text-center">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Mahsulot</th>
+                <th>Hajm</th>
+                <th>Narx</th>
+                <th>Summa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(mahsulot, n) in mahsulotlar" :key="mahsulot">
+                <td>{{ n + 1 }}</td>
+                <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
+                <td>{{ mahsulot.quantity }} {{ mahsulot.measure }}</td>
+                <td>{{ Intl.NumberFormat().format(mahsulot.selling_price) }} so'm</td>
+                <td>{{ Intl.NumberFormat().format(mahsulot.selling_price * mahsulot.quantity) }} so'm</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -146,7 +174,7 @@
   <isloading :isloading="isloading" :message="errorr" />
 </template>
 
-<script type="text/javascript">
+<script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue";
 import swal from "sweetalert";
@@ -156,14 +184,17 @@ export default {
   data() {
     return {
       role: localStorage.getItem("role"),
-      fromDate: "",
-      toDate: "",
+      date: new Date(),
+      fromDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+      toDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString(),
       savdolar: [],
+      mahsulotlar: [],
       savdolar2: [],
       productR: {},
       returnP: {
         quantity: null,
       },
+      statistic: {},
       allIncomes: null,
       isloading: false,
       table: false,
@@ -180,42 +211,14 @@ export default {
       this.savdolar = [];
       this.isloading = true;
       instance.get("all_orders/true").then((orders) => {
-        console.log(orders.data)
         if (orders.data.length > 0) {
-          orders.data.forEach((element) => {
-            element.time = element.time.replace("T", " ");
-            if (element.time >= this.fromDate && element.time <= this.toDate) {
-              instance.get("this_order_trades/" + element.id).then((trades) => {
-                trades.data.forEach((element2) => {
-                  instance
-                    .get("this_product/empty/" + element2.product_code)
-                    .then((product) => {
-                      this.savdolar.push({
-                        trade_id: element2.id,
-                        client: element.client_id,
-                        owner: element.owner_id,
-                        time: element.time,
-                        quantity: element2.quantity,
-                        selling_price: element2.selling_price,
-                        product: product.data[0].name,
-                        brand: product.data[0].brand,
-                        measure: product.data[0].measure,
-                      });
-                      this.savdolar2 = this.savdolar;
-                      this.isloading = false;
-                      this.table = true;
-                    })
-                });
-              });
-            } else {
-              swal({
-                icon: "warning",
-                title: "Joriy sana bo'yicha buyurtmalar topilmadi !",
-              }).then(() => {
-                this.isloading = false
-              })
+          orders.data.forEach((order) => {
+            if (order.time >= this.fromDate && order.time <= this.toDate) {
+              this.savdolar.push(order)
+              this.table = true
+              this.isloading = false
             }
-          });
+          })
         } else {
           this.isloading = false
           swal({
@@ -288,94 +291,86 @@ export default {
         }
       });
     },
-    searchByName(name) {
-      let savdolar = [];
-      if (name.length !== 0) {
-        this.savdolar.forEach((savdo) => {
-          if (savdo.product.toLowerCase().startsWith(name.toLowerCase())) {
-            savdolar.push(savdo);
-          }
-        });
-        this.savdolar = savdolar;
-      } else if (name.length == 0) {
-        this.savdolar = this.savdolar2;
-      }
-    },
-    searchByBrand(brand) {
-      let savdolar = [];
-      if (brand.length !== 0) {
-        this.savdolar.forEach((savdo) => {
-          if (savdo.brand.toLowerCase().startsWith(brand.toLowerCase())) {
-            savdolar.push(savdo);
-          }
-        });
-        this.savdolar = savdolar;
-      } else if (brand.length == 0) {
-        this.savdolar = this.savdolar2;
-      }
-    },
-    searchByQuantity(quantity) {
-      let savdolar = [];
-      if (quantity.length !== 0) {
-        this.savdolar.forEach((savdo) => {
-          if (String(savdo.quantity).startsWith(quantity)) {
-            savdolar.push(savdo);
-          }
-        });
-        this.savdolar = savdolar;
-      } else if (quantity.length == 0) {
-        this.savdolar = this.savdolar2;
-      }
-    },
-    searchBySeller(seller) {
-      let savdolar = [];
-      if (seller.length !== 0) {
-        this.savdolar.forEach((savdo) => {
-          if (savdo.owner.toLowerCase().startsWith(seller.toLowerCase())) {
-            savdolar.push(savdo);
-          }
-        });
-        this.savdolar = savdolar;
-      } else if (seller.length == 0) {
-        this.savdolar = this.savdolar2;
-      }
-    },
-    searchByClient(client) {
-      let savdolar = [];
-      if (client.length !== 0) {
-        this.savdolar.forEach((savdo) => {
-          if (savdo.client.toLowerCase().startsWith(client.toLowerCase())) {
-            savdolar.push(savdo);
-          }
-        });
-        this.savdolar = savdolar;
-      } else if (client.length == 0) {
-        this.savdolar = this.savdolar2;
-      }
-    },
+    // searchByName(name) {
+    //   let savdolar = [];
+    //   if (name.length !== 0) {
+    //     this.savdolar.forEach((savdo) => {
+    //       if (savdo.product.toLowerCase().startsWith(name.toLowerCase())) {
+    //         savdolar.push(savdo);
+    //       }
+    //     });
+    //     this.savdolar = savdolar;
+    //   } else if (name.length == 0) {
+    //     this.savdolar = this.savdolar2;
+    //   }
+    // },
+    // searchByBrand(brand) {
+    //   let savdolar = [];
+    //   if (brand.length !== 0) {
+    //     this.savdolar.forEach((savdo) => {
+    //       if (savdo.brand.toLowerCase().startsWith(brand.toLowerCase())) {
+    //         savdolar.push(savdo);
+    //       }
+    //     });
+    //     this.savdolar = savdolar;
+    //   } else if (brand.length == 0) {
+    //     this.savdolar = this.savdolar2;
+    //   }
+    // },
+    // searchByQuantity(quantity) {
+    //   let savdolar = [];
+    //   if (quantity.length !== 0) {
+    //     this.savdolar.forEach((savdo) => {
+    //       if (String(savdo.quantity).startsWith(quantity)) {
+    //         savdolar.push(savdo);
+    //       }
+    //     });
+    //     this.savdolar = savdolar;
+    //   } else if (quantity.length == 0) {
+    //     this.savdolar = this.savdolar2;
+    //   }
+    // },
+    // searchBySeller(seller) {
+    //   let savdolar = [];
+    //   if (seller.length !== 0) {
+    //     this.savdolar.forEach((savdo) => {
+    //       if (savdo.owner.toLowerCase().startsWith(seller.toLowerCase())) {
+    //         savdolar.push(savdo);
+    //       }
+    //     });
+    //     this.savdolar = savdolar;
+    //   } else if (seller.length == 0) {
+    //     this.savdolar = this.savdolar2;
+    //   }
+    // },
+    // searchByClient(client) {
+    //   let savdolar = [];
+    //   if (client.length !== 0) {
+    //     this.savdolar.forEach((savdo) => {
+    //       if (savdo.client.toLowerCase().startsWith(client.toLowerCase())) {
+    //         savdolar.push(savdo);
+    //       }
+    //     });
+    //     this.savdolar = savdolar;
+    //   } else if (client.length == 0) {
+    //     this.savdolar = this.savdolar2;
+    //   }
+    // },
 
     getStatistic() {
-      // this.isloading = true
-      // this.allIncomes = 0
-      // instance.get("all_orders/true").then((orders) => {
-      //   console.log(orders.data)
-      //   if (orders.data.length > 0) {
-      //     orders.data.forEach((element) => {
-      //       instance.get("this_order_incomes/" + element.id).then((incomes) => {
-      //         incomes.data.forEach((element2) => {
-      //           this.allIncomes += element2.price
-      //         })
-      //         this.isloading = false
-      //         })
-      //     })
-      //   } else {
-      //     this.isloading = false
-      //   }
-      // })
+      console.clear()
+      this.isloading = true
+      instance
+        .get("statistics_between_time/" + this.fromDate + "/" + this.toDate)
+        .then((response) => {
+          this.statistic = response.data
+          this.isloading = false
+        })
     },
   },
   mounted() {
     console.clear();
+    console.log(this.fromDate,this.toDate)
     this.getStatistic()
     
     // instance.get("all_products_for_trade_to_search").then((res) => {

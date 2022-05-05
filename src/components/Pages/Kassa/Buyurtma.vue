@@ -1,10 +1,14 @@
 <template>
   <div class="container-fluid">
-    <!-- <button @click="printCheck">print</button> -->
-    <router-link class="btn btn-sm mb-2 btn-outline-success" to="/kassa">
+    <router-link class="btn btn-sm mb-2 btn-outline-info" to="/kassa">
       <span class="fa fa-arrow-left" /> Ortga
     </router-link>
-    <button class="btn btn-sm btn-success float-right" data-toggle="modal" href="#confirm">
+    <button class="btn" @click="printCheck()">Print</button>
+    <button
+      class="btn btn-sm btn-success float-right"
+      data-toggle="modal"
+      href="#confirm"
+    >
       <span class="fa fa-circle-check" /> Tasdiqlash
     </button>
     <div class="card shadow">
@@ -55,6 +59,7 @@
               <tr>
                 <th>№</th>
                 <th>Mahsulot</th>
+                <th>Qoldiq</th>
                 <th>Hajm</th>
                 <th>Narx</th>
                 <th v-if="final_price">Narx</th>
@@ -65,6 +70,12 @@
               <tr v-for="(mahsulot, n) in buyurtma.data" :key="mahsulot">
                 <td>{{ n + 1 }}</td>
                 <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
+                <td>
+                  <span
+                    >{{ mahsulot.quantity + mahsulot.qoldiq }}
+                    {{ mahsulot.measure }}</span
+                  >
+                </td>
                 <td @dblclick="showInput()">
                   <span id="default"
                     >{{ mahsulot.quantity }} {{ mahsulot.measure }}</span
@@ -146,6 +157,9 @@
               <tr v-if="adding">
                 <td></td>
                 <td>{{ product.name }} {{ product.brand }}</td>
+                <td>
+                  <span>{{ product.quantity }} {{ product.measure }}</span>
+                </td>
                 <td>
                   <div class="input-group input-group-sm w-75 mx-auto">
                     <input
@@ -245,6 +259,21 @@
                 Umumiy summa :
                 {{ Intl.NumberFormat().format(buyurtma.order_price) }}
                 so'm
+                <div class="input-group input-group-sm w-75 my-2">
+                  <input
+                    class="form-control"
+                    type="number"
+                    step="any"
+                    min="0"
+                    :max="buyurtma.order_price"
+                    v-model="orderdiscount.discount"
+                    placeholder="Chegirma summa"
+                    @change="discount()"
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text">so'm</div>
+                  </div>
+                </div>
               </center>
             </strong>
             <hr />
@@ -339,7 +368,7 @@
                       type="button"
                       class="btn btn-sm btn-success"
                       data-toggle="modal"
-                      href="#mijozQoshish"
+                      href="#exampleModall1803"
                     >
                       <span class="fa fa-circle-plus" />
                     </button>
@@ -368,10 +397,10 @@
                     <span class="input-group input-group-sm p-2">
                       <input
                         type="number"
+                        step="any"
                         class="form-control"
                         v-model="plastikSavdo.price"
                         min="0"
-                        :max="buyurtma.order_price - naxtSavdo.price"
                         @keyup="nasiya2()"
                         id="currency"
                       />
@@ -414,7 +443,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-success">
+            <button type="submit" class="btn btn-outline-info">
               <span class="far fa-circle-check" /> Tasdiqlash
             </button>
             <button class="btn btn-outline-danger" data-dismiss="modal">
@@ -427,9 +456,15 @@
     </div>
   </div>
 
-  
-  <div class="modal fade" id="mijozQoshish">
-    <div class="modal-dialog">
+  <div
+    class="modal fade"
+    id="exampleModall1803"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModallLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="exampleModallLabel">Mijoz qo'shish</h4>
@@ -438,13 +473,13 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group field-client-ism required">
-                <label class="mt-3">Ism</label>
+                <label>Ism</label>
                 <input
                   type="text"
                   class="form-control"
                   placeholder="Mijoz ismi"
                   required
-                  v-model="yangiMijoz.name"
+                  v-model="mijozpost.name"
                 />
 
                 <label class="mt-3">Manzil</label>
@@ -453,11 +488,11 @@
                   class="form-control"
                   placeholder="Manzil"
                   required
-                  v-model="yangiMijoz.address"
+                  v-model="mijozpost.address"
                 />
 
                 <label class="mt-3">Telefon</label>
-                <div class="input-group mb-3">
+                <div class="input-group">
                   <div class="input-group-prepend">
                     <span
                       class="input-group-text"
@@ -473,21 +508,21 @@
                     minlength="9"
                     maxlength="9"
                     required
-                    v-model="yangiMijoz.phone"
+                    v-model="mijozpost.phone"
                     aria-label="Default"
                     aria-describedby="inputGroup-sizing-default"
                   />
                 </div>
 
-                <label class="mt-3">Toifa</label>
+                <!-- <label class="mt-3">Toifa</label>
                 <div class="input-group">
-                  <select class="custom-select" v-model="yangiMijoz.comment">
+                  <select class="custom-select" v-model="mijozpost.comment">
                     <option value="Umumiy">Umumiy</option>
                     <option value="Narx">Narx</option>
                     <option value="Sifat">Sifat</option>
                     <option value="Premium">Premium</option>
                   </select>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -497,9 +532,9 @@
           <button
             type="button"
             form="form1"
-            class="btn btn-outline-success"
+            class="btn btn-outline-info"
             data-dismiss="modal"
-            @click="mijozQoshish()"
+            @click="mijozQoshish"
           >
             <i class="far fa-check-circle"></i>
             Tasdiqlash
@@ -516,7 +551,7 @@
       </div>
     </div>
   </div>
-  
+
   <span id="receipent" style="display: none" v-if="receipentValue">
     <center>
       <img
@@ -527,7 +562,9 @@
       <ul style="list-decoration: none; margin: 0; padding: 0">
         <li style="display: flex; justify-content: space-between">
           <strong>Filial tel: </strong>
-          <a :href="'tel:+998' + buyurtma.branch_tel">+998{{ buyurtma.branch_tel }}</a>
+          <a :href="'tel:+998' + buyurtma.branch_tel"
+            >+998{{ buyurtma.branch_tel }}</a
+          >
         </li>
         <li style="display: flex; justify-content: space-between">
           <strong>Sana: </strong>
@@ -541,7 +578,10 @@
         </li>
       </ul>
       <hr />
-      <table border="1px" style="border-collapse: collapse; font-size: 13px; width: 100%">
+      <table
+        border="1px"
+        style="border-collapse: collapse; font-size: 13px; width: 100%"
+      >
         <thead>
           <tr>
             <th>Mahsulot</th>
@@ -568,23 +608,42 @@
           </strong>
         </li>
         <hr />
-        <li style="display: flex; justify-content: space-between" v-if="buyurtma.naxt">
+        <li
+          style="display: flex; justify-content: space-between"
+          v-if="buyurtma.discount !== 0"
+        >
+          <strong>Chegirma: </strong>
+          <strong>{{ Intl.NumberFormat().format(buyurtma.discount) }} so'm</strong>
+        </li>
+        <li
+          style="display: flex; justify-content: space-between"
+          v-if="buyurtma.naxt"
+        >
           <strong>Naxt: </strong>
           <strong>{{ Intl.NumberFormat().format(buyurtma.naxt) }} so'm</strong>
         </li>
-        <li style="display: flex; justify-content: space-between" v-if="buyurtma.plastik">
+        <li
+          style="display: flex; justify-content: space-between"
+          v-if="buyurtma.plastik"
+        >
           <strong>Plastik: </strong>
           <strong
             >{{ Intl.NumberFormat().format(buyurtma.plastik) }} so'm</strong
           >
         </li>
-        <li style="display: flex; justify-content: space-between" v-if="buyurtma.loan_price !== 0">
+        <li
+          style="display: flex; justify-content: space-between"
+          v-if="buyurtma.loan_price !== 0"
+        >
           <strong>Nasiya: </strong>
           <strong>
-            {{ Intl.NumberFormat().format(buyurtma.loan_price) }} so'm
+            {{ Intl.NumberFormat().format(-buyurtma.loan_price) }} so'm
           </strong>
         </li>
-        <li style="display: flex; justify-content: space-between" v-if="buyurtma.loan_price !== 0">
+        <li
+          style="display: flex; justify-content: space-between"
+          v-if="buyurtma.loan_price !== 0"
+        >
           <strong>Nasiya qaytarish sanasi: </strong>
           <strong>
             {{ buyurtma.loan_data }}
@@ -595,11 +654,12 @@
       <div id="demo" style="padding: 20px" />
     </center>
   </span>
+
   <isloading :isloading="isloading" :message="error" />
 </template>
 
-<script>
-import swal from 'sweetalert';
+<script type="text/javascript">
+import swal from "sweetalert";
 import isloading from "../../Anime/Anime.vue";
 import { instance } from "../Api";
 
@@ -629,19 +689,27 @@ export default {
       new_loan: "",
       mijozlar: [],
       client_id: "",
-      yangiMijoz: {
+      mijozpost: {
         name: "",
         phone: null,
         address: "",
         comment: "Umumiy",
       },
+      orderdiscount: {
+        discount: null,
+      },
     };
+  },
+  watch: {
+    receipentValue() {
+    }
   },
   methods: {
     getData() {
       instance
         .get("this_order/" + this.$route.params.id)
         .then((response) => {
+          console.log(response.data);
           this.buyurtma = response.data;
           instance
             .get("all_products_for_trade_to_search")
@@ -651,12 +719,12 @@ export default {
                 .get("all_customers")
                 .then((res) => {
                   this.mijozlar = res.data;
-                  this.isloading = false
+                  this.isloading = false;
                 })
                 .catch((err) => {
                   this.isloading = false;
                   this.errorr = err.message;
-                })
+                });
             })
             .catch((err) => {
               this.isloading = false;
@@ -686,9 +754,9 @@ export default {
               title: "Bunday mahsulot mavjud emas !",
               timer: 2000,
             }).then(() => {
-              document.querySelector("#barcode").value = null
-              document.querySelector("#barcode").focus()
-            })
+              document.querySelector("#barcode").value = null;
+              document.querySelector("#barcode").focus();
+            });
           }
         })
         .catch((err) => {
@@ -711,17 +779,17 @@ export default {
               swal({
                 icon: "warning",
                 title: "Hajmda xatolik",
-                timer: 1000
+                timer: 1000,
               }).then(() => {
-                this.isloading = false
+                this.isloading = false;
                 document.querySelector("#hajm").focus();
-              })
+              });
             } else {
               swal("", "", "success", { timer: 700 }).then(() => {
                 this.buyurtma = response.data;
                 this.adding = false;
                 this.product = {};
-                this.isloading = false
+                this.isloading = false;
               });
             }
           }
@@ -741,7 +809,7 @@ export default {
               icon: "success",
               timer: 700,
             }).then(() => {
-              this.buyurtma = response.data
+              this.buyurtma = response.data;
             });
           }
           this.isloading = false;
@@ -801,7 +869,7 @@ export default {
         input.forEach((input) => {
           input.style = "display: none";
         });
-        this.putThisTrade(mahsulot)
+        this.putThisTrade(mahsulot);
       } else {
         let span = document.querySelectorAll("#default");
         let input = document.querySelectorAll("#input");
@@ -811,36 +879,63 @@ export default {
         input.forEach((input) => {
           input.style = "display: none";
         });
-        this.putThisTrade(mahsulot)
+        this.putThisTrade(mahsulot);
       }
     },
     putThisTrade(mahsulot) {
-      this.isloading = true
+      this.isloading = true;
       let data = {
         product_code: mahsulot.code,
         quantity: mahsulot.quantity,
         selling_price: mahsulot.selling_price,
         order_id: this.$route.params.id,
-      }
-      instance.put("update_this_trade", data).then((response) => {
-        if (response.status == 200) {
-          swal({
-            icon: "success",
-            timer: 700
-          }).then(() => {
-            this.buyurtma = response.data
-            this.isloading = false
-          })
-        }
-      })
-      .catch((err) => {
-        this.isloading = false
-        this.error = err.message
-      })
+      };
+      instance
+        .put("update_this_trade", data)
+        .then((response) => {
+          if (response.status == 200) {
+            swal({
+              icon: "success",
+              timer: 700,
+            }).then(() => {
+              this.buyurtma = response.data;
+              this.isloading = false;
+            });
+          }
+        })
+        .catch((err) => {
+          this.isloading = false;
+          this.error = err.message;
+        });
     },
-    async printCheck() {
+    printCheck() {
+      // this.receipentValue = true;
+      // // this.getData();
+      // setTimeout(() => {
+      //   let demo = document.getElementById("demo")
+      //   demo.innerHTML = ""
+      //   setTimeout(() => {
+      //     new QRCode(demo, {
+      //       text: this.$route.params.id,
+      //       width: 100, //default 128
+      //       height: 100,
+      //       colorDark: "#000000",
+      //       colorLight: "#ffffff",
+      //       correctLevel: QRCode.CorrectLevel.H,
+      //     });
+      //     let check = window.open("_blank", "Check", "width=auto");
+      //     let receipent = document.querySelector("#receipent").innerHTML;
+      //     check.document.write(`${receipent}`);
+      //     setTimeout(() => {
+      //       check.print();
+      //       // check.close();
+      //     }, 200);
+      //     this.isloading = false;
+      //     // this.$router.push({ path: "/kassa" });
+      //     console.log(demo);
+      //   }, 300);
+      // }, 100);
       this.receipentValue = true;
-      await this.getData()
       setTimeout(() => {
         document.querySelector("#demo").innerHTML = "";
         var qrcode = new QRCode(document.querySelector("#demo"), {
@@ -860,26 +955,37 @@ export default {
           let receipent = document.querySelector("#receipent");
           let check = window.open("_blank", "Check", "width=auto");
           check.document.write(`${receipent.innerHTML}`);
-          check.print();
-          check.close()
-          this.isloading = false;
-          this.$router.push({path: "/kassa"})
+          setTimeout(() => {
+            check.print();
+            check.close()
+            this.isloading = false;
+            this.$router.push({path: "/kassa"})
+          }, 100);
         }, 100);
       }, 100);
     },
     count1() {
-      this.plastikSavdo.price = this.buyurtma.order_price - this.naxtSavdo.price;
+      this.plastikSavdo.price =
+        this.buyurtma.order_price - this.naxtSavdo.price;
     },
     count2() {
-      this.naxtSavdo.price = this.buyurtma.order_price - this.plastikSavdo.price;
+      this.naxtSavdo.price =
+        this.buyurtma.order_price - this.plastikSavdo.price;
     },
     nasiya1() {
       this.nasiyaSumma =
-        this.buyurtma.order_price - this.plastikSavdo.price - this.naxtSavdo.price;
+        this.buyurtma.order_price -
+        this.plastikSavdo.price -
+        this.naxtSavdo.price;
     },
     nasiya2() {
       this.nasiyaSumma =
-        this.buyurtma.order_price - this.naxtSavdo.price - this.plastikSavdo.price;
+        this.buyurtma.order_price -
+        this.naxtSavdo.price -
+        this.plastikSavdo.price;
+    },
+    discount() {
+      this.buyurtma.order_price = this.buyurtma.order_price - this.orderdiscount.discount;
     },
     payToCass(naxt, plastik) {
       this.isloading = true;
@@ -887,6 +993,7 @@ export default {
       let new_loan = {
         return_date: this.new_loan,
       };
+      let orderdiscount = this.orderdiscount.discount == null ? {discount: 0} : this.orderdiscount
 
       if (this.client == true && this.client_id == "") {
         swal({
@@ -909,9 +1016,9 @@ export default {
           .post("order_confirmation/" + this.$route.params.id + "/unknown", {
             new_incomes,
             new_loan,
+            orderdiscount
           })
           .then((res) => {
-            console.log(res.data);
             if (res.status == 200) {
               swal({
                 icon: "success",
@@ -919,6 +1026,7 @@ export default {
                 timer: 700,
               }).then(
                 document.querySelector("#close_modal1").click(),
+                this.getData(),
                 this.printCheck()
               );
             }
@@ -939,11 +1047,19 @@ export default {
           new_incomes = [];
           new_incomes.push(naxt, plastik);
         }
+        console.log(new_incomes,new_loan,orderdiscount)
         instance
-          .post("order_confirmation/" + this.$route.params.id + "/" + this.client_id, {
-            new_incomes,
-            new_loan,
-          })
+          .post(
+            "order_confirmation/" +
+              this.$route.params.id +
+              "/" +
+              this.client_id,
+            {
+              new_incomes,
+              new_loan,
+              orderdiscount
+            }
+          )
           .then((res) => {
             console.log(res.data);
             if (res.status == 200) {
@@ -953,6 +1069,7 @@ export default {
                 timer: 700,
               }).then(
                 document.querySelector("#close_modal1").click(),
+                this.getData(),
                 this.printCheck()
               );
             }
@@ -960,32 +1077,40 @@ export default {
           .catch((err) => {
             this.isloading = false;
             this.errorr = err.message;
-          })
+          });
       }
     },
     mijozQoshish() {
+      this.isloading = true;
       instance
-        .post("customer_create", this.yangiMijoz)
+        .post("customer_create", this.mijozpost)
         .then((response) => {
-          swal({
-            icon: "success",
-            timer: 1000,
-          }).then(() => {
-            this.getData();
-          });
+          if (response.status == 200) {
+            swal({ icon: "success", timer: 1000 }).then(() => {
+              this.getData();
+              // window.location.reload();
+              (this.mijozpost = {
+                name: "",
+                phone: null,
+                address: "",
+                comment: "",
+              }),
+                (this.isloading = false);
+            });
+          }
         })
         .catch((err) => {
-          this.errorr = err.message;
+          this.error = err.message;
           this.isloading = false;
         });
     },
   },
   mounted() {
-    document.querySelector("#barcode").focus()
     console.clear();
     setTimeout(() => {
       this.getData();
     }, 1000);
+    document.querySelector("#barcode").focus()
   },
 };
 </script>
