@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div id="chevron"></div>
-    <router-link class="btn btn-outline-info btn-sm mb-2" to="/taminot">
+    <router-link class="btn btn-outline-success btn-sm mb-2" to="/taminot">
       <span class="fa fa-arrow-left"></span> Ortga
     </router-link>
     <div class="card shadow">
@@ -74,9 +74,7 @@
                           <td>
                             <button
                               class="btn btn-sm btn-light"
-                              data-toggle="modal"
-                              href="#return"
-                              @click="returnProduct(tarix.id)"
+                              @click="returnProduct(tarix)"
                             >
                               <span class="fa fa-undo"/>
                             </button>
@@ -110,7 +108,7 @@
                   <div class="col-sm-4">
                     <div class="row">
                       <div class="col-sm mb-2">
-                        <button class="btn btn-block btn-outline-info" @click="searchByDate(dateFrom, dateTo)">
+                        <button class="btn btn-block btn-outline-success" @click="searchByDate(dateFrom, dateTo)">
                           <span class="fa fa-search"></span>
                         </button>
                       </div>
@@ -182,6 +180,7 @@
 <script>
 import { instance } from "../Api";
 import isloading from "../../Anime/Anime.vue"
+import swal from 'sweetalert';
 export default {
   components: { isloading },
   data() {
@@ -236,10 +235,11 @@ export default {
         .then((res) => {
           this.taminotTarix = res.data
           this.isloading = false
-        }).catch((err) => {
-            this.isloading = false;
-             this.errorr = err.message
-          });
+        })
+        .catch((err) => {
+          this.errorr = err.message
+          this.isloading = false;
+        });
     },
     searchByDate(from, to) {
       this.isloading = true
@@ -253,12 +253,44 @@ export default {
       this.tolovTarix = tarix
       this.isloading = false
     },
-    returnProduct(id) {
+    returnProduct(product) {
       this.isloading = true
-      setTimeout(() => {
-        console.log(id);
-        this.isloading = false
-      }, 200);
+      swal({
+        title: product.product + " mahsulotidan qaytarib olish",
+        content: {
+          element: "input",
+          attributes: {
+            placeholder: "Mahsulot hajmini kiriting",
+          }
+        }
+      }).then((value) => {
+        if (value < 0) {
+          swal({
+            icon: "warning",
+            title: "Noto'g'ri qiymat !",
+            timer: 1000
+          }).then(
+            this.isloading = false
+          )
+        } else {
+          instance.delete("remove_this_supply/" + product.id + "/?vozvrat_quantity=" + value)
+          .then((response) => {
+            if (response.status == 200) {
+              swal({
+                icon: "success",
+                timer: 1000,
+              }).then(
+                this.isloading = false,
+                this.getData2()
+              )
+            }
+          })
+          .catch((err) => {
+            this.error = err.message
+            this.isloading = false
+          })
+        }
+      })
     },
   },
   mounted() {

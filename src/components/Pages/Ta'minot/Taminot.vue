@@ -3,25 +3,36 @@
     <div class="card shadow">
       <div class="card-header">
         <div class="row">
-          <div class="col-md">
-            <h3>Ta'minotchilar</h3>
+          <div class="col-md-3">
+            <h4>Ta'minotchilar</h4>
           </div>
           <div class="col-md mb-2">
-            <input
-              type="search"
-              class="form-control"
-              v-model="search"
-              placeholder="Qidiruv"
-            />
+            <h4>
+              Umumiy balans:
+              <span :class="sum_of_balance.sum > 0 ? 'text-danger' : 'text-success'"> {{Intl.NumberFormat().format(sum_of_balance.sum)}} so'm </span>
+              <span :class="sum_of_balance.dollar > 0 ? 'text-danger' : 'text-success'"> {{Intl.NumberFormat().format(sum_of_balance.dollar)}} dollar </span>
+            </h4>
           </div>
-          <div class="col-md">
-            <button
-              data-toggle="modal"
-              data-target="#modal1"
-              class="btn btn-outline-success float-right"
-            >
-              <span class="fa fa-user-plus"></span> Ta'minotchi qo'shish
-            </button>
+          <div class="col-md-3">
+            <div class="row">
+              <div class="col-10">
+                <input
+                  type="search"
+                  class="form-control form-control-sm"
+                  v-model="search"
+                  placeholder="Qidiruv"
+                />
+              </div>
+              <div class="col-2">
+                <button
+                  data-toggle="modal"
+                  data-target="#modal1"
+                  class="btn btn-sm btn-outline-success float-right"
+                >
+                  <span class="fa fa-user-plus"/>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -322,6 +333,10 @@ export default {
       search: "",
       isloading: true,
       errorr: [],
+      sum_of_balance: {
+        sum: null,
+        dollar: null,
+      },
     };
   },
   methods: {
@@ -331,6 +346,15 @@ export default {
         .then((res) => {
           console.log(res.data)
           this.taminotchilar = res.data
+          res.data.forEach((item) => {
+            item.balances.forEach((balance) => {
+              if (balance.currency == "dollar") {
+                this.sum_of_balance.dollar += balance.balance
+              } else if (balance.currency == "so'm") {
+                this.sum_of_balance.sum += balance.balance
+              }
+            })
+          })
           this.isloading = false
         })
         .catch((err) => {
@@ -443,7 +467,7 @@ export default {
     filteredCards: function () {
       if (this.taminotchilar.length > 0) {
         return this.taminotchilar.filter((taminotchis) => {
-          return taminotchis.name.toLowerCase().match(this.search.toLowerCase());
+          return taminotchis.name.toLowerCase().match(this.search.toLowerCase()) || String(taminotchis.phone).match(this.search)
         });
       }
     },

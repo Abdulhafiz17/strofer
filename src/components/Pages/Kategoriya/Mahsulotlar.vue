@@ -8,7 +8,7 @@
             <input
               type="search"
               class="form-control"
-              placeholder="qidiruv"
+              placeholder="Qidiruv"
               v-model="search"
             />
           </div>
@@ -109,18 +109,36 @@
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-body">
-          <center id="price" style="color: black !important; margin: 0 !important; padding: 0 !important">
-            <!-- <img src="../../../components/pictures/1.png" width="50"/> -->
-            <!-- <strong v-if="uzunlik &lt 15 || uzunlik == 15" style="font-size: 30px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
-            <strong v-if="uzunlik &lt 20 && (uzunlik &gt 15 || uzunlik == 15)" style="font-size: 21px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
-            <strong v-if="(uzunlik &gt 20 || uzunlik == 20) && uzunlik &lt 30" style="font-size: 17px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
-            <strong v-if="(uzunlik &gt 30 || uzunlik == 30) && uzunlik &lt 40" style="font-size: 15px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
-            <strong v-if="(uzunlik &gt 40 || uzunlik == 40) && uzunlik &lt 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
-            <strong v-if="uzunlik &gt 50 || uzunlik == 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong> -->
-            <br><span style="font-size: 13px">{{ mahsulot.name }} {{mahsulot.brand}} <b>{{Intl.NumberFormat().format(mahsulot.selling_price)}}so'm</b></span>
-            <div class="row">
-              <img id="barcode" class="" />
-            </div>
+          <center
+            id="price"
+            style="
+              color: black !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+          >
+            <span style="display: flex; width: 100%">
+              <span style="display: block; width: 30px; align-items: center">
+                <img src="../../../components/pictures/1.png" width="100" style="transform: rotate(-90deg); margin-left: -30px; margin-top: 40px"/>
+              </span>
+              <!-- <strong v-if="uzunlik &lt 15 || uzunlik == 15" style="font-size: 30px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+              <strong v-if="uzunlik &lt 20 && (uzunlik &gt 15 || uzunlik == 15)" style="font-size: 21px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+              <strong v-if="(uzunlik &gt 20 || uzunlik == 20) && uzunlik &lt 30" style="font-size: 17px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+              <strong v-if="(uzunlik &gt 30 || uzunlik == 30) && uzunlik &lt 40" style="font-size: 15px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+              <strong v-if="(uzunlik &gt 40 || uzunlik == 40) && uzunlik &lt 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong>
+              <strong v-if="uzunlik &gt 50 || uzunlik == 50" style="font-size: 14px">{{ mahsulot.name }} {{ mahsulot.brand }} <br> {{Intl.NumberFormat().format(mahsulot.selling_price)}} so'm</strong> -->
+              <span style="display: block; align-items: center; justify-content: center">
+                <span>
+                  <br><span style="font-size: 12px">{{ mahsulot.name }} {{mahsulot.brand}} <b>{{Intl.NumberFormat().format(mahsulot.selling_price)}}so'm</b></span>
+                  <div class="row">
+                    <img id="barcode" class="" />
+                  </div>
+                </span>
+              </span>
+            </span>
           </center>
         </div>
         <div class="modal-footer">
@@ -184,7 +202,7 @@ export default {
       console.log(this.uzunlik)
       this.mahsulot = mahsulot;
       JsBarcode("#barcode", mahsulot.product_code, {
-        height: 12,
+        height: 10,
         width: 2,
         displayValue: true,
       });
@@ -192,15 +210,19 @@ export default {
 
     print() {
       let barcode = document.querySelector("#price").outerHTML;
-      let windowPrint = window.open(
-        "_blank",
-        "Barcode",
-        "width=auto",
-      );
-      windowPrint.document.write(`${barcode}`);
-      windowPrint.print();
-      windowPrint.window.close()
-      this.isloading = false
+      setTimeout(() => {
+        let windowPrint = window.open(
+          "_blank",
+          "Barcode",
+          "width=auto",
+        );
+        windowPrint.document.write(`${barcode}`);
+        setTimeout(() => {
+          windowPrint.print();
+          windowPrint.window.close()
+          this.isloading = false
+        }, 100);
+      }, 100);
     },
   },
   mounted() {

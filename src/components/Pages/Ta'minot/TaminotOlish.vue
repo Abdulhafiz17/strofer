@@ -69,7 +69,13 @@
                 required
               />
               <datalist id="mahsulotlar">
-                <option v-for="mahsulot in mahsulotlar" :key="mahsulot" :value="mahsulot.product_code">{{ mahsulot.name }} {{mahsulot.brand}}</option>
+                <option
+                  v-for="mahsulot in mahsulotlar"
+                  :key="mahsulot"
+                  :value="mahsulot.product_code"
+                >
+                  {{ mahsulot.name }} {{ mahsulot.brand }}
+                </option>
               </datalist>
               <!-- <button type="submit" class="btn btn-outline-success">
                 <span class="far fa-circle-check" />
@@ -137,20 +143,20 @@
                       </span>
                     </div>
                   </div> -->
-                <label> Kategoriya </label>
-                <select
-                  class="custom-select"
-                  v-model="postMahsulot.product.category_id"
-                  required
-                >
-                  <option
-                    v-for="kategoriya in kategoriyalar"
-                    :key="kategoriya.id"
-                    :value="kategoriya.id"
+                  <label> Kategoriya </label>
+                  <select
+                    class="custom-select"
+                    v-model="postMahsulot.product.category_id"
+                    required
                   >
-                    {{ kategoriya.name }}
-                  </option>
-                </select>
+                    <option
+                      v-for="kategoriya in kategoriyalar"
+                      :key="kategoriya.id"
+                      :value="kategoriya.id"
+                    >
+                      {{ kategoriya.name }}
+                    </option>
+                  </select>
                 </div>
                 <!-- <div class="col-sm">
                   <label> Yaroqlilik muddati </label>
@@ -242,15 +248,19 @@
               </div>
               <div class="col-sm">
                 <label>Kirim narx</label>
+                <span id="kurs" style="display: none"></span>
                 <div class="input-group">
                   <input
                     type="number"
+                    id="income_price"
                     step="any"
                     min="0"
                     class="form-control"
                     placeholder="Narxi"
                     v-model="postMahsulot.new_supply.price"
                     required
+                    @keyup="countCurrency"
+                    @click="countCurrency"
                   />
                   <select
                     class="custom-select"
@@ -403,13 +413,17 @@
               </div>
               <div class="col-sm">
                 <label>Kirim narx</label>
+                <span id="kurs" style="display: none"></span>
                 <div class="input-group">
                   <input
                     type="number"
+                    id="income_price"
                     step="any"
                     min="0"
                     class="form-control w-50"
                     v-model="postMahsulot.new_supply.price"
+                    @keyup="countCurrency()"
+                    @click="countCurrency()"
                     required
                   />
                   <select
@@ -465,8 +479,18 @@
                   <td>{{ n + 1 }}</td>
                   <td>{{ taminot.product }} {{ taminot.brand }}</td>
                   <td>{{ taminot.quantity }} {{ taminot.measure }}</td>
-                  <td>{{ Intl.NumberFormat().format(taminot.price) }} {{ taminot.currency_id }}</td>
-                  <td>{{ Intl.NumberFormat().format(taminot.quantity * taminot.price) }} {{ taminot.currency_id }}</td>
+                  <td>
+                    {{ Intl.NumberFormat().format(taminot.price) }}
+                    {{ taminot.currency_id }}
+                  </td>
+                  <td>
+                    {{
+                      Intl.NumberFormat().format(
+                        taminot.quantity * taminot.price
+                      )
+                    }}
+                    {{ taminot.currency_id }}
+                  </td>
                   <td>
                     <button
                       class="btn btn-sm btn-outline-danger"
@@ -550,9 +574,55 @@ export default {
       collapse: false,
       errorr: "",
       percent: null,
+      currency: null,
     };
   },
+  mounted() {
+    console.clear();
+    this.getData();
+    this.getCurrency();
+    document.querySelector("#barcode").focus()
+  },
   methods: {
+    countCurrency() {
+      let span = document.querySelector("#kurs")
+      let input = document.querySelector("#income_price")
+      if (this.postMahsulot.new_supply.price) {
+        span.style = `
+        border: 1px solid gray;
+        border-radius: 10px;
+        background: var(--dark);
+        color: white;
+        padding: 5px 10px 5px 10px;
+        bottom: 40px;
+        
+        position: absolute;
+        z-index: 1;
+        `
+        if (this.postMahsulot.new_supply.currency_id == "so'm") {
+          span.innerHTML = Intl.NumberFormat().format(this.postMahsulot.new_supply.price / this.currency.price) + " dollar"
+        } else if (this.postMahsulot.new_supply.currency_id == "dollar") {
+          span.innerHTML = Intl.NumberFormat().format(this.currency.price * this.postMahsulot.new_supply.price) + " so'm"
+        }
+      } else {
+        span.style = "display: none"
+      }
+
+      input.addEventListener("change", () => {
+        span.style = "display: none"
+      })
+    },
+    getCurrency() {
+      this.isLoading = true
+      instance.get("this_currency/dollar")
+      .then((response) => {
+        this.currency = response.data
+      })
+      .catch((err) => {
+        this.isLoading = false
+        this.errorr = err.message
+      })
+    },
     getData() {
       this.isLoading = true;
       instance
@@ -566,18 +636,19 @@ export default {
               instance
                 .get("all_products_for_trade_to_search")
                 .then((response) => {
-                  this.mahsulotlar = response.data
-                  this.isLoading = false
-                })
+                  this.mahsulotlar = response.data;
+                  this.isLoading = false;
+                });
             })
             .catch((err) => {
               this.isloading = false;
               this.errorr = err.message;
-            })
-        }).catch((err) => {
-          this.errorr = err.message
-          this.isLoading = false
+            });
         })
+        .catch((err) => {
+          this.errorr = err.message;
+          this.isLoading = false;
+        });
     },
     postCode() {
       this.isloading = true;
@@ -664,16 +735,16 @@ export default {
               icon: "warning",
               title: "Bunday mahsulot ro'yxatga qo'shilgan !",
               closeOnClickOutside: false,
-            })
-            this.isLoading = false
+            });
+            this.isLoading = false;
           } else if (res.data == "So'rovda xatolik") {
             swal({
               icon: "warning",
               title: res.data,
-              timer: 1000
-            })
+              timer: 1000,
+            });
           } else if (res.status == 200) {
-            swal({ icon: "success", timer: 1000}).then(() => {
+            swal({ icon: "success", timer: 1000 }).then(() => {
               this.openRow = null;
               this.barcode = "";
               this.alert = "";
@@ -700,15 +771,15 @@ export default {
                   market_id: this.$route.params.id,
                 },
               };
-              document.querySelector("#barcode").focus()
-              this.isLoading = false
-            })
+              document.querySelector("#barcode").focus();
+              this.isLoading = false;
+            });
           }
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
-        })
+        });
     },
     getTaminot() {
       this.isLoading = true;
@@ -716,13 +787,13 @@ export default {
       instance
         .get("all_supplies/" + this.$route.params.id + "/false")
         .then((res) => {
-          this.taminotlar = res.data
-        }).catch((err) => {
-          this.errorr = err.message
-          this.isLoading = false
-        }).finally(
-          this.isLoading = false
-        )
+          this.taminotlar = res.data;
+        })
+        .catch((err) => {
+          this.errorr = err.message;
+          this.isLoading = false;
+        })
+        .finally((this.isLoading = false));
     },
     deleteTaminot(id) {
       this.isLoading = true;
@@ -735,15 +806,15 @@ export default {
               title: "O'chirildi !",
               timer: 1000,
             }).then(() => {
-              this.getTaminot()
-              this.isLoading = false
-            })
-          }, 500)
+              this.getTaminot();
+              this.isLoading = false;
+            });
+          }, 300);
         })
         .catch((err) => {
           this.isLoading = false;
           this.errorr = err.message;
-        })
+        });
     },
     confirmTaminot() {
       this.isloading = true;
@@ -769,18 +840,15 @@ export default {
         swal({
           icon: "warning",
           title: "Ta'minot bo'sh !",
-          timer: 1000
+          timer: 1000,
         });
       }
     },
     count() {
-      this.postMahsulot.product.selling_price = ((this.postMahsulot.new_supply.price / 100) * this.percent) + this.postMahsulot.new_supply.price
+      this.postMahsulot.product.selling_price =
+        (this.postMahsulot.new_supply.price / 100) * this.percent +
+        this.postMahsulot.new_supply.price;
     },
-  },
-  mounted() {
-    console.clear();
-    this.getData();
-    document.querySelector("#barcode").focus()
   },
 };
 </script>

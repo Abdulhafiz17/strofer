@@ -1,9 +1,9 @@
 <template>
   <div class="container-fluid">
-    <router-link class="btn btn-sm mb-2 btn-outline-info" to="/kassa">
+    <router-link class="btn btn-sm mb-2 btn-outline-success" to="/kassa">
       <span class="fa fa-arrow-left" /> Ortga
     </router-link>
-    <button class="btn" @click="printCheck()">Print</button>
+    <!-- <button class="btn" @click="printCheck()">Print</button> -->
     <button
       class="btn btn-sm btn-success float-right"
       data-toggle="modal"
@@ -15,7 +15,14 @@
       <div class="card-header">
         <div class="row text-center">
           <div class="col-md-4">
-            <h3>{{ buyurtma.number }} - buyurtma</h3>
+            <div class="row">
+              <div class="col-3">
+                <h4> № {{buyurtma.number}} </h4>
+              </div>
+              <div class="col">
+                <h4> <span class="fa fa-user"/> <span>{{buyurtma.owner}}</span> </h4>
+              </div>
+            </div>
           </div>
           <div class="col-md-4">
             <div class="input-group">
@@ -46,7 +53,7 @@
             </div>
           </div>
           <div class="col-md-4">
-            <h3>{{ Intl.NumberFormat().format(buyurtma.order_price) }} so'm</h3>
+            <h4>{{ Intl.NumberFormat().format(buyurtma.order_price) }} so'm</h4>
           </div>
         </div>
       </div>
@@ -443,7 +450,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-outline-info">
+            <button type="submit" class="btn btn-outline-success">
               <span class="far fa-circle-check" /> Tasdiqlash
             </button>
             <button class="btn btn-outline-danger" data-dismiss="modal">
@@ -532,7 +539,7 @@
           <button
             type="button"
             form="form1"
-            class="btn btn-outline-info"
+            class="btn btn-outline-success"
             data-dismiss="modal"
             @click="mijozQoshish"
           >
@@ -555,16 +562,18 @@
   <span id="receipent" style="display: none" v-if="receipentValue">
     <center>
       <img
-        src="../../../components/pictures/1(2).png"
-        width="50"
-        style="margin: 10px"
+        src="./1.png"
+        width="120"
+        style="margin: 20px"
       />
       <ul style="list-decoration: none; margin: 0; padding: 0">
         <li style="display: flex; justify-content: space-between">
+          <strong>Asosiy tel: </strong>
+          <span>+998732400401</span>
+        </li>
+        <li style="display: flex; justify-content: space-between">
           <strong>Filial tel: </strong>
-          <a :href="'tel:+998' + buyurtma.branch_tel"
-            >+998{{ buyurtma.branch_tel }}</a
-          >
+          <span>+998{{ buyurtma.branch_tel }}</span>
         </li>
         <li style="display: flex; justify-content: space-between">
           <strong>Sana: </strong>
@@ -594,7 +603,7 @@
             <th>{{ mahsulot.name }} {{ mahsulot.brand }}</th>
             <td>{{ mahsulot.quantity }} {{ mahsulot.measure }}</td>
             <td>
-              {{ Intl.NumberFormat().format(mahsulot.selling_price) }}so'm
+              {{ Intl.NumberFormat().format(mahsulot.selling_price) }} so'm
             </td>
           </tr>
         </tbody>
@@ -604,7 +613,7 @@
         <li style="display: flex; justify-content: space-between">
           <strong>To'lov summa: </strong>
           <strong>
-            {{ Intl.NumberFormat().format(buyurtma.order_price) }}so'm
+            {{ Intl.NumberFormat().format(buyurtma.order_price) }} so'm
           </strong>
         </li>
         <hr />
@@ -704,13 +713,18 @@ export default {
     receipentValue() {
     }
   },
+  mounted() {
+    console.clear();
+    this.getData();
+    document.querySelector("#barcode").focus()
+  },
   methods: {
     getData() {
       instance
         .get("this_order/" + this.$route.params.id)
         .then((response) => {
-          console.log(response.data);
           this.buyurtma = response.data;
+          console.log(response.data)
           instance
             .get("all_products_for_trade_to_search")
             .then((response) => {
@@ -909,32 +923,6 @@ export default {
         });
     },
     printCheck() {
-      // this.receipentValue = true;
-      // // this.getData();
-      // setTimeout(() => {
-      //   let demo = document.getElementById("demo")
-      //   demo.innerHTML = ""
-      //   setTimeout(() => {
-      //     new QRCode(demo, {
-      //       text: this.$route.params.id,
-      //       width: 100, //default 128
-      //       height: 100,
-      //       colorDark: "#000000",
-      //       colorLight: "#ffffff",
-      //       correctLevel: QRCode.CorrectLevel.H,
-      //     });
-      //     let check = window.open("_blank", "Check", "width=auto");
-      //     let receipent = document.querySelector("#receipent").innerHTML;
-      //     check.document.write(`${receipent}`);
-      //     setTimeout(() => {
-      //       check.print();
-      //       // check.close();
-      //     }, 200);
-      //     this.isloading = false;
-      //     // this.$router.push({ path: "/kassa" });
-      //     console.log(demo);
-      //   }, 300);
-      // }, 100);
       this.receipentValue = true;
       setTimeout(() => {
         document.querySelector("#demo").innerHTML = "";
@@ -945,12 +933,7 @@ export default {
           colorDark: "#000000",
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.H,
-        });
-        // JsBarcode("#barcodeReceipent", id, {
-        //   height: 30,
-        //   width: 1,
-        //   displayValue: true,
-        // });
+        })
         setTimeout(() => {
           let receipent = document.querySelector("#receipent");
           let check = window.open("_blank", "Check", "width=auto");
@@ -1086,7 +1069,8 @@ export default {
         .post("customer_create", this.mijozpost)
         .then((response) => {
           if (response.status == 200) {
-            swal({ icon: "success", timer: 1000 }).then(() => {
+            swal({ icon: "success", timer: 700 })
+            .then(() => {
               this.getData();
               // window.location.reload();
               (this.mijozpost = {
@@ -1104,13 +1088,6 @@ export default {
           this.isloading = false;
         });
     },
-  },
-  mounted() {
-    console.clear();
-    setTimeout(() => {
-      this.getData();
-    }, 1000);
-    document.querySelector("#barcode").focus()
   },
 };
 </script>

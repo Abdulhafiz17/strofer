@@ -2,6 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
+    path: "/:catchAll(.*)",
+    meta: { requiresAuth: true , title: 'Sahifa Topilmadi • Medland'},
+    name: "NotFound",
+    component: () => import("../components/NotFound/NotFound.vue")
+  },
+  {
     path: "/",
     name: "Login",
     component: () => import("../components/SignUp/Login.vue"),
