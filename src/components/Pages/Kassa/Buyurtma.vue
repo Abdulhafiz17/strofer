@@ -45,8 +45,8 @@
                 </option>
               </datalist>
               <div class="input-group-append">
-                <div class="input-group-text">
-                  <!-- @dblclick="final_price = !final_price" -->
+                <div class="input-group-text" @dblclick="final_price = !final_price">
+                  
                   <span class="fa fa-barcode" />
                 </div>
               </div>
@@ -142,7 +142,7 @@
                   </form>
                 </td>
                 <td v-if="final_price">
-                  {{ Intl.NumberFormat().format(mahsulot.price) }} so'm
+                  {{ Intl.NumberFormat().format(mahsulot.price) }}
                 </td>
                 <td>
                   {{

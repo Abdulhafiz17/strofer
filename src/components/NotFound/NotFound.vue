@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid">
-      <h1>Not found</h1>
+  <div class="container">
+      <h1>Sahifa topilmadi !</h1>
   </div>
 </template>
 

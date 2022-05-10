@@ -229,7 +229,7 @@ export default {
     console.clear();
     setTimeout(() => {
       this.getData();
-    }, 500);
+    }, 100);
   },
   computed: {
     filteredCards: function () {

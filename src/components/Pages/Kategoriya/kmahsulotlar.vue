@@ -31,7 +31,7 @@
                     <th scope="col">Shtrix kodi</th>
                     <th scope="col">Mahsulot</th>
                     <th scope="col">Brend</th>
-                    <th scope="col">Narx</th>
+                    <!-- <th scope="col">Narx</th> -->
                     <th scope="col">Sotuv narx</th>
                     <th scope="col">Oxirgi narx</th>
                     <th scope="col">Miqdor</th>
@@ -49,14 +49,14 @@
                     <td>{{ mahsulotlar.code }}</td>
                     <td>{{ mahsulotlar.name }}</td>
                     <td>{{ mahsulotlar.brand }}</td>
-                    <td>
+                    <!-- <td>
                       {{
                         Intl.NumberFormat({ sytle: "currency" }).format(
                           mahsulotlar.price
                         )
                       }}
                       {{ mahsulotlar.currency_id }}
-                    </td>
+                    </td> -->
                     <td>
                       {{
                         Intl.NumberFormat({ style: "currency" }).format(
