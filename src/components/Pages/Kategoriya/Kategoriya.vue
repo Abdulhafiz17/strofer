@@ -9,7 +9,7 @@
               type="search"
               class="form-control"
               v-model="search"
-              placeholder="qidiruv"
+              placeholder="Qidiruv"
             />
           </div>
           <div class="col-md-4">

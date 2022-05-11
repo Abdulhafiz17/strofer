@@ -289,7 +289,7 @@
                   required
                 />
               </div>
-              <div class="col-sm">
+              <!-- <div class="col-sm">
                 <label> Brend </label>
                 <input
                   type="text"
@@ -297,7 +297,7 @@
                   v-model="postMahsulot.product.brand"
                   required
                 />
-              </div>
+              </div> -->
               <div class="col-sm">
                 <label> Kategoriya </label>
                 <select
@@ -494,7 +494,7 @@
                   <td>
                     <button
                       class="btn btn-sm btn-outline-danger"
-                      @click="deleteTaminot(taminot.id)"
+                      @click="deleteTaminot(taminot)"
                     >
                       <span class="far fa-circle-xmark" />
                     </button>
@@ -795,21 +795,23 @@ export default {
         })
         .finally((this.isLoading = false));
     },
-    deleteTaminot(id) {
+    deleteTaminot(taminot) {
       this.isLoading = true;
       instance
-        .delete("remove_this_supply/" + id)
+        .delete("remove_this_supply/" + taminot.id + "/" + "?vozvrat_quantity=" + taminot.quantity)
         .then((response) => {
-          setTimeout(() => {
-            swal({
-              icon: "success",
-              title: "O'chirildi !",
-              timer: 1000,
-            }).then(() => {
-              this.getTaminot();
-              this.isLoading = false;
-            });
-          }, 300);
+          if (response.status == 200) {
+            setTimeout(() => {
+              swal({
+                icon: "success",
+                title: "O'chirildi !",
+                timer: 700,
+              }).then(() => {
+                this.getTaminot();
+                this.isLoading = false;
+              });
+            }, 300);
+          }
         })
         .catch((err) => {
           this.isLoading = false;

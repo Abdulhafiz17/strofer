@@ -240,7 +240,7 @@
                   role="tab"
                   aria-controls="pills-anonym"
                   aria-selected="true"
-                  @click="client = false"
+                  @click="client = false; client_id = 'unknown'"
                 >
                   Anonim
                 </button>
@@ -350,7 +350,7 @@
                     {{ mijoz.name }}
                   </option>
                 </datalist> -->
-                <div class="input-group">
+                <!-- <div class="input-group">
                   <select
                     class="custom-select custom-select-sm"
                     v-model="client_id"
@@ -380,6 +380,39 @@
                       <span class="fa fa-circle-plus" />
                     </button>
                   </div>
+                </div> -->
+                <div class="btn-group" style="width: 100%">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-success dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <span v-if="client_id === 'unknown'">Mijoz tanlang</span><span v-else>{{client.name}}</span>
+                  </button>
+                  <ul class="dropdown-menu" style="width: 100%">
+                    <li class="">
+                      <input
+                        type="search"
+                        class="form-control form-control-sm dropdown-item"
+                        placeholder="Qidiruv"
+                        v-model="search"
+                      />
+                    </li>
+                    <li
+                      v-for="mijoz in filterClient"
+                      :key="mijoz.id"
+                      :value="mijoz.id"
+                    >
+                      <button
+                        class="dropdown-item d-flex justify-content-around"
+                        type="button"
+                        @click="client = mijoz, client_id = mijoz.id"
+                      >
+                        {{mijoz.name}} - +998{{mijoz.phone}}
+                      </button>
+                    </li>
+                  </ul>
                 </div>
                 <div class="row mt-2">
                   <div class="col-md">
@@ -697,7 +730,7 @@ export default {
       nasiyaSumma: 0,
       new_loan: "",
       mijozlar: [],
-      client_id: "",
+      client_id: "unknown",
       mijozpost: {
         name: "",
         phone: null,
@@ -707,6 +740,7 @@ export default {
       orderdiscount: {
         discount: null,
       },
+      search: "",
     };
   },
   watch: {
@@ -717,6 +751,13 @@ export default {
     console.clear();
     this.getData();
     document.querySelector("#barcode").focus()
+  },
+  computed: {
+    filterClient: function() {
+      return this.mijozlar.filter((mijoz) => {
+        return mijoz.name.toLowerCase().match(this.search.toLowerCase()) || String(mijoz.phone).match(this.search)
+      })
+    }
   },
   methods: {
     getData() {
@@ -978,7 +1019,7 @@ export default {
       };
       let orderdiscount = this.orderdiscount.discount == null ? {discount: 0} : this.orderdiscount
 
-      if (this.client == true && this.client_id == "") {
+      if (this.client == true && this.client_id == "unknown") {
         swal({
           icon: "warning",
           title: "Mijoz tanlang !",
@@ -986,7 +1027,7 @@ export default {
           closeOnClickOutside: false,
           closeOnEsc: false,
         });
-      } else if (this.client == false && this.client_id == "") {
+      } else if (this.client == false && this.client_id == "unknown") {
         let new_incomes = [];
         if (naxt.price == 0 || naxt.price == null) {
           new_incomes.push(plastik);
@@ -996,7 +1037,7 @@ export default {
           new_incomes.push(naxt, plastik);
         }
         instance
-          .post("order_confirmation/" + this.$route.params.id + "/unknown", {
+          .post("order_confirmation/" + this.$route.params.id + "/" + this.client_id, {
             new_incomes,
             new_loan,
             orderdiscount
