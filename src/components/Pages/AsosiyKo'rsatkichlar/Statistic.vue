@@ -49,7 +49,9 @@
           v-if="this.$route.name !== 'Vozvrat'"
         >
           <div
-            :class="tab == 'statistic' ? 'tab-pane fade show active' : 'tab-pane fade'"
+            :class="
+              tab == 'statistic' ? 'tab-pane fade show active' : 'tab-pane fade'
+            "
             id="pills-home"
             role="tabpanel"
             aria-labelledby="pills-home-tab"
@@ -99,7 +101,6 @@
                 class="
                   table-responsive
                   text-center
-                  table-bordered
                   my-custom-scrollbar
                   table-wrapper-scroll-y
                   collapse
@@ -108,7 +109,7 @@
                 v-if="table"
                 id="table"
               >
-                <table class="table table-sm table-hover">
+                <table class="table table-sm table-hover table-borderless">
                   <thead>
                     <tr>
                       <th>№</th>
@@ -116,6 +117,7 @@
                       <th>Sotuvchi</th>
                       <th>Mijoz</th>
                       <th>Sana</th>
+                      <th></th>
                       <th></th>
                     </tr>
                   </thead>
@@ -204,7 +206,9 @@
             />
           </div>
           <div
-            :class="tab == 'product' ? 'tab-pane fade show active' : 'tab-pane fade'"
+            :class="
+              tab == 'product' ? 'tab-pane fade show active' : 'tab-pane fade'
+            "
             id="pills-products"
             role="tabpanel"
             aria-labelledby="pills-products-tab"
@@ -258,7 +262,6 @@
               class="
                 table-responsive
                 text-center
-                table-bordered
                 my-custom-scrollbar
                 table-wrapper-scroll-y
                 collapse
@@ -267,7 +270,7 @@
               v-if="table"
               id="table"
             >
-              <table class="table table-sm table-hover">
+              <table class="table table-sm table-hover table-borerless">
                 <thead>
                   <tr>
                     <th>№</th>
@@ -343,7 +346,7 @@
                         class="btn btn-sm btn-success"
                         data-toggle="modal"
                         href="#products"
-                        @click="mahsulotlar = savdo.data"
+                        @click="mahsulotlar = savdo"
                       >
                         <span class="fa fa-info" />
                       </button>
@@ -383,10 +386,11 @@
                 <th>Hajm</th>
                 <th>Narx</th>
                 <th>Summa</th>
+                <th v-if="this.$route.name == 'Vozvrat'"></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(mahsulot, n) in mahsulotlar" :key="mahsulot">
+              <tr v-for="(mahsulot, n) in mahsulotlar.data" :key="mahsulot">
                 <td>{{ n + 1 }}</td>
                 <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
                 <td>{{ mahsulot.quantity }} {{ mahsulot.measure }}</td>
@@ -401,10 +405,16 @@
                   }}
                   so'm
                 </td>
+                <td v-if="this.$route.name == 'Vozvrat'">
+                  <button class="btn btn-sm" @click="returnProduct(mahsulot)">
+                    <span class="fa fa-arrow-rotate-left" />
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
+        <input type="hidden" id="close_modal" data-dismiss="modal" />
       </div>
     </div>
   </div>
@@ -454,12 +464,9 @@ export default {
       tab: localStorage.getItem("tab"),
     };
   },
-  computed: {
-    function() {localStorage.setItem("tab", "statistic")}
-  },
   methods: {
     setTab(tab) {
-      localStorage.setItem("tab", tab)
+      localStorage.setItem("tab", tab);
     },
     getData() {
       this.savdolar = [];
@@ -472,6 +479,8 @@ export default {
               if (order.time >= this.fromDate && order.time <= this.toDate) {
                 this.savdolar.push(order);
                 this.table = true;
+                this.isloading = false;
+              } else {
                 this.isloading = false;
               }
             });
@@ -489,9 +498,10 @@ export default {
         });
     },
     returnProduct(savdo) {
+      console.log(savdo);
       this.returnP.quantity = Number(this.returnP.quantity);
       swal({
-        title: savdo.product + " mahsulotidan qaytarib olish",
+        title: savdo.name + " mahsulotidan qaytarib olish",
         text:
           "Ushbu mahsulotning savdodagi hajmi : " +
           savdo.quantity +
@@ -517,23 +527,28 @@ export default {
         } else {
           this.returnP.quantity = value;
           instance
-            .post("return_product/" + savdo.trade_id, this.returnP)
+            .post("return_product/" + savdo.id, this.returnP)
             .then((response) => {
               console.log(response.data);
-              if (response.status == 200) {
-                if (response.data == "success") {
-                  swal({
-                    icon: "success",
-                    title: "Mahsulot qaytarib olindi",
-                    timer: 1000,
-                  }).then(location.reload());
-                } else {
-                  swal({
-                    icon: "success",
-                    title: "Mahsulot qaytarib olindi",
-                    timer: 1000,
-                  }).then((location.href = "/nasiyaMijoz/" + response.data));
-                }
+              if (
+                response.status == 200 &&
+                response.data !== "So'rovda xatolik"
+              ) {
+                swal({
+                  icon: "success",
+                  title: "Mahsulot qaytarib olindi",
+                  timer: 800,
+                }).then(() => {
+                  if (response.data == "success") {
+                    // location.reload()
+                    document.querySelector("#close_modal").click();
+                    this.getData();
+                  } else {
+                    location.href = "/nasiyaMijoz/" + response.data;
+                  }
+                });
+              } else if (response.data == "So'rovda xatolik") {
+                swal({ icon: "warning", title: response.data, timer: 800 });
               }
             })
             .catch((err) => {

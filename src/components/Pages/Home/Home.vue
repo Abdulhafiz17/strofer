@@ -6,6 +6,7 @@
 <script>
 export default {
   mounted() {
+    localStorage.setItem("tab", "statistic")
     if (localStorage.getItem("reloaded")) {
       localStorage.removeItem("reloaded");
     } else {
