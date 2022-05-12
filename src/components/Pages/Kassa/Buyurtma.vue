@@ -3,7 +3,7 @@
     <router-link class="btn btn-sm mb-2 btn-outline-success" to="/kassa">
       <span class="fa fa-arrow-left" /> Ortga
     </router-link>
-    <!-- <button class="btn" @click="printCheck()">Print</button> -->
+    <button class="btn" @click="printCheck()">Print</button>
     <button
       class="btn btn-sm btn-success float-right"
       data-toggle="modal"
@@ -595,7 +595,7 @@
   <span id="receipent" style="display: none" v-if="receipentValue">
     <center>
       <img
-        src="./1.png"
+        src="./2.png"
         width="120"
         style="margin: 20px"
       />
@@ -612,7 +612,7 @@
           <strong>Sana: </strong>
           <span>{{ buyurtma.time.replace("T", " ") }}</span>
         </li>
-        <li style="display: flex; justify-content: space-between">
+        <li style="display: flex; justify-content: space-between" v-if="buyurtma.client !== 'anonim'">
           <strong> Mijoz: </strong> <span> {{ buyurtma.client }} </span>
         </li>
         <li style="display: flex; justify-content: space-between">
