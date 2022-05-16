@@ -203,7 +203,7 @@ export default {
       this.mahsulot = mahsulot;
       JsBarcode("#barcode", mahsulot.product_code, {
         height: 10,
-        width: 2,
+        width: 1.5,
         displayValue: true,
       });
     },

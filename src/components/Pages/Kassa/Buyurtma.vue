@@ -301,6 +301,7 @@
                         v-model="naxtSavdo.price"
                         @keyup="count1()"
                         min="0"
+                        step="any"
                         :max="balance"
                         id="currency"
                       />
@@ -317,6 +318,7 @@
                         class="form-control"
                         v-model="plastikSavdo.price"
                         min="0"
+                        step="any"
                         :max="balance"
                         @keyup="count2()"
                         id="currency"
@@ -423,6 +425,7 @@
                         class="form-control"
                         v-model="naxtSavdo.price"
                         min="0"
+                        step="any"
                         :max="buyurtma.order_price - plastikSavdo.price"
                         @keyup="nasiya1()"
                         id="currency"
@@ -457,6 +460,7 @@
                       <input
                         type="number"
                         min="0"
+                        step="any"
                         class="form-control"
                         v-model="nasiyaSumma"
                         readonly
@@ -601,7 +605,7 @@
       />
       <ul style="list-decoration: none; margin: 0; padding: 0">
         <li style="display: flex; justify-content: space-between">
-          <strong>Asosiy tel: </strong>
+          <strong>Umumiy tel: </strong>
           <span>+998732400401</span>
         </li>
         <li style="display: flex; justify-content: space-between">
@@ -675,7 +679,7 @@
         </li>
         <li
           style="display: flex; justify-content: space-between"
-          v-if="buyurtma.loan_price !== 0"
+          v-if="buyurtma.loan_price"
         >
           <strong>Nasiya: </strong>
           <strong>
@@ -684,7 +688,7 @@
         </li>
         <li
           style="display: flex; justify-content: space-between"
-          v-if="buyurtma.loan_price !== 0"
+          v-if="buyurtma.loan_price"
         >
           <strong>Nasiya qaytarish sanasi: </strong>
           <strong>
@@ -1030,9 +1034,11 @@ export default {
       } else if (this.client == false && this.client_id == "unknown") {
         let new_incomes = [];
         if (naxt.price == 0 || naxt.price == null) {
-          new_incomes.push(plastik);
+          naxt.price = 0
+          new_incomes.push(plastik, naxt);
         } else if (plastik.price == 0 || plastik.price == null) {
-          new_incomes.push(naxt);
+          plastik.price = 0
+          new_incomes.push(naxt, plastik);
         } else {
           new_incomes.push(naxt, plastik);
         }
@@ -1050,8 +1056,10 @@ export default {
                 timer: 700,
               }).then(
                 document.querySelector("#close_modal1").click(),
-                this.getData(),
-                this.printCheck()
+                setTimeout(() => {
+                  this.getData(),
+                  this.printCheck()
+                }, 10)
               );
             }
           })
@@ -1062,11 +1070,13 @@ export default {
       } else {
         let new_incomes = [];
         if (naxt.price == 0 || naxt.price == null) {
+          naxt.price = 0
           new_incomes = [];
-          new_incomes.push(plastik);
+          new_incomes.push(plastik, naxt);
         } else if (plastik.price == 0 || plastik.price == null) {
+          plastik.price = 0
           new_incomes = [];
-          new_incomes.push(naxt);
+          new_incomes.push(naxt, plastik);
         } else {
           new_incomes = [];
           new_incomes.push(naxt, plastik);
@@ -1093,8 +1103,10 @@ export default {
                 timer: 700,
               }).then(
                 document.querySelector("#close_modal1").click(),
-                this.getData(),
-                this.printCheck()
+                setTimeout(() => {
+                  this.getData(),
+                  this.printCheck()
+                }, 10)
               );
             }
           })

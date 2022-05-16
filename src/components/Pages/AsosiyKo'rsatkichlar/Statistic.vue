@@ -186,7 +186,7 @@
                           class="btn btn-sm btn-success"
                           data-toggle="modal"
                           href="#products"
-                          @click="mahsulotlar = savdo.data"
+                          @click="mahsulotlar = savdo"
                         >
                           <span class="fa fa-info" />
                         </button>

@@ -210,6 +210,14 @@ li {
     color: white;
 }
 
+.dark .list-group-item {
+    background: var(--dark);
+    color: white;
+}
+.dark .list-group-item:hover {
+background: rgb(211, 211, 211, 0.1);
+}
+
 .nav-link:hover {
     color: black;
 }
