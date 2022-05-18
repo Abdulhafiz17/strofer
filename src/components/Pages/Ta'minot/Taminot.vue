@@ -341,6 +341,8 @@ export default {
   },
   methods: {
     getData() {
+      this.sum_of_balance.sum = null
+      this.sum_of_balance.dollar = null
       instance
         .get("all_markets")
         .then((res) => {
@@ -377,7 +379,7 @@ export default {
           .then((res) => {
             console.log(res.data);
             if (res.status == 200) {
-              swal({ icon: "success", timer: 1000 }).then(() => {
+              swal({ icon: "success", timer: 700 }).then(() => {
                 this.getData();
                 // window.location.reload();
                 this.yangiTaminotchi = {
@@ -411,7 +413,7 @@ export default {
           .put("this_market_update/" + id, this.editTaminotchi)
           .then((res) => {
             if (res.status == 200) {
-              swal({ icon: "success", timer: 1000 }).then(() => {
+              swal({ icon: "success", timer: 700 }).then(() => {
                 // window.location.reload();
                 this.getData()
               });
@@ -439,7 +441,7 @@ export default {
             document.querySelector("#modalFooter").click()
             swal({
               icon: "success",
-              timer: 1000
+              timer: 700
             }).then(() => {
               this.getData()
               this.tolov = {

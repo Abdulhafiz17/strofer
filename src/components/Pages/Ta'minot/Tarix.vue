@@ -278,10 +278,13 @@ export default {
             if (response.status == 200) {
               swal({
                 icon: "success",
-                timer: 1000,
+                timer: 700,
               }).then(
                 this.isloading = false,
-                this.getData2()
+                setTimeout(() => {
+                  this.getData()
+                  this.getData2()
+                }, 100)
               )
             }
           })
@@ -295,13 +298,13 @@ export default {
   },
   mounted() {
     console.clear()
-    setTimeout(() => {
-      this.getData();
-      this.getData2();
-    }, 1000);
     instance.get("this_market/" + this.$route.params.id).then((res) => {
       this.taminotchi = res.data;
     })
+    setTimeout(() => {
+      this.getData();
+      this.getData2();
+    }, 100);
   },
   computed: {
     filterRow: function () {
