@@ -282,8 +282,9 @@ export default {
               }).then(
                 this.isloading = false,
                 setTimeout(() => {
-                  this.getData()
-                  this.getData2()
+                  // this.getData()
+                  // this.getData2()
+                  location.reload()
                 }, 100)
               )
             }
