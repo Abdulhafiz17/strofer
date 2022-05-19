@@ -19,6 +19,7 @@
               data-toggle="modal"
               href="#report"
               @click="getReport()"
+              v-wave
             >
               <span class="fa fa-chart-pie"/> Kunlik hisobot
             </button>
