@@ -8,7 +8,7 @@
       <div class="card-header">
         <div class="row">
           <div class="col-md">
-            <h3>{{ taminotchi.name }} tarixi ㅤㅤ Balans : <span v-for="balance in taminotchi.balances" :key="balance.id" :class="balance.balance > 0 ? 'text-danger' : 'text-success'">  {{ Intl.NumberFormat().format(balance.balance) }} {{ balance.currency }} <span class="fa fa-coin"/> </span> </h3>
+            <h3>{{ taminotchi.name }} tarixi ㅤㅤ Balans : <span v-for="balance in taminotchi.balances" :key="balance.id" :class="balance.balance > 0 ? 'text-danger' : 'text-success'">  {{ Intl.NumberFormat().format(Math.abs(balance.balance)) }} {{ balance.currency }} <span class="fa fa-coin"/> </span> </h3>
           </div>
         </div>
       </div>
