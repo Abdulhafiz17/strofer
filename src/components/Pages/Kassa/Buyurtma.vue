@@ -58,9 +58,9 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="my-custom-scrollbar table-wrapper-scroll-y">
+        <div class="my-custom-scrollbar table-wrapper-scroll-y text-center">
           <table
-            class="table table-sm table-hover table-borderless text-center"
+            class="table table-sm table-hover table-borderless"
           >
             <thead>
               <tr>
@@ -83,16 +83,12 @@
                     {{ mahsulot.measure }}</span
                   >
                 </td>
-                <td @dblclick="showInput()">
-                  <span id="default"
-                    >{{ mahsulot.quantity }} {{ mahsulot.measure }}</span
-                  >
+                <td>
                   <form
                     @submit.prevent="updateThisTrade(mahsulot, n)"
-                    id="input"
-                    style="display: none"
+                    class="w-75 mx-auto"
                   >
-                    <div class="input-group input-group-sm w-75 mx-auto">
+                    <div class="input-group input-group-sm">
                       <input
                         type="number"
                         step="any"
@@ -110,18 +106,13 @@
                     </div>
                   </form>
                 </td>
-                <td @dblclick="showInput()">
-                  <span id="default">
-                    {{ Intl.NumberFormat().format(mahsulot.selling_price) }}
-                    so'm
-                  </span>
+                <td>
                   <form
                     @submit.prevent="updateThisTrade(mahsulot)"
-                    id="input"
-                    style="display: none"
+                    class="w-75 mx-auto"
                   >
                     <span :class="'tooltipText ' + n"></span>
-                    <div class="input-group input-group-sm w-75 mx-auto">
+                    <div class="input-group input-group-sm">
                       <input
                         type="number"
                         step="any"
@@ -168,24 +159,25 @@
                   <span>{{ product.quantity }} {{ product.measure }}</span>
                 </td>
                 <td>
-                  <div class="input-group input-group-sm w-75 mx-auto">
-                    <input
-                      type="number"
-                      id="hajm"
-                      step="any"
-                      placeholder="Hajm"
-                      class="form-control text-center"
-                      v-model="product.hajm"
-                      required
-                      min="0"
-                      @change="toTrade(product)"
-                    />
-                    <div class="input-group-append">
-                      <div class="input-group-text">
-                        {{ product.measure }}
+                  <form @submit.prevent="toTrade(product)">
+                    <div class="input-group input-group-sm w-75 mx-auto">
+                      <input
+                        type="number"
+                        id="hajm"
+                        step="any"
+                        placeholder="Hajm"
+                        class="form-control text-center"
+                        v-model="product.hajm"
+                        required
+                        min="0"
+                      />
+                      <div class="input-group-append">
+                        <div class="input-group-text">
+                          {{ product.measure }}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </form>
                 </td>
                 <td>
                   {{ Intl.NumberFormat().format(product.selling_price) }} so'm
@@ -801,7 +793,7 @@ export default {
         .then((response) => {
           if (response.data.length > 0) {
             this.product = response.data[0];
-            this.product.hajm = null;
+            this.product.hajm = 1;
             this.adding = true;
             this.barcode = "";
             setTimeout(() => {
