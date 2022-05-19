@@ -30,7 +30,7 @@
                     <th scope="col">№</th>
                     <th scope="col">Shtrix kodi</th>
                     <th scope="col">Mahsulot</th>
-                    <th scope="col">Brend</th>
+                    <th scope="col">Narx</th>
                     <!-- <th scope="col">Narx</th> -->
                     <th scope="col">Sotuv narx</th>
                     <th scope="col">Oxirgi narx</th>
@@ -47,8 +47,8 @@
                   >
                     <th scope="row">{{ idx + 1 }}</th>
                     <td>{{ mahsulotlar.code }}</td>
-                    <td>{{ mahsulotlar.name }}</td>
-                    <td>{{ mahsulotlar.brand }}</td>
+                    <td>{{ mahsulotlar.name }} {{ mahsulotlar.brand }}</td>
+                    <td>{{Intl.NumberFormat().format(mahsulotlar.price)}} so'm</td>
                     <!-- <td>
                       {{
                         Intl.NumberFormat({ sytle: "currency" }).format(

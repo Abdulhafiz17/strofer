@@ -6,7 +6,7 @@
           <div class="col-md-3">
             <h4>Ta'minotchilar</h4>
           </div>
-          <div class="col-md mb-2">
+          <div class="col-md-6 mb-2">
             <h4>
               Umumiy balans:
               <span :class="sum_of_balance.sum > 0 ? 'text-danger' : 'text-success'"> {{Intl.NumberFormat().format(sum_of_balance.sum)}} so'm </span>

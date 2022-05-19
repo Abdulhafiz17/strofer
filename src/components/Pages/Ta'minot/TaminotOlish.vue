@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row" v-if="alert === 'null'">
-      <div class="col-md">
+      <div class="col-md" style="position: absolute; z-index: 1; top: 1%">
         <div class="alert alert-warning" role="alert">
           <strong
             >Bunday mahsulot bazada mavjud emas. Iltimos quyidagi formani
@@ -49,7 +49,7 @@
             <div class="col-sm-1">
               <button
                 type="button"
-                class="btn btn-block btn-outline-success"
+                :class="taminotlar.length > 0 ? 'btn btn-block btn-outline-danger' : 'btn btn-block btn-outline-success'"
                 data-toggle="modal"
                 data-target="#savat"
                 @click="getTaminot()"
@@ -581,6 +581,9 @@ export default {
     console.clear();
     this.getData();
     this.getCurrency();
+    setTimeout(() => {
+      this.getTaminot();
+    }, 100);
     document.querySelector("#barcode").focus()
   },
   methods: {
@@ -656,6 +659,7 @@ export default {
         .get("this_product_codee/" + this.barcode)
         .then((res) => {
           if (res.data.length !== 0) {
+            document.querySelector("#barcode").setAttribute("readonly", "true")
             this.openRow = true;
             this.postMahsulot.product = {
               category_id: res.data[0].category_id,
@@ -673,6 +677,7 @@ export default {
             };
             this.getMahsulot(this.postMahsulot.product);
           } else {
+            document.querySelector("#barcode").setAttribute("readonly", "true")
             this.postMahsulot.product = {
               category_id: "",
               code: "",
@@ -744,7 +749,8 @@ export default {
               timer: 1000,
             });
           } else if (res.status == 200) {
-            swal({ icon: "success", timer: 1000 }).then(() => {
+            swal({ icon: "success", timer: 700 }).then(() => {
+              document.querySelector("#barcode").removeAttribute("readonly")
               this.openRow = null;
               this.barcode = "";
               this.alert = "";
@@ -771,6 +777,7 @@ export default {
                   market_id: this.$route.params.id,
                 },
               };
+              this.getTaminot();
               document.querySelector("#barcode").focus();
               this.isLoading = false;
             });

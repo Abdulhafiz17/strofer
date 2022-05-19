@@ -3,7 +3,7 @@
     <router-link class="btn btn-sm mb-2 btn-outline-success" to="/kassa">
       <span class="fa fa-arrow-left" /> Ortga
     </router-link>
-    <button class="btn" @click="printCheck()">Print</button>
+    <!-- <button class="btn" @click="printCheck()">Print</button> -->
     <button
       class="btn btn-sm btn-success float-right"
       data-toggle="modal"
