@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <input type="color" name="" id="">
+    <!-- <input type="color" name="" id=""> -->
     <div class="card shadow">
       <div class="card-header">
         <h4 v-if="this.$route.name == 'Vozvrat'">Vozvrat qilish</h4>

@@ -88,7 +88,7 @@
                           :class="balance.balance > 0 ? 'text-danger' : 'text-success'"
                         >
                           <!-- :class="balance != 0? 'text-success': 'text-danger'" -->
-                          {{Math.abs(Intl.NumberFormat().format(balance.balance))}}
+                          {{Intl.NumberFormat().format(Math.abs(balance.balance))}}
                           {{ balance.currency }} <span class="fa fa-coin" />
                         </span>
                       </td>
