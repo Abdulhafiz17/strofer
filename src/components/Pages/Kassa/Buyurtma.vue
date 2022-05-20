@@ -32,6 +32,7 @@
                 list="products"
                 placeholder="Code"
                 @change="addProduct(barcode)"
+                @keyup="searchProduct(barcode)"
                 v-model="barcode"
                 autocomplete="false"
               />
@@ -84,53 +85,44 @@
                   >
                 </td>
                 <td>
-                  <form
-                    @submit.prevent="updateThisTrade(mahsulot, n)"
-                    class="w-75 mx-auto"
-                  >
-                    <div class="input-group input-group-sm">
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        class="form-control text-center"
-                        placeholder="Hajm"
-                        required
-                        v-model="mahsulot.quantity"
-                      />
-                      <div class="input-group-append">
-                        <div class="input-group-text">
-                          {{ mahsulot.measure }}
-                        </div>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      class="form-control text-center"
+                      placeholder="Hajm"
+                      required
+                      v-model="mahsulot.quantity"
+                      @focusout="putThisTrade(mahsulot, n)"
+                    />
+                    <div class="input-group-append">
+                      <div class="input-group-text">
+                        {{ mahsulot.measure }}
                       </div>
                     </div>
-                  </form>
+                  </div>
                 </td>
                 <td>
-                  <form
-                    @submit.prevent="updateThisTrade(mahsulot)"
-                    class="w-75 mx-auto"
-                  >
-                    <span :class="'tooltipText ' + n"></span>
-                    <div class="input-group input-group-sm">
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        :id="'price' + n"
-                        class="form-control text-center"
-                        placeholder="Narx"
-                        required
-                        v-model="mahsulot.selling_price"
-                        @keyup="tooltip(n)"
-                        @click="tooltip(n)"
-                        @focusout="hide(n)"
-                      />
-                      <div class="input-group-append">
-                        <div class="input-group-text">so'm</div>
-                      </div>
+                  <span :class="'tooltipText ' + n"></span>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      :id="'price' + n"
+                      class="form-control text-center"
+                      placeholder="Narx"
+                      required
+                      v-model="mahsulot.selling_price"
+                      @keyup="tooltip(n)"
+                      @click="tooltip(n)"
+                      @focusout="hide(n); putThisTrade(mahsulot)"
+                    />
+                    <div class="input-group-append">
+                      <div class="input-group-text">so'm</div>
                     </div>
-                  </form>
+                  </div>
                 </td>
                 <td v-if="final_price">
                   {{ Intl.NumberFormat().format(mahsulot.price) }}
@@ -757,15 +749,16 @@ export default {
   },
   methods: {
     getData() {
+      document.querySelector("#barcode").focus()
       instance
         .get("this_order/" + this.$route.params.id)
         .then((response) => {
           this.buyurtma = response.data;
           console.log(response.data)
-          instance
-            .get("all_products_for_trade_to_search")
-            .then((response) => {
-              this.mahsulotlar = response.data;
+          // instance
+          //   .get("all_products_for_trade_to_search")
+          //   .then((response) => {
+          //     this.mahsulotlar = response.data;
               instance
                 .get("all_customers")
                 .then((res) => {
@@ -776,16 +769,25 @@ export default {
                   this.isloading = false;
                   this.errorr = err.message;
                 });
-            })
-            .catch((err) => {
-              this.isloading = false;
-              this.error = err.message;
-            });
+            // })
+            // .catch((err) => {
+            //   this.isloading = false;
+            //   this.error = err.message;
+            // });
         })
         .catch((err) => {
           this.isloading = false;
           this.error = err.message;
         });
+    },
+    searchProduct(name) {
+      if (name.length > 3) {
+        instance.post("all_products_for_trade_to_search_kassa",{code: "", name: name})
+        .then((response) => {
+          console.log(response.data)
+          this.mahsulotlar = response.data
+        })
+      }
     },
     addProduct(barcode) {
       instance
@@ -794,11 +796,12 @@ export default {
           if (response.data.length > 0) {
             this.product = response.data[0];
             this.product.hajm = 1;
-            this.adding = true;
+            // this.adding = true;
             this.barcode = "";
-            setTimeout(() => {
-              document.querySelector("#hajm").focus();
-            }, 100);
+            // setTimeout(() => {
+              this.toTrade(this.product)
+              document.querySelector("#barcode").focus();
+            // }, 10);
           } else {
             swal({
               icon: "warning",
@@ -820,6 +823,7 @@ export default {
       let data = {
         product_code: product.product_code,
         quantity: product.hajm,
+        // quantity: 1,
       };
       instance
         .post("to_trade/" + this.$route.params.id, data)
@@ -833,14 +837,17 @@ export default {
                 timer: 1000,
               }).then(() => {
                 this.isloading = false;
-                document.querySelector("#hajm").focus();
+                document.querySelector("#barcode").focus();
               });
             } else {
-              swal("", "", "success", { timer: 700 }).then(() => {
-                this.buyurtma = response.data;
-                this.adding = false;
-                this.product = {};
-                this.isloading = false;
+              swal("", "", "success", { timer: 800 }).then(() => {
+                // this.buyurtma = response.data;
+                  this.adding = false;
+                  this.product = {};
+                // setTimeout(() => {
+                  this.isloading = false;
+                  this.getData()
+                // }, 400);
               });
             }
           }
@@ -855,12 +862,15 @@ export default {
       instance
         .delete("remove_this_trade/" + code + "/" + this.$route.params.id)
         .then((response) => {
+          // console.log(response.data)
           if (response.status == 200) {
             swal({
               icon: "success",
-              timer: 700,
+              timer: 800,
             }).then(() => {
-              this.buyurtma = response.data;
+              // this.buyurtma = response.data;
+              this.getData()
+              document.querySelector("#barcode").focus()
             });
           }
           this.isloading = false;
@@ -869,16 +879,6 @@ export default {
           this.isloading = false;
           this.error = err.message;
         });
-    },
-    showInput() {
-      let span = document.querySelectorAll("#default");
-      let input = document.querySelectorAll("#input");
-      span.forEach((span) => {
-        span.style = "display: none";
-      });
-      input.forEach((input) => {
-        input.style = "display: block";
-      });
     },
     tooltip(id) {
       let input = document.querySelector("#price" + id);
@@ -892,7 +892,7 @@ export default {
         background: var(--dark);  
         color: white;
         padding: 5px 10px 5px 10px;
-        bottom: 50px;
+        bottom: 65px;
         
         position: absolute;
         z-index: 1;
@@ -910,29 +910,6 @@ export default {
       );
       tooltip.style = "display: none";
     },
-    updateThisTrade(mahsulot, n) {
-      if (n !== undefined) {
-        let span = document.querySelectorAll("#default");
-        let input = document.querySelectorAll("#input");
-        span.forEach((span) => {
-          span.style = "display: block";
-        });
-        input.forEach((input) => {
-          input.style = "display: none";
-        });
-        this.putThisTrade(mahsulot);
-      } else {
-        let span = document.querySelectorAll("#default");
-        let input = document.querySelectorAll("#input");
-        span.forEach((span) => {
-          span.style = "display: block";
-        });
-        input.forEach((input) => {
-          input.style = "display: none";
-        });
-        this.putThisTrade(mahsulot);
-      }
-    },
     putThisTrade(mahsulot) {
       this.isloading = true;
       let data = {
@@ -945,13 +922,16 @@ export default {
         .put("update_this_trade", data)
         .then((response) => {
           if (response.status == 200) {
-            swal({
-              icon: "success",
-              timer: 700,
-            }).then(() => {
-              this.buyurtma = response.data;
-              this.isloading = false;
-            });
+            // swal({
+            //   icon: "success",
+            //   timer: 700,
+            // }).then(() => {
+              // this.buyurtma = response.data;
+              setTimeout(() => {
+                this.getData()
+                this.isloading = false;
+              }, 200);
+            // });
           }
         })
         .catch((err) => {
