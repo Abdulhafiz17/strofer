@@ -43,6 +43,21 @@
               Mahsulotlar qoldig'i
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+            <button
+              :class="tab == 'chart' ? 'nav-link active' : 'nav-link'"
+              id="pills-chart-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-chart"
+              type="button"
+              role="tab"
+              aria-controls="pills-chart"
+              aria-selected="true"
+              @click="setTab('chart')"
+            >
+              Jadval
+            </button>
+          </li>
         </ul>
         <div
           class="tab-content"
@@ -74,7 +89,7 @@
               </div>
               <div class="col-md-4 mb-1">
                 <div class="row">
-                  <div class="col-md-6 mb-1">
+                  <div class="col-md mb-1">
                     <button
                       class="btn btn-sm btn-block btn-outline-success"
                       @click="
@@ -85,18 +100,10 @@
                       <span class="far fa-circle-check" /> Qidirish
                     </button>
                   </div>
-                  <div class="col-md-6">
-                    <button
-                      class="btn btn-sm btn-block btn-outline-success"
-                      data-toggle="collapse"
-                      href="#table"
-                    >
-                      <span class="fa fa-chevron-down" />
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
+            <hr />
             <div class="my-2">
               <div
                 class="
@@ -104,11 +111,8 @@
                   text-center
                   my-custom-scrollbar
                   table-wrapper-scroll-y
-                  collapse
                 "
                 style="max-height: 60vh"
-                v-if="table"
-                id="table"
               >
                 <table class="table table-sm table-hover table-borderless">
                   <thead>
@@ -177,17 +181,17 @@
                     <tr v-for="(savdo, n) in savdolar || []" :key="savdo.id">
                       <td>{{ n + 1 }}</td>
                       <td>
-                        {{ Intl.NumberFormat().format(savdo.order_price) }}so'm
+                        {{ Intl.NumberFormat().format(savdo.sum_order_summaa) }}so'm
                       </td>
-                      <td>{{ savdo.owner_id }}</td>
-                      <td>{{ savdo.client_id }}</td>
+                      <td>{{ savdo.user_name }}</td>
+                      <td>{{ savdo.customer_name }}</td>
                       <td>{{ savdo.time.replace("T", " ") }}</td>
                       <td>
                         <button
                           class="btn btn-sm btn-success"
                           data-toggle="modal"
                           href="#products"
-                          @click="mahsulotlar = savdo"
+                          @click="getBuyurtma(savdo.id)"
                         >
                           <span class="fa fa-info" />
                         </button>
@@ -197,14 +201,6 @@
                 </table>
               </div>
             </div>
-            <hr />
-            <Chart
-              :statistic="statistic"
-              v-if="
-                (role == 'admin' || role == 'branch_admin') &&
-                this.$route.name !== 'Vozvrat'
-              "
-            />
           </div>
           <div
             :class="
@@ -215,6 +211,63 @@
             aria-labelledby="pills-products-tab"
           >
             <Mahsulotlar />
+          </div>
+          <div
+            :class="
+              tab == 'chart' ? 'tab-pane fade show active' : 'tab-pane fade'
+            "
+            id="pills-chart"
+            role="tabpanel"
+            aria-labelledby="pills-chart-tab"
+          >
+            <div class="row">
+              <div class="col-md-4 mb-1">
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  v-model="fromDate"
+                />
+              </div>
+              <div class="col-md-4 mb-1">
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  v-model="toDate"
+                />
+              </div>
+              <div class="col-md-4 mb-1">
+                <div class="row">
+                  <div class="col-md-6 mb-1">
+                    <button
+                      class="btn btn-sm btn-block btn-outline-success"
+                      @click="
+                        getStatistic();
+                        getData();
+                      "
+                    >
+                      <span class="far fa-circle-check" /> Qidirish
+                    </button>
+                  </div>
+                  <div class="col-md-6">
+                    <button
+                      class="btn btn-sm btn-block btn-outline-success"
+                      data-toggle="collapse"
+                      href="#table"
+                    >
+                      <span class="fa fa-chevron-down" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <hr/>
+            </div>
+            <Chart
+              :statistic="statistic"
+              v-if="
+                (role == 'admin' || role == 'branch_admin') &&
+                this.$route.name !== 'Vozvrat'
+              "
+            />
           </div>
         </div>
         <span v-if="this.$route.name == 'Vozvrat'">
@@ -258,32 +311,30 @@
               </div>
             </div>
           </div>
-          <div class="my-2">
-            <div
-              class="
-                table-responsive
-                text-center
-                my-custom-scrollbar
-                table-wrapper-scroll-y
-                collapse
-              "
-              style="max-height: 60vh"
-              v-if="table"
-              id="table"
-            >
-              <table class="table table-sm table-hover table-borerless">
-                <thead>
-                  <tr>
-                    <th>№</th>
-                    <th>Summa</th>
-                    <th>Sotuvchi</th>
-                    <th>Mijoz</th>
-                    <th>Sana</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- <tr>
+            <div class="my-2">
+              <div
+                class="
+                  table-responsive
+                  text-center
+                  my-custom-scrollbar
+                  table-wrapper-scroll-y
+                "
+                style="max-height: 60vh"
+              >
+                <table class="table table-sm table-hover table-borderless">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Summa</th>
+                      <th>Sotuvchi</th>
+                      <th>Mijoz</th>
+                      <th>Sana</th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- <tr>
                   <td>
                     <input
                       class="form-control form-control-sm"
@@ -334,37 +385,30 @@
                   <td></td>
                   <td v-if="role == 'cashier'"></td>
                 </tr> -->
-                  <tr v-for="(savdo, n) in savdolar || []" :key="savdo.id">
-                    <td>{{ n + 1 }}</td>
-                    <td>
-                      {{ Intl.NumberFormat().format(savdo.order_price) }}so'm
-                    </td>
-                    <td>{{ savdo.owner_id }}</td>
-                    <td>{{ savdo.client_id }}</td>
-                    <td>{{ savdo.time.replace("T", " ") }}</td>
-                    <td>
-                      <button
-                        class="btn btn-sm btn-success"
-                        data-toggle="modal"
-                        href="#products"
-                        @click="mahsulotlar = savdo"
-                      >
-                        <span class="fa fa-info" />
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    <tr v-for="(savdo, n) in savdolar || []" :key="savdo.id">
+                      <td>{{ n + 1 }}</td>
+                      <td>
+                        {{ Intl.NumberFormat().format(savdo.sum_order_summaa) }}so'm
+                      </td>
+                      <td>{{ savdo.user_name }}</td>
+                      <td>{{ savdo.customer_name }}</td>
+                      <td>{{ savdo.time.replace("T", " ") }}</td>
+                      <td>
+                        <button
+                          class="btn btn-sm btn-success"
+                          data-toggle="modal"
+                          href="#products"
+                          @click="getBuyurtma(savdo.id)"
+                        >
+                          <span class="fa fa-info" />
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
           <hr />
-          <Chart
-            :statistic="statistic"
-            v-if="
-              (role == 'admin' || role == 'branch_admin') &&
-              this.$route.name !== 'Vozvrat'
-            "
-          />
         </span>
       </div>
     </div>
@@ -391,7 +435,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(mahsulot, n) in mahsulotlar.data" :key="mahsulot">
+              <tr v-for="(mahsulot, n) in buyurtma.data" :key="mahsulot">
                 <td>{{ n + 1 }}</td>
                 <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
                 <td>{{ mahsulot.quantity }} {{ mahsulot.measure }}</td>
@@ -407,13 +451,21 @@
                   so'm
                 </td>
                 <td v-if="this.$route.name == 'Vozvrat'">
-                  <button class="btn btn-sm" @click="returnProduct(mahsulot)">
+                  <button class="btn btn-sm" @click="returnProduct(mahsulot); buyurtma_id = buyurtma.id">
                     <span class="fa fa-arrow-rotate-left" />
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
+          <hr/>
+          <div class="row text-center">
+            <span class="col"><strong>Buyurtma summasi: </strong>{{Intl.NumberFormat().format(buyurtma.order_price)}} so'm</span>
+            <span class="col" v-if="buyurtma.naxt > 0"><strong>Naxt: </strong>{{Intl.NumberFormat().format(buyurtma.naxt)}} so'm</span>
+            <span class="col" v-if="buyurtma.plastik > 0"><strong>Plastik: </strong>{{Intl.NumberFormat().format(buyurtma.plastik)}} so'm</span>
+            <span class="col" v-if="buyurtma.discount > 0"><strong>Chegirma: </strong>{{Intl.NumberFormat().format(buyurtma.discount)}} so'm</span>
+            <span class="col" v-if="buyurtma.loan_price > 0"><strong>Nasiya: </strong>{{Intl.NumberFormat().format(buyurtma.loan_price)}} so'm</span>
+          </div>
         </div>
         <input type="hidden" id="close_modal" data-dismiss="modal" />
       </div>
@@ -447,7 +499,8 @@ export default {
       ).toISOString(),
       savdolar: [],
       mahsulotlar: [],
-      savdolar2: [],
+      buyurtma: {},
+      buyurtma_id: "",
       productR: {},
       returnP: {
         quantity: null,
@@ -465,6 +518,14 @@ export default {
       tab: localStorage.getItem("tab"),
     };
   },
+  mounted() {
+    console.clear();
+    this.getStatistic();
+
+    // instance.get("all_products_for_trade_to_search").then((res) => {
+    //   console.log(res.data)
+    // })
+  },
   methods: {
     setTab(tab) {
       localStorage.setItem("tab", tab);
@@ -473,30 +534,29 @@ export default {
       this.savdolar = [];
       this.isloading = true;
       instance
-        .get("all_orders/true")
-        .then((orders) => {
-          if (orders.data.length > 0) {
-            orders.data.forEach((order) => {
-              if (order.time >= this.fromDate && order.time <= this.toDate) {
-                this.savdolar.push(order);
-                this.table = true;
-                this.isloading = false;
-              } else {
-                this.isloading = false;
-              }
-            });
-          } else {
-            this.isloading = false;
-            swal({
-              icon: "warning",
-              title: "Qidiruv natijasi bo'sh !",
-            });
-          }
+        .get("orders_between_time/" + this.fromDate + '/' + this.toDate)
+        .then((response) => {
+          this.savdolar = response.data.data
+          console.log(response.data)
         })
         .catch((err) => {
           this.isloading = false;
           this.errorr = err.message;
         });
+    },
+    getBuyurtma(id) {
+      this.isloading = true
+      instance
+      .get("this_order/" + id)
+      .then((response) => {
+        console.log(response.data)
+        this.buyurtma = response.data
+        this.isloading = false
+      })
+      .catch((err) => {
+        this.isloading = false;
+        this.errorr = err.message;
+      });
     },
     returnProduct(savdo) {
       console.log(savdo);
@@ -542,8 +602,8 @@ export default {
                 }).then(() => {
                   if (response.data == "success") {
                     // location.reload()
-                    document.querySelector("#close_modal").click();
-                    this.getData();
+                    // document.querySelector("#close_modal").click();
+                    this.getBuyurtma(this.buyurtma_id);
                   } else {
                     location.href = "/nasiyaMijoz/" + response.data;
                   }
@@ -629,20 +689,12 @@ export default {
       console.clear();
       this.isloading = true;
       instance
-        .get("statistics_between_time/" + this.fromDate + "/" + this.toDate)
+        .get("orders_between_time/" + this.fromDate + "/" + this.toDate)
         .then((response) => {
           this.statistic = response.data;
           this.isloading = false;
         });
     },
-  },
-  mounted() {
-    console.clear();
-    this.getStatistic();
-
-    // instance.get("all_products_for_trade_to_search").then((res) => {
-    //   console.log(res.data)
-    // })
   },
 };
 </script>

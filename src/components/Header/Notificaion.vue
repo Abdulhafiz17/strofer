@@ -5,8 +5,7 @@
     @click="getData(), notification = !notification"
     v-if="role == 'branch_admin'"
   >
-    <span class="fa fa-bell" style="color: white; font-size: 15px" />
-    <sup> {{ notice }} </sup>
+    <span :class="notice > 0 ? 'fa fa-bell fa-shake text-danger' : 'fa fa-bell'" style="color: white; font-size: 18px" />
   </button>
   <div class="drop text-center" id="drop" v-if="notification">
     <ul class="list-group" id="basicList">

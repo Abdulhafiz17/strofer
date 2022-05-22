@@ -31,7 +31,7 @@
                 id="barcode"
                 list="products"
                 placeholder="Code"
-                @change="addProduct(barcode)"
+                @change="toTrade(barcode)"
                 @keyup="searchProduct(barcode)"
                 v-model="barcode"
                 autocomplete="false"
@@ -47,7 +47,6 @@
               </datalist>
               <div class="input-group-append">
                 <div class="input-group-text" @dblclick="final_price = !final_price">
-                  
                   <span class="fa fa-barcode" />
                 </div>
               </div>
@@ -55,6 +54,7 @@
           </div>
           <div class="col-md-4">
             <h4>{{ Intl.NumberFormat().format(buyurtma.order_price) }} so'm</h4>
+            <!-- <h4>{{ Intl.NumberFormat().format(sum_of_order) }} so'm</h4> -->
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(mahsulot, n) in buyurtma.data" :key="mahsulot">
+              <tr v-for="(mahsulot, n, sum) in buyurtma.data" :key="mahsulot">
                 <td>{{ n + 1 }}</td>
                 <td>{{ mahsulot.name }} {{ mahsulot.brand }}</td>
                 <td>
@@ -130,65 +130,16 @@
                 <td>
                   {{
                     Intl.NumberFormat().format(
-                      mahsulot.quantity * mahsulot.selling_price
+                      sum = mahsulot.quantity * mahsulot.selling_price
                     )
                   }}
                   so'm
+                  <!-- <span style="display: none">{{sum_of_order += sum}}</span> -->
                 </td>
                 <td>
                   <button
                     class="btn btn-sm btn-outline-danger"
                     @click="deleteTrade(mahsulot.code)"
-                  >
-                    <span class="far fa-circle-xmark" />
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="adding">
-                <td></td>
-                <td>{{ product.name }} {{ product.brand }}</td>
-                <td>
-                  <span>{{ product.quantity }} {{ product.measure }}</span>
-                </td>
-                <td>
-                  <form @submit.prevent="toTrade(product)">
-                    <div class="input-group input-group-sm w-75 mx-auto">
-                      <input
-                        type="number"
-                        id="hajm"
-                        step="any"
-                        placeholder="Hajm"
-                        class="form-control text-center"
-                        v-model="product.hajm"
-                        required
-                        min="0"
-                      />
-                      <div class="input-group-append">
-                        <div class="input-group-text">
-                          {{ product.measure }}
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </td>
-                <td>
-                  {{ Intl.NumberFormat().format(product.selling_price) }} so'm
-                </td>
-                <td v-if="final_price">
-                  {{ Intl.NumberFormat().format(product.final_price) }} so'm
-                </td>
-                <td>
-                  {{
-                    Intl.NumberFormat().format(
-                      product.quantity * product.selling_price
-                    )
-                  }}
-                  so'm
-                </td>
-                <td>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="(adding = false), (product = {})"
                   >
                     <span class="far fa-circle-xmark" />
                   </button>
@@ -700,11 +651,10 @@ export default {
       isloading: true,
       error: "",
       buyurtma: {},
+      sum_of_order: 0,
       mahsulotlar: [],
       barcode: "",
-      product: {},
       final_price: false,
-      adding: false,
       receipentValue: false,
       client: false,
       naxtSavdo: {
@@ -749,31 +699,23 @@ export default {
   },
   methods: {
     getData() {
+      this.sum_of_order = 0
       document.querySelector("#barcode").focus()
       instance
         .get("this_order/" + this.$route.params.id)
         .then((response) => {
           this.buyurtma = response.data;
           console.log(response.data)
-          // instance
-          //   .get("all_products_for_trade_to_search")
-          //   .then((response) => {
-          //     this.mahsulotlar = response.data;
-              instance
-                .get("all_customers")
-                .then((res) => {
-                  this.mijozlar = res.data;
-                  this.isloading = false;
-                })
-                .catch((err) => {
-                  this.isloading = false;
-                  this.errorr = err.message;
-                });
-            // })
-            // .catch((err) => {
-            //   this.isloading = false;
-            //   this.error = err.message;
-            // });
+          instance
+            .get("all_customers")
+            .then((res) => {
+              this.mijozlar = res.data;
+              this.isloading = false;
+            })
+            .catch((err) => {
+              this.isloading = false;
+              this.errorr = err.message;
+            });
         })
         .catch((err) => {
           this.isloading = false;
@@ -782,74 +724,52 @@ export default {
     },
     searchProduct(name) {
       if (name.length > 3) {
-        instance.post("all_products_for_trade_to_search_kassa",{code: "", name: name})
+        instance.post("all_products_for_trade_to_search_kassa",{product: name})
         .then((response) => {
-          console.log(response.data)
           this.mahsulotlar = response.data
         })
       }
     },
-    addProduct(barcode) {
-      instance
-        .get("this_product/empty/" + barcode)
-        .then((response) => {
-          if (response.data.length > 0) {
-            this.product = response.data[0];
-            this.product.hajm = 1;
-            // this.adding = true;
-            this.barcode = "";
-            // setTimeout(() => {
-              this.toTrade(this.product)
-              document.querySelector("#barcode").focus();
-            // }, 10);
-          } else {
-            swal({
-              icon: "warning",
-              title: "Bunday mahsulot mavjud emas !",
-              timer: 2000,
-            }).then(() => {
-              document.querySelector("#barcode").value = null;
-              document.querySelector("#barcode").focus();
-            });
-          }
-        })
-        .catch((err) => {
-          this.isloading = false;
-          this.error = err.message;
-        });
-    },
-    toTrade(product) {
+    toTrade(barcode) {
+      console.clear()
+      console.log(barcode)
       this.isloading = true;
+      this.sum_of_order = 0
       let data = {
-        product_code: product.product_code,
-        quantity: product.hajm,
-        // quantity: 1,
+        product_code: barcode,
+        // quantity: product.hajm,
+        quantity: 1,
       };
       instance
         .post("to_trade/" + this.$route.params.id, data)
         .then((response) => {
           console.log(response.data);
           if (response.status == 200) {
-            if (response.data == "So'rovda xatolik_kata") {
+            if (response.data == "So'rovda xatolikk") {
               swal({
                 icon: "warning",
-                title: "Hajmda xatolik",
-                timer: 1000,
-              }).then(() => {
-                this.isloading = false;
-                document.querySelector("#barcode").focus();
-              });
+                title: "Bunday mahsulot mavjud emas",
+                timer: 1500,
+              })
+            } else if (response.data == "So'rovda xatolik_kata") {
+              swal({
+                icon: "warning",
+                title: "Hajm yetarli emas !",
+                timer: 1500,
+              })
             } else {
-              swal("", "", "success", { timer: 800 }).then(() => {
+              // swal("", "", "success", { timer: 800 }).then(() => {
                 // this.buyurtma = response.data;
-                  this.adding = false;
-                  this.product = {};
                 // setTimeout(() => {
-                  this.isloading = false;
-                  this.getData()
+                  this.buyurtma.data = response.data.data
+                  this.buyurtma.order_price = response.data.sum_selling_price
                 // }, 400);
-              });
+              // });
             }
+            this.barcode = ""
+            document.querySelector("#barcode").value = null
+            document.querySelector("#barcode").focus();
+            this.isloading = false;
           }
         })
         .catch((err) => {
@@ -859,19 +779,21 @@ export default {
     },
     deleteTrade(code) {
       this.isloading = true;
+      this.sum_of_order = 0
       instance
         .delete("remove_this_trade/" + code + "/" + this.$route.params.id)
         .then((response) => {
-          // console.log(response.data)
+          console.log(response.data)
           if (response.status == 200) {
-            swal({
-              icon: "success",
-              timer: 800,
-            }).then(() => {
+            // swal({
+            //   icon: "success",
+            //   timer: 800,
+            // }).then(() => {
               // this.buyurtma = response.data;
-              this.getData()
               document.querySelector("#barcode").focus()
-            });
+              this.buyurtma.data = response.data.data
+              this.buyurtma.order_price = response.data.sum_selling_price
+            // });
           }
           this.isloading = false;
         })
@@ -912,6 +834,7 @@ export default {
     },
     putThisTrade(mahsulot) {
       this.isloading = true;
+      this.sum_of_order = 0
       let data = {
         product_code: mahsulot.code,
         quantity: mahsulot.quantity,
@@ -921,16 +844,19 @@ export default {
       instance
         .put("update_this_trade", data)
         .then((response) => {
+          console.log(response.data)
           if (response.status == 200) {
             // swal({
             //   icon: "success",
             //   timer: 700,
             // }).then(() => {
               // this.buyurtma = response.data;
-              setTimeout(() => {
-                this.getData()
+              // setTimeout(() => {
+                // this.getData()
+                this.buyurtma.data = response.data.data
+                this.buyurtma.order_price = response.data.sum_selling_price
                 this.isloading = false;
-              }, 200);
+              // }, 500);
             // });
           }
         })

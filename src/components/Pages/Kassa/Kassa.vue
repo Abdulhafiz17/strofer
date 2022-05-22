@@ -36,7 +36,7 @@
               v-for="tab in buyurtmalar"
               :key="tab.id"
               :id="tab.id"
-              class="nav-link btn btn-sm"
+              class="nav-link btn-sm"
               @click="orderId = tab.id"
             >
               <button
@@ -45,7 +45,7 @@
               >
                 <span class="far fa-circle-xmark" />
               </button>
-              <router-link class="nav-link btn btn-sm" :to="'/buyurtma/' + tab.id" v-if="tab">
+              <router-link class="nav-link btn-sm" :to="'/buyurtma/' + tab.id" v-if="tab">
                 {{ tab.number }} - buyurtma <br />
                 {{ tab.time.substr(11, 8) }}
               </router-link>
@@ -141,14 +141,19 @@ export default {
       sana: null,
     };
   },
+  mounted() {
+    console.clear();
+    this.getBuyurtma();
+    this.sana = new Date().getDate() + "." + (new Date().getMonth() + 1) + "." +  new Date().getFullYear()
+  },
   methods: {
     getBuyurtma() {
       this.isloading = true;
       this.buyurtmalar = [];
-      this.buyurtmaMahsulotlar = [];
       instance
-        .get("all_orders/false")
+        .get("all_orders_false")
         .then((res) => {
+          console.log(res.data)
           this.buyurtmalar = res.data;
           this.isloading = false;
         })
@@ -166,6 +171,10 @@ export default {
           console.log(response.data);
           this.hisobot = response.data
           this.isloading = false
+        })
+        .catch((err) => {
+          this.isloading = false
+          this.errorr = err.message
         })
     },
     createOrder() {
@@ -214,11 +223,6 @@ export default {
         return a.position - b.position;
       });
     },
-  },
-  mounted() {
-    console.clear();
-    this.getBuyurtma();
-    this.sana = new Date().getDate() + "." + (new Date().getMonth() + 1) + "." +  new Date().getFullYear()
   },
 };
 </script>
